@@ -1,0 +1,15 @@
+{
+    "version": 1,
+    "link": [
+        {
+            "input": [],
+            "module": "sample",
+            "output": []
+        },
+        {
+            "input": [],
+            "module": "sample2",
+            "output": []
+        }
+    ]
+}
