@@ -7,6 +7,11 @@ def getConfig():
         return json.load(fp)
 
 
+def fillInput():
+
+    pass
+
+
 def init(Global):
     Global["BasicConfig"] = getConfig()
     moduleList = Global["BasicConfig"]["moduleList"]

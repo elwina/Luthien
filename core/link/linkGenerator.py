@@ -1,4 +1,4 @@
-import json
+import commentjson as json
 
 
 class LinkGenerator:

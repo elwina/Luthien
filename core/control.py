@@ -1,6 +1,9 @@
 from core.link.linkGenerator import LinkGenerator
 from importlib import import_module
 
+from core.link.moduleInf import ModuleInf
+from core.coupler import Coupler
+
 
 class Control():
 
@@ -15,6 +18,8 @@ class Control():
 
     def run(self):
         for action in self.linkSheet:
-            moduleInf = self.Global["moduleInformation"]
+            moduleInf: ModuleInf = self.Global["moduleInformation"]
             mo = moduleInf.getModule(action["module"])
-            print(mo.Module().name)
+            print(mo.name)
+
+            cp = Coupler(action)

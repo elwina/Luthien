@@ -2,9 +2,30 @@
     "version": 1,
     "link": [
         {
-            "input": [],
+            "input": [
+                {
+                    // inputInf
+                    "var": "",
+                    "default": {
+                        "type": "",
+                        "value": ""
+                    },
+                    "predefine": {},
+                    "connect": {
+                        // levelInf
+                        // 用顺序法
+                        "type": "level",
+                        "content": []
+                    },
+                    "cover": {}
+                }
+            ],
             "module": "sample",
-            "output": []
+            "output": [
+                {
+                    "var": ""
+                }
+            ]
         },
         {
             "input": [],
