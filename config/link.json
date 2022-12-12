@@ -2,6 +2,7 @@
     "version": 1,
     "link": [
         {
+            "module": "sample",
             "input": [
                 {
                     // inputInf
@@ -20,7 +21,6 @@
                     "cover": {}
                 }
             ],
-            "module": "sample",
             "output": [
                 {
                     "var": ""

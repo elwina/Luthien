@@ -1,10 +1,8 @@
 import json
-from core.link.moduleInf import ModuleInf
 
 
 def getConfig():
-    with open("config/basic.json") as fp:
-        return json.load(fp)
+    pass
 
 
 def fillInput():
@@ -12,7 +10,5 @@ def fillInput():
     pass
 
 
-def init(Global):
-    Global["BasicConfig"] = getConfig()
-    moduleList = Global["BasicConfig"]["moduleList"]
-    Global["moduleInformation"] = ModuleInf(moduleList)
+def init():
+    pass

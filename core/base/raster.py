@@ -1,4 +1,4 @@
-class Raster:
+class RasterBase:
 
     def __init__(self, typeName):
         self.typeName = typeName
