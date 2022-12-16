@@ -8,4 +8,4 @@ class TYPE_Field(Protocol):
         pass
 
 
-TYPE_FIRLD_LIST = Dict[str, Type[TYPE_Field]]
+TYPE_FIELD_LIST = Dict[str, Type[TYPE_Field]]

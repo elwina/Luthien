@@ -1,18 +1,24 @@
+from core.field.demField import DemField
 from core.template.moduleTemplate import ModuleTemplate
+from core.typing.moduleType import TYPE_Module
+from core.typing.fieldType import TYPE_Field
 from module.sample.input.uniInput import UniInput
 from module.sample.run import sampleRun as runFunc
 
 
-class Module(ModuleTemplate):
+class Module(ModuleTemplate, TYPE_Module):
+    inputFieldsNames: list[str] = ["dem", "sampleUni"]
+    inputFields: list[TYPE_Field]
 
     def __init__(self):
         super(Module, self).__init__("sample")
-        self.input.append(UniInput())
-        for inp in self.input:
-            inp.init()
+
+    def prepareData(self, list: list[TYPE_Field]):
+        self.inputFields = list
+        pass
 
     def run(self):
-        runFunc(self.input[0].get())
+        runFunc(self.inputFields[0])
         pass
 
 

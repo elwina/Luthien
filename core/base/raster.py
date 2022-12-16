@@ -8,11 +8,12 @@ class RasterBase:
         self.nullData = 0
         self.data = []
 
-    def init(self, row, col, cellSize, nullData=-9999):
-        self.row = row
-        self.col = col
-        self.cellSize = cellSize
-        self.nullData = nullData
+    def init(self):
+        self.row = 100
+        self.col = 100
+        self.cellSize = 100
+        self.nullData = -9999
+        self.define([[0 for _ in range(100)] for _ in range(100)])
 
     def define(self, data):
         self.data = data

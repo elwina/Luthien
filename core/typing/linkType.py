@@ -1,7 +1,7 @@
 from typing import Dict, List, TypedDict, Literal, Any
 
 
-class _TYPE_A_Link(TypedDict):
+class TYPE_A_Link(TypedDict):
     module: str
     input: Any
     output: Any
@@ -9,10 +9,10 @@ class _TYPE_A_Link(TypedDict):
 
 class TYPE_Link_Json(TypedDict):
     version: int
-    link: list[_TYPE_A_Link]
+    link: list[TYPE_A_Link]
 
 
-a: TYPE_Link_Json = {
+_a: TYPE_Link_Json = {
     "version":
     1,
     "link": [{
