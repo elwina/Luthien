@@ -1,0 +1,62 @@
+{
+    "version": 1,
+    "instance": {
+        "dem": { // instance declare
+            "field": "dem",
+            "init": {
+                "use": "define", // define | no | copy
+                "define": {
+                    "method": "json",
+                    "config": {
+                        "outListConf": true,
+                        "inFile": true,
+                        "inFilePath": "data/test.json"
+                    },
+                    "data": null
+                }
+            }
+        },
+        "water": {
+            "field": "rain",
+            "init": {
+                "use": "no"
+            }
+        },
+        "sampleUni": {
+            "field": "sampleUni",
+            "init": { //declare define
+                "use": "define",
+                "define": { // define
+                    "method": "json",
+                    "config": {
+                        "outListConf": true,
+                        "inFile": true,
+                        "inFilePath": "data/test.json"
+                    },
+                    "data": null
+                }
+            }
+        }
+    },
+    "link": [
+        { // link declare
+            "module": "sample",
+            "input": [
+                {
+                    "in": "dem",
+                    "use": "instance", // instance | define
+                    "from": "dem" //fieldname
+                    //"use":define
+                    //define:{
+                    //    "method"
+                    //}
+                }
+            ],
+            "output": [
+                {
+                    "var": ""
+                }
+            ]
+        }
+    ]
+}
