@@ -29,6 +29,8 @@ class Control():
     def initialize(self):
         self.fMr = FieldManager()
         self.fMr.createField(FIELD_LIST)
+        # data.json导入
+        self.fMr.initDataIn()
 
         for moName in MODULE_LIST:
             logger.info("Create Module {module_name}", module_name=moName)

@@ -1,5 +1,11 @@
+from core.typing.ioType import TYPE_IO_LIST
 from core.typing.moduleType import TYPE_MODULE_LIST
 from core.typing.fieldType import TYPE_FIELD_LIST
+
+from core.io.txt2RasterIO import txt2RasterIO
+from core.io.jsonIO import jsonIO
+
+IO_LIST: TYPE_IO_LIST = {"json": jsonIO, "txt2Raster": txt2RasterIO}
 
 from module.sample.main import Module as sample
 

@@ -1,0 +1,20 @@
+{
+    "sampleUni": {
+        "method": "json",
+        "config": {
+            "outListConf": true,
+            "inFile": true,
+            "inFilePath": "data/test.json"
+        },
+        "data": null
+    },
+    "dem": {
+        "method": "txt2Raster",
+        "config": {
+            "outRasterBase": true,
+            "inFile": true,
+            "inFilePath": "data/demtest.txt"
+        },
+        "data": null
+    }
+}
