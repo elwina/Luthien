@@ -1,5 +1,4 @@
 from core.base.listConf import ListConfBase
-from core.template.inputTemplate import InputTemplate
 from core.typing.fieldType import TYPE_Field
 
 UNI_INPUT_DICT_DEFAULT = [{

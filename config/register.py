@@ -17,6 +17,11 @@ from core.base.raster import RasterBase
 BASE_LIST = {"listConf": ListConfBase, "raster": RasterBase}
 
 from core.field.demField import DemField
+from core.field.rainField import RainField
 from module.sample.field.uniField import UniField as SampleUniField
 
-FIELD_LIST: TYPE_FIELD_LIST = {"dem": DemField, "sampleUni": SampleUniField}
+FIELD_LIST: TYPE_FIELD_LIST = {
+    "dem": DemField,
+    "rain": RainField,
+    "sampleUni": SampleUniField
+}

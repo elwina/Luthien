@@ -12,4 +12,6 @@ class TYPE_Field(Protocol):
         pass
 
 
-TYPE_FIELD_LIST = Dict[str, Type[TYPE_Field]]
+TYPE_Instance = TYPE_Field
+
+TYPE_FIELD_LIST = MutableMapping[str, Type[TYPE_Field]]

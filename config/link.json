@@ -5,20 +5,13 @@
             "module": "sample",
             "input": [
                 {
-                    // inputInf
-                    "var": "",
-                    "default": {
-                        "type": "",
-                        "value": ""
-                    },
-                    "predefine": {},
-                    "connect": {
-                        // levelInf
-                        // 用顺序法
-                        "type": "level",
-                        "content": []
-                    },
-                    "cover": {}
+                    "in": "dem",
+                    "use": "field", // field | define
+                    "from": "dem" //fieldname
+                    //"use":define
+                    //define:{
+                    //    "method"
+                    //}
                 }
             ],
             "output": [

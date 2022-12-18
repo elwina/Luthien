@@ -1,5 +1,5 @@
-from core.fieldManager import FieldManager
-from core.link.linkGenerator import LinkGenerator
+from core.instanceManager import InstanceManager
+from core.linkGenerator import LinkGenerator
 from config.register import MODULE_LIST, FIELD_LIST
 from loguru import logger
 
@@ -9,7 +9,7 @@ from core.typing.moduleType import TYPE_Module
 
 class Control():
     lGr: LinkGenerator
-    fMr: FieldManager
+    iMr: InstanceManager
 
     modules: dict[str, TYPE_Module] = {}
     nowModule: str
@@ -27,10 +27,9 @@ class Control():
         self.linkSheet = lGr.getLink()
 
     def initialize(self):
-        self.fMr = FieldManager()
-        self.fMr.createField(FIELD_LIST)
-        # data.json导入
-        self.fMr.initDataIn()
+        self.iMr = InstanceManager()
+        self.iMr.createInstances()
+        self.iMr.initDataIn()
 
         for moName in MODULE_LIST:
             logger.info("Create Module {module_name}", module_name=moName)
@@ -52,6 +51,6 @@ class Control():
     def dataIn(self):
         mo = self.modules[self.nowModule]
         requireFields = list(
-            map(lambda fieldName: self.fMr.getFields(fieldName),
+            map(lambda fieldName: self.iMr.getInstance(fieldName),
                 mo.inputFieldsNames))
         mo.prepareData(requireFields)

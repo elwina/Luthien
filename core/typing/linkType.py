@@ -1,6 +1,12 @@
 from typing import Dict, List, TypedDict, Literal, Any
 
 
+class TYPE_Link_Declare(TypedDict):
+    module: str
+    input: Any
+    output: Any
+
+
 class TYPE_A_Link(TypedDict):
     module: str
     input: Any
