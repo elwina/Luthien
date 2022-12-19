@@ -3,6 +3,7 @@ import commentjson as json
 from loguru import logger
 from core.conf import getConfig
 from core.typing.linkType import TYPE_Link_Declare
+from core.typing.outputType import TYPE_A_Output_Action
 
 
 class LinkManager:
@@ -36,9 +37,16 @@ class LinkManager:
     def getTotalEpochs(self):
         return self.timeEpoch
 
-    def getLinkDeclare(self):
+    def getLinkDeclare(self) -> Sequence[TYPE_Link_Declare]:
         time = self.timenow
-        return filter(lambda x: time % x["timeInter"] == 0, self.linkDeclare)
+        return list(
+            filter(lambda x: time % x["timeInter"] == 0, self.linkDeclare))
 
     def timeAdd(self):
         self.timenow = self.timenow + 1
+
+    def getOutputAction(
+        self, actionList: Sequence[TYPE_A_Output_Action]
+    ) -> Sequence[TYPE_A_Output_Action]:
+        time = self.timenow
+        return list(filter(lambda x: time % x["timeInter"] == 0, actionList))

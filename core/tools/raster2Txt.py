@@ -1,8 +1,7 @@
 from loguru import logger
-from core.base.raster import TYPE_RASTER_DATA
 
 
-def raster2Txt(rasterData: TYPE_RASTER_DATA, filename):
+def raster2Txt(rasterData, filename: str):
     logger.info("Write Raster Txt {path}", path=filename)
     with open(filename, 'w') as fp:
         instr = "ncols\t{ncols}\nnrows\t{nrows}\nxllcorner\t{xllcorner}\nyllcorner\t{yllcorner}\ncellsize\t{cellsize}\nNODATA_value\t{NODATA_value}\n".format(

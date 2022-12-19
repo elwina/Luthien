@@ -4,11 +4,14 @@ from typing import Any, MutableMapping, Sequence, TypedDict
 from loguru import logger
 from config.register import FIELD_LIST
 from core.conf import getConfig
+from core.mod.outputManager import outputManager
 from core.typing.fieldType import Type_Instance_Declare
 
 from core.typing.fieldType import  TYPE_Field
 from core.typing.inputType import TYPE_Indata
 from core.typing.linkType import TYPE_A_Link_Input, TYPE_Link_Declare
+from core.typing.outputType import TYPE_A_Output_Action
+from core.typing.recordType import TYPE_A_Record, TYPE_Recorder_Env
 
 
 class _TYPE_A_Instance(TypedDict):
@@ -77,8 +80,32 @@ class InstanceManager():
                     pass
         return indata
 
-    # def createAnoInstance(self,declare:Type_Instance_Declare)->TYPE_Field:
-    #     Field = FIELD_LIST[declare["field"]]
-    #     ins = Field()
-    #     ins.define(declare["init"]["define"]["method"], config, data)
-    #     pass
+    def updateFromOutput(self,actionList:Sequence[TYPE_A_Output_Action],outMr:outputManager,time:int):
+        '''根据output action操作instance'''
+        for action in actionList:
+            catch=action["catch"]
+            catchIns=outMr.getOutput(catch,time)
+            if catchIns is not None:
+                self.instances[action["put"]]["instance"]=catchIns
+            else:
+                logger.error("Catch instance not found!")
+
+    def makeRecords(self,recordList:Sequence[TYPE_A_Record],env:TYPE_Recorder_Env):
+        '''记录''' 
+        for record in recordList:
+            self.makeARecord(
+                record["catch"],
+                record["method"],
+                record["config"],
+                env
+            )
+
+
+    def makeARecord(self,name:str,methodName: str, config: MutableMapping[str, Any],
+               env: TYPE_Recorder_Env):
+        '''使用record记录'''
+        ins = self.getInstance(name)
+        env["pre"] = env["pre"] + "out-" + name
+
+        ins.record(methodName, config, env)
+

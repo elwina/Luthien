@@ -67,14 +67,18 @@
                 }
             ],
             "output": [
-                {
-                    "var": ""
+                { // output action
+                    "catch": "rain",
+                    "put": "water1",
+                    "timeInter": 1 // 每n个timestep输出到instance一次
                 }
-            ]
+            ],
+            "recordInside": [],
+            "record": []
         },
         {
             "module": "sample",
-            "timeInter": 2, // 每n个timestep运行一次
+            "timeInter": 1, // 每n个timestep运行一次
             "input": [ // link input
                 {
                     "into": "dem",
@@ -88,8 +92,26 @@
                 }
             ],
             "output": [
+                { // output action
+                    "catch": "rain",
+                    "put": "dem",
+                    "timeInter": 1 // 每n个timestep输出到instance一次
+                }
+            ],
+            "recordInside": [
                 {
-                    "var": ""
+                    // record
+                    "catch": "rain",
+                    "method": "raster",
+                    "config": {}
+                }
+            ],
+            "record": [
+                {
+                    // record
+                    "catch": "water1",
+                    "method": "raster",
+                    "config": {}
                 }
             ]
         }

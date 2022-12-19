@@ -1,6 +1,7 @@
 from typing import Any, Mapping, MutableMapping, Sequence, TypedDict
 from config.register import IO_LIST
 from core.typing.ioType import TYPE_IO, TYPE_IO_DATA
+from core.typing.recordType import TYPE_Recorder_Env
 from core.utils.confType import TYPE_CONF_VALUE, generateInitDict
 
 from typing_extensions import NotRequired, Required
@@ -60,6 +61,10 @@ class ListConfBase:
         config["outListConf"] = True
         re = method({"config": config, "oldData": self.data, "newData": data})
         self.data = re["newData"]
+
+    def record(self, methodName: str, config: MutableMapping[str, Any],
+               env: TYPE_Recorder_Env):
+        pass
 
 
 if __name__ == "__main__":
