@@ -1,22 +1,26 @@
 {
     "version": 1,
+    "basic": {
+        "timestep": 2,
+        "timeUnit": "hour",
+        "timeEpoch": 5 // 运行几次
+    },
     "instance": {
         "dem": { // instance declare
             "field": "dem",
             "init": {
                 "use": "define", // define | no | copy
                 "define": {
-                    "method": "json",
+                    "method": "txt2Raster",
                     "config": {
-                        "outListConf": true,
                         "inFile": true,
-                        "inFilePath": "data/test.json"
+                        "inFilePath": "data/demtest.txt"
                     },
                     "data": null
                 }
             }
         },
-        "water": {
+        "water1": {
             "field": "rain",
             "init": {
                 "use": "no"
@@ -41,15 +45,46 @@
     "link": [
         { // link declare
             "module": "sample",
-            "input": [
+            "timeInter": 1, // 每一个timestep运行一次
+            "input": [ // link input
                 {
-                    "in": "dem",
+                    "into": "dem",
                     "use": "instance", // instance | define
-                    "from": "dem" //fieldname
+                    "instance": "dem" //fieldname
                     //"use":define
                     //define:{
                     //    "method"
                     //}
+                },
+                {
+                    "into": "sampleUni",
+                    "use": "instance", // instance | define
+                    "instance": "sampleUni" //fieldname
+                    //"use":define
+                    //define:{
+                    //    "method"
+                    //}
+                }
+            ],
+            "output": [
+                {
+                    "var": ""
+                }
+            ]
+        },
+        {
+            "module": "sample",
+            "timeInter": 2, // 每n个timestep运行一次
+            "input": [ // link input
+                {
+                    "into": "dem",
+                    "use": "instance", // instance | define
+                    "instance": "dem" //fieldname
+                },
+                {
+                    "into": "sampleUni",
+                    "use": "instance", // instance | define
+                    "instance": "sampleUni" //fieldname
                 }
             ],
             "output": [

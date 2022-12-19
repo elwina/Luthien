@@ -1,9 +1,7 @@
 from typing import Literal, MutableMapping, Optional, TypedDict
-
-from typing_extensions import NotRequired
 from loguru import logger
-from core.field.demField import DemField
 from core.typing.fieldType import TYPE_Instance
+from core.typing.inputType import TYPE_Indata, TYPE_Information
 
 '''
 "abc":{
@@ -19,17 +17,6 @@ indata:{
     }
 }
 '''
-
-class _TYPE_A_Indata(TypedDict):
-    method:Literal["in"]
-    instance:NotRequired[TYPE_Instance]
-
-TYPE_Indata=MutableMapping[str,_TYPE_A_Indata]
-
-class _TYPE_A_Information(TypedDict):
-    required:bool
-
-TYPE_Information=MutableMapping[str,_TYPE_A_Information]
 
 class inputManager:
     information:TYPE_Information={}
@@ -48,9 +35,11 @@ class inputManager:
         for name in indata:
             match indata[name]["method"]:
                 case "in":
-                        ins=indata[name].get("instance")
-                        if ins is not None:
-                            newInstances[name]=ins
+                    ins=indata[name].get("instance")
+                    if ins is not None:
+                        newInstances[name]=ins
+                    else:
+                        logger.error("No Instance Input!")
 
         self.instances=newInstances
 
@@ -69,6 +58,8 @@ class inputManager:
         '''返回存在optional instances名字的列表'''
         return list(set(list(self.instances.keys())) & set(list(map(lambda x:x,filter(lambda x:self.information[x]["required"]==False,self.information)))))
 
+    def getInstances(self):
+        return self.instances
 
 if __name__=="__main__":
     m=inputManager()

@@ -1,12 +1,14 @@
 import commentjson as json
-from typing import Any, MutableMapping, TypedDict
+from typing import Any, MutableMapping, Sequence, TypedDict
 
 from loguru import logger
 from config.register import FIELD_LIST
 from core.conf import getConfig
-from core.typing.configType import Type_Instance_Declare
+from core.typing.fieldType import Type_Instance_Declare
 
 from core.typing.fieldType import  TYPE_Field
+from core.typing.inputType import TYPE_Indata
+from core.typing.linkType import TYPE_A_Link_Input, TYPE_Link_Declare
 
 
 class _TYPE_A_Instance(TypedDict):
@@ -54,3 +56,29 @@ class InstanceManager():
                     self.defineInstance(name,defineData["method"],defineData["config"],defineData["data"])
                 case "no":
                     pass
+
+    def linkDataIn(self,linkInputList:Sequence[TYPE_A_Link_Input])->TYPE_Indata:
+        '''根据link input配置indata'''
+        indata:TYPE_Indata={}
+        for linkInput in linkInputList:
+            match linkInput["use"]:
+                case "instance":
+                    # 选择instance放入
+                    if "instance" in linkInput:
+                        insName=linkInput["instance"]
+                        ins=self.getInstance(insName)
+                        indata[linkInput["into"]]={
+                            "method":"in",
+                            "instance":ins
+                            }
+                    else:
+                        logger.error("No instance said to use!")
+                case "define":
+                    pass
+        return indata
+
+    # def createAnoInstance(self,declare:Type_Instance_Declare)->TYPE_Field:
+    #     Field = FIELD_LIST[declare["field"]]
+    #     ins = Field()
+    #     ins.define(declare["init"]["define"]["method"], config, data)
+    #     pass
