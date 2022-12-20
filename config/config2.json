@@ -1,0 +1,85 @@
+{
+    "version": 1,
+    "basic": {
+        "timestep": 1,
+        "timeUnit": "hour",
+        "timeEpoch": 1, // 运行几次
+        "outputPath": "output/"
+    },
+    "instance": {
+        "dem": { // instance declare
+            "field": "dem",
+            "init": {
+                "use": "define", // define | no | copy
+                "define": {
+                    "method": "txt2Raster",
+                    "config": {
+                        "inFile": true,
+                        "inFilePath": "data/demtest.txt"
+                    },
+                    "data": null
+                }
+            },
+            "record": { // recordInf
+                "at": "se",
+                "recInf": []
+            }
+        },
+        "water": {
+            "field": "rain",
+            "init": {
+                "use": "no"
+            },
+            "record": "e"
+        },
+        "lisUni": {
+            "field": "lisfloodUni",
+            "init": { //declare define
+                "use": "define",
+                "define": { // define
+                    "method": "json",
+                    "config": {
+                        "outListConf": true,
+                        "inFile": true,
+                        "inFilePath": "data/test.json"
+                    },
+                    "data": null
+                }
+            },
+            "record": "s"
+        }
+    },
+    "link": [
+        { // link declare
+            "module": "lisflood",
+            "timeInter": 1, // 每一个timestep运行一次
+            "input": [ // link input
+                {
+                    "into": "dem",
+                    "use": "instance", // instance | define
+                    "instance": "dem" //fieldname
+                },
+                {
+                    "into": "lisUni",
+                    "use": "instance", // instance | define
+                    "instance": "lisUni" //fieldname
+                }
+            ],
+            "output": [
+                { // output action
+                    "catch": "water",
+                    "put": "water",
+                    "timeInter": 1 // 每n个timestep输出到instance一次
+                }
+            ],
+            "recordInside": [],
+            "record": [
+                {
+                    "catch": "water",
+                    "method": "raster",
+                    "config": {}
+                }
+            ]
+        }
+    ]
+}

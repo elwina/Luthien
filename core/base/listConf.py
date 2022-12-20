@@ -1,10 +1,11 @@
-from typing import Any, Mapping, MutableMapping, Sequence, TypedDict
+from typing import Any, Mapping, MutableMapping, Sequence
 from config.register import IO_LIST
+from core.base.listConfType import TYPE_LIST_CONF_DATA, TYPE_LIST_CONF_IN_DATA
 from core.typing.ioType import TYPE_IO, TYPE_IO_DATA
 from core.typing.recordType import TYPE_Recorder_Env
 from core.utils.confType import TYPE_CONF_VALUE, generateInitDict
 
-from typing_extensions import NotRequired, Required
+from typing_extensions import NotRequired, Required, TypedDict
 '''
     [
         {
@@ -16,18 +17,8 @@ from typing_extensions import NotRequired, Required
 '''
 
 
-class TYPE_LIST_CONF_IN_A_DATA(TypedDict, total=False):
-    name: Required[str]
-    type: Required[str]
-    default: TYPE_CONF_VALUE
-
-
-TYPE_LIST_CONF_IN_DATA = Sequence[TYPE_LIST_CONF_IN_A_DATA]
-
-TYPE_LIST_CONF_DATA = MutableMapping[str, TYPE_CONF_VALUE]
-
-
 class ListConfBase:
+    data: TYPE_LIST_CONF_DATA
 
     def __init__(self, typeName: str):
         self.typeName = typeName
@@ -43,10 +34,10 @@ class ListConfBase:
             if "default" in item:
                 self.data[item["name"]] = item["default"]
 
-    def setterOne(self, key: str, value: str):
+    def setOne(self, key: str, value: str):
         self.data[key] = value
 
-    def getterOne(self, key: str):
+    def getOne(self, key: str):
         return self.data[key]
 
     def setter(self, indata: dict):

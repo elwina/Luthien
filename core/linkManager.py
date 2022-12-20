@@ -43,9 +43,14 @@ class LinkManager:
         return self.timeEpoch
 
     def getLinkDeclare(self) -> Sequence[TYPE_Link_Declare]:
+        return self.linkDeclare
+
+    def ifLinkRun(self, num: int) -> bool:
         time = self.timenow
-        return list(
-            filter(lambda x: time % x["timeInter"] == 0, self.linkDeclare))
+        if time % self.linkDeclare[num]["timeInter"] == 0:
+            return True
+        else:
+            return False
 
     def timeAdd(self):
         self.timenow = self.timenow + 1

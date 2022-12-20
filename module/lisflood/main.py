@@ -1,26 +1,38 @@
 from typing import Sequence
-from core.field.demField import DemField
-from core.template.moduleTemplate import ModuleTemplate
+from core.typing.inputType import TYPE_Information
+from core.mod.moduleTemplate import ModuleTemplate
 from core.typing.moduleType import TYPE_Module
 from core.typing.fieldType import TYPE_Field
+from core.typing.outputType import TYPE_Output_Information
 from module.lisflood.run import sampleRun as runFunc
+
+MODULE_INSTANCE_INF: TYPE_Information = {
+    "dem": {
+        "required": True
+    },
+    "lisUni": {
+        "required": True
+    },
+    "mann": {
+        "required": False
+    }
+}
+
+MODULE_OUTPUT_INSTANCE_INF: TYPE_Output_Information = {"water": {}}
 
 
 class Module(ModuleTemplate, TYPE_Module):
-    inputFieldsNames: list[str] = ["dem", "sampleUni"]
-    inputFields: list[TYPE_Field]
-
-    inputFieldsRequired: Sequence[str] = ["dem", "sampleUni"]
-    inputFieldsOptional: Sequence[str] = []
-    internalOutput: Sequence[str] = []
 
     def __init__(self):
-        super(Module, self).__init__("sample")
-
-    def prepareData(self, list: list[TYPE_Field]):
-        self.inputFields = list
-        pass
+        super().__init__("lisflood", MODULE_INSTANCE_INF,
+                         MODULE_OUTPUT_INSTANCE_INF)
 
     def run(self):
-        runFunc(self.inputFields[0])
-        pass
+        self.outMr.clearCache()
+        runFunc(self.outMr.putout, self.inMr.getInstances(),
+                self.inMr.existOptionalInstancesName())
+
+
+if __name__ == "__main__":
+    m = Module()
+    #m.prepareData([])

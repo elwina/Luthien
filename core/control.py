@@ -38,15 +38,19 @@ class Control():
             logger.info("Epoch {num} start.", num=epoch)
 
             for (i, link) in enumerate(self.lMr.getLinkDeclare()):
-                logger.info("Start Run Module {module_name}",
+                logger.info("Start Module {module_name}",
                             module_name=link["module"])
                 self.nowModule = link["module"]
                 self.nowLink = link
                 self.nowLinkNum = i
                 self.updateEnv()
 
-                self.dataIn()
-                self.runOne()
+                if self.lMr.ifLinkRun(i):
+                    self.dataIn()
+                    self.runOne()
+                    logger.info("Run it")
+                else:
+                    logger.info("No Run it")
                 self.dealOut()
                 self.recordData()
 

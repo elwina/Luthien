@@ -1,3 +1,5 @@
 {
-    "teststring": "asdfg"
+    "rainFromConf": 1,
+    "rainBase": 0,
+    "rainAddPerhour": 500
 }
