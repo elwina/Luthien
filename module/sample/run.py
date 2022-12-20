@@ -10,7 +10,7 @@ from copy import deepcopy
 
 def sampleRun(putout: Callable[[TYPE_Putout], None],
               instances: MutableMapping[str, TYPE_Instance],
-              optList: Sequence[str], env):
+              optList: Sequence[str]):
     logger.debug("sampleRun,optList:{opt}", opt=",".join(optList))
 
     dem = deepcopy(instances["dem"])

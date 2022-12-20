@@ -8,6 +8,7 @@ class TYPE_Basic_Config(TypedDict):
     timestep: int
     timeUnit: str
     timeEpoch: int
+    outputPath:str
 
 
 class Type_Config_Json(TypedDict):

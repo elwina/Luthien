@@ -1,7 +1,7 @@
 from typing import Any, MutableMapping, Sequence, TypedDict
 
 from config.register import IO_LIST, RECORDER_LIST
-from core.typing.recordType import TYPE_Recorder_Env
+from core.typing.recordType import TYPE_Recorder_Env, TYPE_Recorder_TempEnv
 
 
 class TYPE_RASTER_DATA(TypedDict):
@@ -41,6 +41,6 @@ class RasterBase:
         self.data = re["newData"]
 
     def record(self, methodName: str, config: MutableMapping[str, Any],
-               env: TYPE_Recorder_Env):
+               tempEnv: TYPE_Recorder_TempEnv):
         method = RECORDER_LIST[methodName]
-        method({"config": config, "data": self.data, "env": env})
+        method({"config": config, "data": self.data, "tempEnv": tempEnv})

@@ -5,8 +5,9 @@ from config.register import MODULE_LIST, FIELD_LIST
 from loguru import logger
 from core.typing.linkType import TYPE_Link_Declare
 
-from core.typing.moduleType import TYPE_Module, TYPE_Run_Env
+from core.typing.moduleType import TYPE_Module
 from core.typing.recordType import TYPE_Recorder_Env
+from core.env import env
 
 
 class Control():
@@ -18,7 +19,7 @@ class Control():
     nowLink: TYPE_Link_Declare
     nowLinkNum: int
 
-    def __init__(self, Global):
+    def __init__(self):
         self.initialize()
 
     def initialize(self):
@@ -42,6 +43,7 @@ class Control():
                 self.nowModule = link["module"]
                 self.nowLink = link
                 self.nowLinkNum = i
+                self.updateEnv()
 
                 self.dataIn()
                 self.runOne()
@@ -50,6 +52,7 @@ class Control():
 
             self.lMr.timeAdd()
             logger.info("Epoch {num} end.", num=epoch)
+        logger.info("Run done.")
 
     def dataIn(self):
         mo = self.modules[self.nowModule]
@@ -57,7 +60,7 @@ class Control():
 
     def runOne(self):
         mo = self.modules[self.nowModule]
-        mo.run(self.generateEnv())
+        mo.run()
 
     def dealOut(self):
         mo = self.modules[self.nowModule]
@@ -67,19 +70,9 @@ class Control():
 
     def recordData(self):
         mo = self.modules[self.nowModule]
-        #mo.outMr.makeRecords(self.nowLink["recordInside"],self.generateRecorderEnv())
-        self.iMr.makeRecords(self.nowLink["record"],
-                             self.generateRecorderEnv())
+        mo.outMr.makeRecords(self.nowLink["recordInside"])
+        self.iMr.makeRecords(self.nowLink["record"])
 
-    def generateEnv(self) -> TYPE_Run_Env:
-        return {
-            "timestep": self.lMr.timestep,
-            "timeUnit": self.lMr.timeUnit,
-            "time": self.lMr.getTime()
-        }
-
-    def generateRecorderEnv(self) -> TYPE_Recorder_Env:
-        filename = "output/" + self.nowModule + '-' + str(
-            self.nowLinkNum) + '-' + str(self.lMr.getTime())
-
-        return {"time": self.lMr.getTime(), "pre": filename}
+    def updateEnv(self):
+        env.moduleNow = self.nowModule
+        env.linkNowNum = self.nowLinkNum

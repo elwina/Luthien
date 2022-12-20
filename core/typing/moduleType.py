@@ -7,12 +7,6 @@ from core.typing.fieldType import TYPE_Field
 from core.typing.inputType import TYPE_Indata
 
 
-class TYPE_Run_Env(TypedDict):
-    timestep: int
-    timeUnit: str
-    time: int
-
-
 class TYPE_Module(Protocol):
     inMr: inputManager
     outMr: outputManager
@@ -20,7 +14,7 @@ class TYPE_Module(Protocol):
     def prepareData(self, indata: TYPE_Indata) -> None:
         pass
 
-    def run(self, env: TYPE_Run_Env) -> None:
+    def run(self) -> None:
         pass
 
 

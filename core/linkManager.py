@@ -4,6 +4,7 @@ from loguru import logger
 from core.conf import getConfig
 from core.typing.linkType import TYPE_Link_Declare
 from core.typing.outputType import TYPE_A_Output_Action
+from core.env import env
 
 
 class LinkManager:
@@ -29,7 +30,11 @@ class LinkManager:
         self.timeEpoch = basicConfig["timeEpoch"]
 
         self.timenow = 0
+        self.updateEnv()
         logger.info("Set time to 0.")
+
+        env.timestep = self.timestep
+        env.timeUnit = self.timeUnit
 
     def getTime(self):
         return self.timenow
@@ -44,9 +49,13 @@ class LinkManager:
 
     def timeAdd(self):
         self.timenow = self.timenow + 1
+        self.updateEnv()
 
     def getOutputAction(
         self, actionList: Sequence[TYPE_A_Output_Action]
     ) -> Sequence[TYPE_A_Output_Action]:
         time = self.timenow
         return list(filter(lambda x: time % x["timeInter"] == 0, actionList))
+
+    def updateEnv(self):
+        env.epoch = self.timenow

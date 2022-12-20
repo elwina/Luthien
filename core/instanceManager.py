@@ -5,13 +5,14 @@ from loguru import logger
 from config.register import FIELD_LIST
 from core.conf import getConfig
 from core.mod.outputManager import outputManager
+from core.env import env
 from core.typing.fieldType import Type_Instance_Declare
 
 from core.typing.fieldType import  TYPE_Field
 from core.typing.inputType import TYPE_Indata
 from core.typing.linkType import TYPE_A_Link_Input, TYPE_Link_Declare
 from core.typing.outputType import TYPE_A_Output_Action
-from core.typing.recordType import TYPE_A_Record, TYPE_Recorder_Env
+from core.typing.recordType import TYPE_A_Record, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
 
 
 class _TYPE_A_Instance(TypedDict):
@@ -90,22 +91,41 @@ class InstanceManager():
             else:
                 logger.error("Catch instance not found!")
 
-    def makeRecords(self,recordList:Sequence[TYPE_A_Record],env:TYPE_Recorder_Env):
+    def makeRecords(self,recordList:Sequence[TYPE_A_Record],ifStart=False,ifEnd=False):
         '''记录''' 
+        linkDes=str(env.linkNowNum)
+        if ifStart:linkDes="start"
+        if ifEnd:linkDes="end"
         for record in recordList:
             self.makeARecord(
                 record["catch"],
                 record["method"],
                 record["config"],
-                env
+                linkDes
             )
 
 
-    def makeARecord(self,name:str,methodName: str, config: MutableMapping[str, Any],
-               env: TYPE_Recorder_Env):
+    def makeARecord(self,name:str,methodName: str, config: MutableMapping[str, Any],linkDes:str):
         '''使用record记录'''
         ins = self.getInstance(name)
-        env["pre"] = env["pre"] + "out-" + name
+        tempEnv:TYPE_Recorder_TempEnv = {
+                "insName": name,
+                "ifModule": False,
+                "linkDes": linkDes
+            }
+        ins.record(methodName, config,tempEnv)
 
-        ins.record(methodName, config, env)
+
+    def _getIdCharRecord(self,idChar:str)->Sequence[str]:
+        '''获得要在每个epoch前后记录的名单'''
+        return list(filter(lambda x:self.instances[x]["declare"]["record"].__contains__(idChar) ,self.instances))
+
+    def getStartRecord(self)->Sequence[str]:
+        return self._getIdCharRecord('s')
+
+    def getEndRecord(self)->Sequence[str]:
+        return self._getIdCharRecord('e')
+
+        
+
 

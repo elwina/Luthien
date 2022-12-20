@@ -3,7 +3,8 @@
     "basic": {
         "timestep": 2,
         "timeUnit": "hour",
-        "timeEpoch": 5 // 运行几次
+        "timeEpoch": 5, // 运行几次
+        "outputPath": "output/"
     },
     "instance": {
         "dem": { // instance declare
@@ -18,13 +19,18 @@
                     },
                     "data": null
                 }
+            },
+            "record": { // recordInf
+                "at": "se",
+                "recInf": []
             }
         },
         "water1": {
             "field": "rain",
             "init": {
                 "use": "no"
-            }
+            },
+            "record": "e"
         },
         "sampleUni": {
             "field": "sampleUni",
@@ -39,7 +45,8 @@
                     },
                     "data": null
                 }
-            }
+            },
+            "record": "s"
         }
     },
     "link": [

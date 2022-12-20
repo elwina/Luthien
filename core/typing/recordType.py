@@ -7,15 +7,24 @@ class TYPE_A_Record(TypedDict):
     config: MutableMapping
 
 
+class TYPE_Recorder_TempEnv(TypedDict):
+    insName: str
+    ifModule: bool
+    linkDes: str
+
+
 class TYPE_Recorder_Env(TypedDict):
-    time: int
-    pre: str
+    insName: str
+    fileType: str
+    ifModule: bool
+    linkDes: str
+    recNum: int
 
 
 class TYPE_Recorder_Data(TypedDict):
     config: MutableMapping[str, Any]
     data: Any
-    env: TYPE_Recorder_Env
+    tempEnv: TYPE_Recorder_TempEnv
 
 
 TYPE_Recorder_Res = Sequence[str]
