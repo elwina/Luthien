@@ -1,10 +1,9 @@
 from typing import Any, MutableMapping, Sequence
-
-from loguru import logger
 from core.typing.outputType import TYPE_Output_Information, TYPE_Putout
 from core.typing.recordType import TYPE_A_Record
 
-from core.env import env
+from loguru import logger
+from core.envGlobal import envGlobal
 '''
 inf{
     out1:{}
@@ -45,7 +44,7 @@ class outputManager:
         self.instances = {}
 
     def getTimenow(self):
-        return env.epoch
+        return envGlobal.epoch
 
     def clearCache(self):
         self.instances = dict(
@@ -92,6 +91,6 @@ class outputManager:
             "tempEnv": {
                 "insName": name,
                 "ifModule": True,
-                "linkDes": str(env.linkNowNum)
+                "linkDes": str(envGlobal.linkNowNum)
             }
         })

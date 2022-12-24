@@ -8,11 +8,11 @@ class TYPE_Basic_Config(TypedDict):
     timestep: int
     timeUnit: str
     timeEpoch: int
-    outputPath:str
+    outputPath: str
 
 
 class Type_Config_Json(TypedDict):
     version: int
     basic: TYPE_Basic_Config
-    instance: MutableMapping[str, Type_Instance_Declare]
+    instance: Sequence[Type_Instance_Declare]
     link: Sequence[TYPE_Link_Declare]

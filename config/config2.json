@@ -1,17 +1,21 @@
 {
     "version": 1,
     "basic": {
+        // basic config
         "timestep": 1,
         "timeUnit": "hour",
-        "timeEpoch": 1, // 运行几次
+        "timeEpoch": 5, // 运行几次
         "outputPath": "output/"
     },
-    "instance": {
-        "dem": { // instance declare
+    "instance": [
+        { // instance declare
+            "name": "dem",
             "field": "dem",
             "init": {
+                // init declare
                 "use": "define", // define | no | copy
                 "define": {
+                    // define declare
                     "method": "txt2Raster",
                     "config": {
                         "inFile": true,
@@ -20,23 +24,25 @@
                     "data": null
                 }
             },
-            "record": { // recordInf
+            "record": { // record routine declare
                 "at": "se",
                 "recInf": []
             }
         },
-        "water": {
+        {
+            "name": "water",
             "field": "rain",
             "init": {
                 "use": "no"
             },
             "record": "e"
         },
-        "lisUni": {
+        {
+            "name": "lisUni",
             "field": "lisfloodUni",
-            "init": { //declare define
+            "init": { // init declare
                 "use": "define",
-                "define": { // define
+                "define": { // define declare
                     "method": "json",
                     "config": {
                         "outListConf": true,
@@ -48,13 +54,14 @@
             },
             "record": "s"
         }
-    },
+    ],
     "link": [
         { // link declare
             "module": "lisflood",
-            "timeInter": 1, // 每一个timestep运行一次
+            "timeInter": 2, // 每一个timestep运行一次
             "input": [ // link input
                 {
+                    // input declare
                     "into": "dem",
                     "use": "instance", // instance | define
                     "instance": "dem" //fieldname
@@ -66,15 +73,57 @@
                 }
             ],
             "output": [
-                { // output action
+                { // output action declare
                     "catch": "water",
                     "put": "water",
-                    "timeInter": 1 // 每n个timestep输出到instance一次
+                    "timeInter": 2 // 每n个timestep输出到instance一次
                 }
             ],
             "recordInside": [],
             "record": [
                 {
+                    // record declare
+                    "catch": "water",
+                    "method": "raster",
+                    "config": {}
+                }
+            ]
+        },
+        { // link declare
+            "module": "lisflood",
+            "timeInter": 1, // 每一个timestep运行一次
+            "input": [ // link input
+                {
+                    // input declare
+                    "into": "dem",
+                    "use": "instance", // instance | define
+                    "instance": "dem" //fieldname
+                },
+                {
+                    "into": "lisUni",
+                    "use": "instance", // instance | define
+                    "instance": "lisUni" //fieldname
+                }
+            ],
+            "output": [
+                { // output action declare
+                    "catch": "water",
+                    "put": "water",
+                    "timeInter": 1 // 每n个timestep输出到instance一次
+                }
+            ],
+            "recordInside": [
+                // recordInside declare
+                {
+                    // record declare
+                    "catch": "water",
+                    "method": "raster",
+                    "config": {}
+                }
+            ],
+            "record": [
+                {
+                    // record declare
                     "catch": "water",
                     "method": "raster",
                     "config": {}

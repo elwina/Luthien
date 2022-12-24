@@ -1,82 +1,88 @@
 from typing import MutableMapping
+from core.typing.linkType import TYPE_Link_Declare
+from core.typing.moduleType import TYPE_Module
+
 from core.instanceManager import InstanceManager
 from core.linkManager import LinkManager
-from config.register import MODULE_LIST, FIELD_LIST
+
 from loguru import logger
-from core.typing.linkType import TYPE_Link_Declare
-
-from core.typing.moduleType import TYPE_Module
-from core.typing.recordType import TYPE_Recorder_Env
-from core.env import env
+from core.envGlobal import envGlobal
 
 
-class Control():
+class Controller():
     lMr: LinkManager
     iMr: InstanceManager
 
     modules: MutableMapping[str, TYPE_Module] = {}
-    nowModule: str
-    nowLink: TYPE_Link_Declare
     nowLinkNum: int
+    mo: TYPE_Module
 
     def __init__(self):
         self.initialize()
 
     def initialize(self):
+        '''Controller初始化'''
+        logger.info("Controller starts initializing.")
+
+        # iMr初始化
         self.iMr = InstanceManager()
         self.iMr.createInstances()
         self.iMr.initDataIn()
 
+        # lMr初始化
         self.lMr = LinkManager()
 
+        # 模块初始化
+        from config.register import MODULE_LIST
         for moName in MODULE_LIST:
-            logger.info("Create Module {module_name}", module_name=moName)
+            logger.info("Create Module {module_name}.", module_name=moName)
             self.modules[moName] = MODULE_LIST[moName]()
+        logger.success("All modules created.")
 
     def run(self):
-        for epoch in range(self.lMr.getTotalEpochs()):
+        '''启动函数'''
+        for epoch, links in self.lMr.geneEpochs():
             logger.info("Epoch {num} start.", num=epoch)
 
-            for (i, link) in enumerate(self.lMr.getLinkDeclare()):
-                logger.info("Start Module {module_name}",
+            for link in links:
+                logger.info("Now process module {module_name}",
                             module_name=link["module"])
-                self.nowModule = link["module"]
-                self.nowLink = link
-                self.nowLinkNum = i
-                self.updateEnv()
+                self.mo = self.modules[link["module"]]
 
-                if self.lMr.ifLinkRun(i):
+                # 检查是否需要跑
+                if self.lMr.ifLinkRun():
+                    # 需要跑
+                    logger.info("Put data in and run module {module_name}",
+                                module_name=link["module"])
                     self.dataIn()
                     self.runOne()
-                    logger.info("Run it")
                 else:
+                    # 不需要跑,直接处理数据
                     logger.info("No Run it")
+
                 self.dealOut()
                 self.recordData()
 
-            self.lMr.timeAdd()
-            logger.info("Epoch {num} end.", num=epoch)
-        logger.info("Run done.")
+            logger.success("Epoch {num} end.", num=epoch)
+        logger.success("Run done.")
 
     def dataIn(self):
-        mo = self.modules[self.nowModule]
-        mo.prepareData(self.iMr.linkDataIn(self.nowLink["input"]))
+        logger.debug("Put instances into module.")
+        self.mo.prepareData(self.iMr.linkDataIn(self.lMr.getInputDeclare()))
 
     def runOne(self):
-        mo = self.modules[self.nowModule]
-        mo.run()
+        logger.debug("Run the module.")
+        self.mo.run()
 
     def dealOut(self):
-        mo = self.modules[self.nowModule]
-        self.iMr.updateFromOutput(
-            self.lMr.getOutputAction(self.nowLink["output"]), mo.outMr,
-            self.lMr.getTime())
+        logger.debug("Deal with the module output.")
+        self.iMr.updateFromOutput(self.lMr.getOutputAction(), self.mo.outMr)
 
     def recordData(self):
-        mo = self.modules[self.nowModule]
-        mo.outMr.makeRecords(self.nowLink["recordInside"])
-        self.iMr.makeRecords(self.nowLink["record"])
+        logger.debug("Record inside instances.")
+        self.mo.outMr.makeRecords(self.lMr.getRecordInside())
+        logger.debug("Record instances.")
+        self.iMr.makeRecords(self.lMr.getRecordDeclare())
 
     def updateEnv(self):
-        env.moduleNow = self.nowModule
-        env.linkNowNum = self.nowLinkNum
+        logger.debug("update env from Controller.")

@@ -46,9 +46,8 @@ class ListConfBase:
                 self.data[item] = indata[item]
 
     # define是重要函数
-    def define(self, methodName: str, config: MutableMapping[str, Any],
+    def define(self, method: TYPE_IO, config: MutableMapping[str, Any],
                data: Any):
-        method = IO_LIST[methodName]
         config["outListConf"] = True
         re = method({"config": config, "oldData": self.data, "newData": data})
         self.data = re["newData"]
@@ -56,27 +55,3 @@ class ListConfBase:
     def record(self, methodName: str, config: MutableMapping[str, Any],
                env: TYPE_Recorder_Env):
         pass
-
-
-if __name__ == "__main__":
-    test = [{
-        "name": "teststring",
-        "type": "string"
-    }, {
-        "name": "tesint",
-        "type": "int"
-    }, {
-        "name": "testfloat",
-        "type": "float",
-        "default": 0.25
-    }]
-    lc = ListConfBase("test")
-    lc.init(test)
-    lc.default(test)
-
-    lc.define("json", {
-        "outListConf": True,
-        "inFile": True,
-        "inFilePath": "data/test.json"
-    }, None)
-    pass

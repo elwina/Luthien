@@ -1,5 +1,6 @@
 import math
 import os
+import shutil
 import subprocess
 from typing import Any, Callable, MutableMapping, Sequence, cast
 
@@ -26,6 +27,7 @@ def sampleRun(putout: Callable[[TYPE_Putout], None],
 
     # 新建temp文件夹
     tempDir = os.path.join(MODULE_ROOT, "temp")
+    shutil.rmtree(tempDir)
     os.mkdir(tempDir)
 
     from core.base.listConf import ListConfBase
@@ -81,5 +83,5 @@ def sampleRun(putout: Callable[[TYPE_Putout], None],
     from core.field.rainField import RainField
     water = RainField()
     water.init()
-    water.define("txt2Raster", {"inFile": True, "inFilePath": water1h}, None)
+    water.define(txt2RasterIO, {"inFile": True, "inFilePath": water1h}, None)
     putout({"water": {0: water}})

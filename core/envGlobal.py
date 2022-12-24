@@ -1,4 +1,6 @@
-class _Env:
+class _EnvGlobal:
+    configPath: str = ""
+
     timestep: int
     timeUnit: str
 
@@ -9,4 +11,4 @@ class _Env:
     linkNowNum: int
 
 
-env = _Env()
+envGlobal = _EnvGlobal()

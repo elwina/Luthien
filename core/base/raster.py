@@ -2,7 +2,8 @@ from typing import Any, MutableMapping, Sequence, TypedDict
 
 from config.register import IO_LIST, RECORDER_LIST
 from core.base.rasterType import TYPE_RASTER_DATA
-from core.typing.recordType import TYPE_Recorder_Env, TYPE_Recorder_TempEnv
+from core.typing.ioType import TYPE_IO
+from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
 
 
 class RasterBase:
@@ -24,14 +25,12 @@ class RasterBase:
         }
         self.data = initData
 
-    def define(self, methodName: str, config: MutableMapping[str, Any],
+    def define(self, method: TYPE_IO, config: MutableMapping[str, Any],
                data: Any):
-        method = IO_LIST[methodName]
         config["outRasterBase"] = True
         re = method({"config": config, "oldData": self.data, "newData": data})
         self.data = re["newData"]
 
-    def record(self, methodName: str, config: MutableMapping[str, Any],
+    def record(self, method: TYPE_Recorder, config: MutableMapping[str, Any],
                tempEnv: TYPE_Recorder_TempEnv):
-        method = RECORDER_LIST[methodName]
         method({"config": config, "data": self.data, "tempEnv": tempEnv})
