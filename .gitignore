@@ -1,7 +1,7 @@
-__pycache__/
+**/__pycache__/
 
 .VSCodeCounter
 
 /output
 
-temp/
+**/temp/

@@ -26,7 +26,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
 
     # 新建temp文件夹
     tempDir = os.path.join(MODULE_ROOT, "temp")
-    shutil.rmtree(tempDir)
+    shutil.rmtree(tempDir, ignore_errors=True)
     os.mkdir(tempDir)
 
     from core.base.listConf import ListConfBase
