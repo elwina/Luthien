@@ -18,7 +18,7 @@ def txt2RasterIO(ioData: TYPE_IO_DATA) -> TYPE_IO_DATA:
         logger.info("Read Txt File {path}", path=filepath)
         
         try:
-            with open(filepath) as fp:
+            with open(filepath,encoding="utf-8") as fp:
                 for _ in range(6):
                     line = fp.readline()
                     con = line.split()

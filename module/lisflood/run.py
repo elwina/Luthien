@@ -1,7 +1,9 @@
 import math
 import os
+from pathlib import Path
 import shutil
 import subprocess
+import platform
 
 from typing import Any, Callable, MutableMapping, Sequence, cast
 from core.typing.fieldType import TYPE_Instance
@@ -25,7 +27,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
     if "mann" in optList: ifManni = True
 
     # 新建temp文件夹
-    tempDir = os.path.join(MODULE_ROOT, "temp")
+    tempDir = os.path.join(Path(MODULE_ROOT), "temp")
     shutil.rmtree(tempDir, ignore_errors=True)
     os.mkdir(tempDir)
 
@@ -76,7 +78,14 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
     parFilename = os.path.join(tempDir, "auto.par")
     dict2Txt(parDict, parFilename)
 
-    subprocess.run(["../bin/lisflood", "auto.par"], cwd=tempDir)
+    system = platform.system()
+    if system == "Windows":
+        subprocess.run(["..\\bin\\lisflood.exe", "auto.par"],
+                       shell=True,
+                       cwd=tempDir)
+
+    elif system == "Linux":
+        subprocess.run(["../bin/lisflood", "auto.par"], cwd=tempDir)
 
     from core.field.waterField import WaterField
     recordNum = cast(int, config.getOne("recordNum"))
