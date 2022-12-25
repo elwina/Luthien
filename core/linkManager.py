@@ -1,6 +1,6 @@
 from typing import Optional, Sequence
 from core.typing.linkType import TYPE_Link_Declare
-from core.typing.outputType import TYPE_A_Output_Action
+from core.typing.outputType import TYPE_Output_Action_Declare
 
 from loguru import logger
 from core.configGlobal import configGlobal
@@ -41,6 +41,8 @@ class LinkManager:
     def geneEpochs(self):
         '''总轮数生成器'''
         for i in range(self.allEpochs):
+            self.timenow = i
+            self.updateEnv()
 
             def geneLink():
                 for num, link in enumerate(self.linkDeclare):
@@ -49,7 +51,6 @@ class LinkManager:
                     yield link
 
             yield i, geneLink()
-            self.timeAdd()
 
     def ifLinkRun(self, num: Optional[int] = None) -> bool:
         '''返回第num个link是否需要跑'''
@@ -60,19 +61,15 @@ class LinkManager:
         else:
             return False
 
-    def timeAdd(self):
-        self.timenow = self.timenow + 1
-        self.updateEnv()
-
     def getInputDeclare(self, num: Optional[int] = None):
         time = self.timenow
         if num is None: num = self.nowLinkNum
         inputList = self.linkDeclare[num]["input"]
         return inputList
 
-    def getOutputAction(self,
-                        num: Optional[int] = None
-                        ) -> Sequence[TYPE_A_Output_Action]:
+    def getOutputAction(
+            self,
+            num: Optional[int] = None) -> Sequence[TYPE_Output_Action_Declare]:
         time = self.timenow
         if num is None: num = self.nowLinkNum
         actionList = self.linkDeclare[num]["output"]
@@ -95,3 +92,7 @@ class LinkManager:
         envGlobal.epoch = self.timenow
         envGlobal.linkNowNum = self.nowLinkNum
         envGlobal.moduleNow = self.linkDeclare[self.nowLinkNum]["module"]
+
+    def timeParser(self):
+        '''[待开发]解析时间何时运行'''
+        pass

@@ -1,22 +1,21 @@
 from typing import Dict, List, Literal, Any, Sequence
 from typing_extensions import TypedDict, NotRequired
+from core.typing.defineType import TYPE_Define_Declare
+from core.typing.outputType import TYPE_Output_Action_Declare
+from core.typing.recordType import TYPE_Record_Declare
 
-from core.typing.defineType import TYPE_Define
-from core.typing.outputType import TYPE_A_Output_Action
-from core.typing.recordType import TYPE_A_Record
 
-
-class TYPE_A_Link_Input(TypedDict):
+class TYPE_Input_Declare(TypedDict):
     into: str
     use: Literal["instance", "define"]
     instance: NotRequired[str]
-    define: NotRequired[TYPE_Define]
+    define: NotRequired[TYPE_Define_Declare]  # TODO 待开发
 
 
 class TYPE_Link_Declare(TypedDict):
     module: str
     timeInter: int
-    input: Sequence[TYPE_A_Link_Input]
-    output: Sequence[TYPE_A_Output_Action]
-    recordInside: Sequence[TYPE_A_Record]
-    record: Sequence[TYPE_A_Record]
+    input: Sequence[TYPE_Input_Declare]
+    output: Sequence[TYPE_Output_Action_Declare]
+    recordInside: Sequence[TYPE_Record_Declare]
+    record: Sequence[TYPE_Record_Declare]

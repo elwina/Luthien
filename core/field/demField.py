@@ -1,14 +1,11 @@
-from core.base.raster import RasterBase
 from core.typing.fieldType import TYPE_Field
+
+from core.base.raster import RasterBase
 
 
 class DemField(RasterBase, TYPE_Field):
+    '''内置Field:高程图'''
 
     def __init__(self):
         super(DemField, self).__init__("dem")
         self.init()
-
-
-if __name__ == "__main__":
-    a = DemField()
-    print(a.data)

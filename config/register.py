@@ -23,13 +23,13 @@ from core.base.raster import RasterBase
 BASE_LIST = {"listConf": ListConfBase, "raster": RasterBase}
 
 from core.field.demField import DemField
-from core.field.rainField import RainField
+from core.field.waterField import WaterField
 from module.sample.field.uniField import UniField as SampleUniField
 from module.lisflood.field.uniField import UniField as LisfloodUniField
 
 FIELD_LIST: TYPE_FIELD_LIST = {
     "dem": DemField,
-    "rain": RainField,
+    "rain": WaterField,
     "sampleUni": SampleUniField,
     "lisfloodUni": LisfloodUniField
 }

@@ -1,5 +1,4 @@
 from typing import MutableMapping, Sequence, TypedDict
-
 from core.typing.fieldType import Type_Instance_Declare
 from core.typing.linkType import TYPE_Link_Declare
 

@@ -1,15 +1,15 @@
-from typing import Literal, MutableMapping, Optional, TypedDict
-from typing_extensions import NotRequired
+from typing import Literal, MutableMapping, Optional
+from typing_extensions import Required, TypedDict
 
 from core.typing.fieldType import TYPE_Instance
 
 
-class _TYPE_A_Indata(TypedDict):
-    method: Literal["in"]
-    instance: NotRequired[TYPE_Instance]
+class _TYPE_Indata_Declare(TypedDict, total=False):
+    method: Required[Literal["in"]]
+    instance: TYPE_Instance
 
 
-TYPE_Indata = MutableMapping[str, _TYPE_A_Indata]
+TYPE_Indata = MutableMapping[str, _TYPE_Indata_Declare]
 
 
 class _TYPE_A_Information(TypedDict):

@@ -1,7 +1,8 @@
+from core.typing.recordType import TYPE_Recorder_Env
+
 from loguru import logger
 from core.envGlobal import envGlobal
 from core.configGlobal import configGlobal
-from core.typing.recordType import TYPE_Recorder_Env
 
 
 class RecorderGlobal:
@@ -9,6 +10,7 @@ class RecorderGlobal:
     total = 0
 
     def geneFilename(self, recEnv: TYPE_Recorder_Env) -> str:
+        '''生成文件名并记录'''
         strList: list[str] = []
 
         strList.append("Out")
@@ -27,6 +29,7 @@ class RecorderGlobal:
 
         path = configGlobal.getConfig()["basic"]["outputPath"]
         filename = path + "_".join(strList) + recEnv["fileType"]
+
         self._takeRecord(filename)
         logger.info("Generate filename {name}", name=filename)
         return filename

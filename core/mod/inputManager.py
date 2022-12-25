@@ -1,17 +1,21 @@
 from typing import Literal, MutableMapping, Optional, TypedDict
-from loguru import logger
 from core.typing.fieldType import TYPE_Instance
 from core.typing.inputType import TYPE_Indata, TYPE_Information
 
+from loguru import logger
+
 '''
+TYPE_Information形如
 "abc":{
     "required":True
 }
 '''
 
 '''
+TYPE_Indata形如
 indata:{
     "dem":{
+        #* indata declare
         "method":"in"
         "instance":
     }
@@ -30,16 +34,17 @@ class inputManager:
         self.information=inf
 
     def receiveData(self,indata:TYPE_Indata):
-        '''传入数据重要函数'''
+        '''传入数据函数'''
         newInstances :MutableMapping[str, TYPE_Instance]={}
         for name in indata:
             match indata[name]["method"]:
                 case "in":
-                    ins=indata[name].get("instance")
-                    if ins is not None:
+                    # 处理indata declare
+                    if "instance" in indata[name]:
+                        ins=indata[name]["instance"]
                         newInstances[name]=ins
                     else:
-                        logger.error("No Instance Input!")
+                        logger.error("No instance input for {name}!",name=name)
 
         self.instances=newInstances
 
@@ -47,7 +52,7 @@ class inputManager:
         nNames=list(newInstances.keys())
         lackInstances=list(set(self.requiredInstancesName())-(set(nNames)))
         if lackInstances.__len__()>0:
-            logger.error("No Enough Required Instances:{lack}",lack=",".join(lackInstances))
+            logger.error("No enough required instances:{lack}",lack=",".join(lackInstances))
         
 
     def requiredInstancesName(self):
@@ -59,26 +64,6 @@ class inputManager:
         return list(set(list(self.instances.keys())) & set(list(map(lambda x:x,filter(lambda x:self.information[x]["required"]==False,self.information)))))
 
     def getInstances(self):
+        '''返回所有instances'''
         return self.instances
 
-if __name__=="__main__":
-    m=inputManager()
-    m.init({
-        "abc":{
-            "required":True
-        },
-        "abc2":{
-            "required":False
-        },
-    })
-
-    # m.receiveData({
-    #     "abc":{
-    #        "method":"in",
-    #        "instance":"s"
-    #     },
-    #     "abc2":{
-    #        "method":"in",
-    #        "instance":"s"
-    #     }
-    # })

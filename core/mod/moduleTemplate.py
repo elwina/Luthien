@@ -1,10 +1,9 @@
-from typing import Sequence
-from core.mod.outputManager import outputManager
-from core.typing.inputType import TYPE_Indata, TYPE_Information
-from core.mod.inputManager import inputManager
-
 from core.typing.moduleType import TYPE_Module
 from core.typing.outputType import TYPE_Output_Information
+from core.typing.inputType import TYPE_Indata, TYPE_Information
+
+from core.mod.inputManager import inputManager
+from core.mod.outputManager import outputManager
 
 
 class ModuleTemplate(TYPE_Module):

@@ -1,13 +1,14 @@
 import commentjson as json
+
 from core.typing.ioType import TYPE_IO_DATA
-from typing import TypedDict
+
 from loguru import logger
 '''
 config
-    outListConf:True  # 以listConf中的out输出
+    outListConf:True  #* 以listConf中的out输出
 
-    inFile:True # 以文件的形式输入配置
-    inFilePath:"" # 文件路径
+    inFile:True #* 以文件的形式输入配置
+    inFilePath:"" #* 文件路径
 '''
 
 
@@ -26,7 +27,12 @@ def jsonIO(ioData: TYPE_IO_DATA) -> TYPE_IO_DATA:
 
 
 def _inFromFile(filepath) -> dict:
-    logger.info("Read Json File {path}", path=filepath)
-    with open(filepath) as fp:
-        re = json.load(fp)
-        return re
+    logger.info("Read json file {path}", path=filepath)
+    try:
+        with open(filepath) as fp:
+            re = json.load(fp)
+            return re
+    except Exception as e:
+        logger.error(e)
+        logger.error("Cannot read the file {path}!", path=filepath)
+        return {}

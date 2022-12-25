@@ -1,7 +1,7 @@
 from typing import Any, Callable, MutableMapping, Sequence, TypeVar, TypedDict
 
 
-class TYPE_A_Record(TypedDict):
+class TYPE_Record_Declare(TypedDict):
     catch: str
     method: str
     config: MutableMapping
@@ -26,8 +26,6 @@ class TYPE_Recorder_Data(TypedDict):
     data: Any
     tempEnv: TYPE_Recorder_TempEnv
 
-
-TYPE_Recorder_Res = Sequence[str]
 
 TYPE_Recorder = Callable[[TYPE_Recorder_Data], None]
 

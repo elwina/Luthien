@@ -1,19 +1,20 @@
-from typing import Any, MutableMapping, Sequence, TypedDict
-
-from config.register import IO_LIST, RECORDER_LIST
+from typing import Any, MutableMapping
 from core.base.rasterType import TYPE_RASTER_DATA
 from core.typing.ioType import TYPE_IO
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
 
 
 class RasterBase:
+    '''基础类型:Raster,处理栅格'''
+    '''data类型详见TYPE_RASTER_DATA'''
     data: TYPE_RASTER_DATA
 
+    # 初始化函数
     def __init__(self, typeName: str):
         self.typeName = typeName
 
-    # 初始化与默认值
     def init(self):
+        '''每个子类必须调用此函数'''
         initData: TYPE_RASTER_DATA = {
             "row": 2,
             "col": 3,
@@ -25,6 +26,7 @@ class RasterBase:
         }
         self.data = initData
 
+    # 接口函数
     def define(self, method: TYPE_IO, config: MutableMapping[str, Any],
                data: Any):
         config["outRasterBase"] = True

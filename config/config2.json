@@ -25,6 +25,7 @@
                 }
             },
             "record": { // record routine declare
+                // Todo 
                 "at": "se",
                 "recInf": []
             }
@@ -34,8 +35,7 @@
             "field": "rain",
             "init": {
                 "use": "no"
-            },
-            "record": "e"
+            }
         },
         {
             "name": "lisUni",
@@ -51,8 +51,7 @@
                     },
                     "data": null
                 }
-            },
-            "record": "s"
+            }
         }
     ],
     "link": [
@@ -76,7 +75,7 @@
                 { // output action declare
                     "catch": "water",
                     "put": "water",
-                    "timeInter": 2 // 每n个timestep输出到instance一次
+                    "timeInter": 2 // TODO 每n个timestep输出到instance一次
                 }
             ],
             "recordInside": [],

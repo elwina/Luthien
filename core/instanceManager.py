@@ -2,9 +2,9 @@ from typing import Any, MutableMapping, Sequence, TypedDict
 from core.typing.fieldType import Type_Instance_Declare
 from core.typing.fieldType import  TYPE_Field
 from core.typing.inputType import TYPE_Indata
-from core.typing.linkType import TYPE_A_Link_Input
-from core.typing.outputType import TYPE_A_Output_Action
-from core.typing.recordType import TYPE_A_Record, TYPE_Recorder_TempEnv
+from core.typing.linkType import TYPE_Input_Declare
+from core.typing.outputType import TYPE_Output_Action_Declare
+from core.typing.recordType import TYPE_Record_Declare, TYPE_Recorder_TempEnv
 from core.mod.outputManager import outputManager
 
 from loguru import logger
@@ -66,7 +66,7 @@ class InstanceManager():
                     pass
         logger.success("Successfully init instances data")
 
-    def linkDataIn(self,linkInputList:Sequence[TYPE_A_Link_Input])->TYPE_Indata:
+    def linkDataIn(self,linkInputList:Sequence[TYPE_Input_Declare])->TYPE_Indata:
         '''根据link input配置indata'''
         indata:TYPE_Indata={}
         for linkInput in linkInputList:
@@ -86,7 +86,7 @@ class InstanceManager():
                     pass
         return indata
 
-    def updateFromOutput(self,actionList:Sequence[TYPE_A_Output_Action],outMr:outputManager):
+    def updateFromOutput(self,actionList:Sequence[TYPE_Output_Action_Declare],outMr:outputManager):
         '''根据output action操作instance'''
         for action in actionList:
             catch=action["catch"]
@@ -94,12 +94,12 @@ class InstanceManager():
             catchIns=outMr.getOutput(catch,time)
             if catchIns is not None:
                 self.instances[action["put"]]["instance"]=catchIns
-                logger.success("Output {out} is out into instance {ins}.",out=catch,ins=action["put"])
+                logger.success("Output {out} is put out into instance {ins}.",out=catch,ins=action["put"])
             else:
                 logger.error("Catch instance not put out!")
 
-    def makeRecords(self,recordList:Sequence[TYPE_A_Record],ifStart=False,ifEnd=False):
-        '''记录''' 
+    def makeRecords(self,recordList:Sequence[TYPE_Record_Declare],ifStart=False,ifEnd=False):
+        '''记录record''' 
         linkDes=str(envGlobal.linkNowNum)
         if ifStart:linkDes="start"
         if ifEnd:linkDes="end"
@@ -124,7 +124,7 @@ class InstanceManager():
         from config.register import RECORDER_LIST
         ins.record(RECORDER_LIST[methodName], config,tempEnv)
 
-
+    # 以下为待开发内容
     def _getIdCharRecord(self,idChar:str)->Sequence[str]:
         '''获得要在每个epoch前后记录的名单'''
         return list(filter(lambda x:self.instances[x]["declare"]["record"].__contains__(idChar) ,self.instances))

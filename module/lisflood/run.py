@@ -80,8 +80,8 @@ def sampleRun(putout: Callable[[TYPE_Putout], None],
     subprocess.run(["../bin/lisflood", "auto.par"], cwd=tempDir)
 
     water1h = os.path.join(tempDir, "results", "res-0001.wd")
-    from core.field.rainField import RainField
-    water = RainField()
+    from core.field.waterField import WaterField
+    water = WaterField()
     water.init()
     water.define(txt2RasterIO, {"inFile": True, "inFilePath": water1h}, None)
     putout({"water": {0: water}})

@@ -1,7 +1,9 @@
 import sys
 import commentjson as json
-from config.path import CONFIG_JSON_PATH
+
 from core.typing.configType import Type_Config_Json
+
+from config.path import CONFIG_JSON_PATH
 
 
 class ConfigGlobal():

@@ -1,5 +1,4 @@
 from typing import MutableMapping
-from core.typing.linkType import TYPE_Link_Declare
 from core.typing.moduleType import TYPE_Module
 
 from core.instanceManager import InstanceManager
@@ -14,7 +13,6 @@ class Controller():
     iMr: InstanceManager
 
     modules: MutableMapping[str, TYPE_Module] = {}
-    nowLinkNum: int
     mo: TYPE_Module
 
     def __init__(self):
@@ -60,6 +58,7 @@ class Controller():
                     # 不需要跑,直接处理数据
                     logger.info("No Run it")
 
+                # 处理数据
                 self.dealOut()
                 self.recordData()
 
@@ -85,4 +84,4 @@ class Controller():
         self.iMr.makeRecords(self.lMr.getRecordDeclare())
 
     def updateEnv(self):
-        logger.debug("update env from Controller.")
+        logger.debug("Update env from Controller.")

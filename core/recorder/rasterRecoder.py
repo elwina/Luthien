@@ -1,6 +1,7 @@
-from typing import TypedDict
-from core.tools.raster2Txt import raster2Txt
 from core.typing.recordType import TYPE_Recorder_Data, TYPE_Recorder_Env
+
+from core.tools.raster2Txt import raster2Txt
+
 from core.recorderGlobal import recorderGlobal as rGl
 
 
