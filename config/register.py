@@ -8,7 +8,7 @@ from core.io.jsonIO import jsonIO
 
 IO_LIST: TYPE_IO_LIST = {"json": jsonIO, "txt2Raster": txt2RasterIO}
 
-from core.recorder.rasterRecoder import rasterRecorder
+from core.recorder.rasterRecorder import rasterRecorder
 
 RECORDER_LIST: TYPE_RECORDER_LIST = {"raster": rasterRecorder}
 

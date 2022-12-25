@@ -1,7 +1,7 @@
 import getopt
 import sys
 
-from core.control import Controller
+from core.controller import Controller
 
 # 初始化一些Global单例类
 from config.register import IO_LIST, RECORDER_LIST, MODULE_LIST, BASE_LIST, FIELD_LIST
