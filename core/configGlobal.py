@@ -7,8 +7,11 @@ from config.path import CONFIG_JSON_PATH
 
 
 class ConfigGlobal():
-    filepath = CONFIG_JSON_PATH
+    filepath:str
     config: Type_Config_Json
+
+    def __init__(self):
+        self.filepath = CONFIG_JSON_PATH
 
     def getConfig(self) -> Type_Config_Json:
         '''获得配置'''
@@ -20,11 +23,13 @@ class ConfigGlobal():
 
     def initConfig(self):
         '''从文件中读取配置'''
+        print(self.filepath)
         try:
-            with open(self.filepath) as fp:
+            with open(self.filepath,encoding="utf-8") as fp:
                 config: Type_Config_Json = json.load(fp)
             self.config = config
-        except:
+        except Exception as e:
+            print(e)
             print("Config File Not Found!")
             print("Exit!")
             sys.exit(2)
