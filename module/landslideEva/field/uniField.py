@@ -1,15 +1,15 @@
-from core.base.listConf import ListConfBase
 from core.base.listConfType import TYPE_LIST_CONF_IN_DATA
 from core.typing.fieldType import TYPE_Field
+from core.base.listConf import ListConfBase
 
 UNI_INPUT_DICT_DEFAULT: TYPE_LIST_CONF_IN_DATA = [{
     "name": "version",
     "type": "int",
     "default": 1
 }, {
-    "name": "rainBase",
-    "type": "int",
-    "default": 0
+    "name": "threshold",
+    "type": "float",
+    "default": 1
 }]
 
 

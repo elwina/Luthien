@@ -58,6 +58,7 @@ class ListConfBase:
 
     def getOne(self, key: str):
         '''获取值'''
+        # TODO 泛型支持
         return self.data[key]
 
     def setter(self, indata: dict):

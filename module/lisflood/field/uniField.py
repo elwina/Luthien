@@ -1,6 +1,6 @@
-from core.base.listConf import ListConfBase
 from core.base.listConfType import TYPE_LIST_CONF_IN_DATA
 from core.typing.fieldType import TYPE_Field
+from core.base.listConf import ListConfBase
 
 UNI_INPUT_DICT_DEFAULT: TYPE_LIST_CONF_IN_DATA = [{
     "name": "version",
@@ -30,6 +30,10 @@ UNI_INPUT_DICT_DEFAULT: TYPE_LIST_CONF_IN_DATA = [{
     "name": "fpfric",
     "type": "float",
     "default": 0.06
+}, {
+    "name": "recordNum",
+    "type": "int",
+    "default": 3
 }]
 
 

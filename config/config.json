@@ -1,17 +1,20 @@
 {
     "version": 1,
-    "basic": {
-        "timestep": 2,
+    "basic": { // basic config
+        "timestep": 1,
         "timeUnit": "hour",
-        "timeEpoch": 5, // 运行几次
+        "timeEpoch": 3, // 运行几次
         "outputPath": "output/"
     },
-    "instance": {
-        "dem": { // instance declare
+    "instance": [
+        { // instance declare
+            "name": "dem",
             "field": "dem",
             "init": {
+                // init declare
                 "use": "define", // define | no | copy
                 "define": {
+                    // define declare
                     "method": "txt2Raster",
                     "config": {
                         "inFile": true,
@@ -20,23 +23,25 @@
                     "data": null
                 }
             },
-            "record": { // recordInf
+            "record": { // record routine declare
+                // Todo 
                 "at": "se",
                 "recInf": []
             }
         },
-        "water1": {
+        {
+            "name": "water",
             "field": "rain",
             "init": {
                 "use": "no"
-            },
-            "record": "e"
+            }
         },
-        "sampleUni": {
-            "field": "sampleUni",
-            "init": { //declare define
+        {
+            "name": "lisUni",
+            "field": "lisfloodUni",
+            "init": { // init declare
                 "use": "define",
-                "define": { // define
+                "define": { // define declare
                     "method": "json",
                     "config": {
                         "outListConf": true,
@@ -45,78 +50,60 @@
                     },
                     "data": null
                 }
-            },
-            "record": "s"
+            }
         }
-    },
+    ],
     "link": [
         { // link declare
-            "module": "sample",
-            "timeInter": 1, // 每一个timestep运行一次
+            "module": "lisflood",
+            "timeInter": 3, // 每一个timestep运行一次
             "input": [ // link input
                 {
+                    // input declare
                     "into": "dem",
                     "use": "instance", // instance | define
                     "instance": "dem" //fieldname
-                    //"use":define
-                    //define:{
-                    //    "method"
-                    //}
                 },
                 {
-                    "into": "sampleUni",
+                    "into": "lisUni",
                     "use": "instance", // instance | define
-                    "instance": "sampleUni" //fieldname
-                    //"use":define
-                    //define:{
-                    //    "method"
-                    //}
+                    "instance": "lisUni" //fieldname
                 }
             ],
             "output": [
-                { // output action
-                    "catch": "rain",
-                    "put": "water1",
-                    "timeInter": 1 // 每n个timestep输出到instance一次
+                { // output action declare
+                    "catch": "water",
+                    "put": "water",
+                    "timeInter": 1 //TODO 每n个timestep输出到instance一次
                 }
             ],
             "recordInside": [],
             "record": []
         },
-        {
-            "module": "sample",
-            "timeInter": 1, // 每n个timestep运行一次
+        { // link declare
+            "module": "landslideEva",
+            "timeInter": 1, // 每一个timestep运行一次
             "input": [ // link input
                 {
-                    "into": "dem",
+                    // input declare
+                    "into": "water",
                     "use": "instance", // instance | define
-                    "instance": "dem" //fieldname
-                },
-                {
-                    "into": "sampleUni",
-                    "use": "instance", // instance | define
-                    "instance": "sampleUni" //fieldname
+                    "instance": "water" //fieldname
                 }
             ],
-            "output": [
-                { // output action
-                    "catch": "rain",
-                    "put": "dem",
-                    "timeInter": 1 // 每n个timestep输出到instance一次
-                }
-            ],
+            "output": [],
             "recordInside": [
                 {
-                    // record
-                    "catch": "rain",
+                    // record declare
+                    "catch": "eva",
                     "method": "raster",
                     "config": {}
                 }
             ],
             "record": [
                 {
-                    // record
-                    "catch": "water1",
+                    // record declare
+                    "catch": "water",
                     "method": "raster",
                     "config": {}
                 }

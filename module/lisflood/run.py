@@ -2,25 +2,24 @@ import math
 import os
 import shutil
 import subprocess
-from typing import Any, Callable, MutableMapping, Sequence, cast
 
-from loguru import logger
-from core.base.rasterType import TYPE_RASTER_DATA
-from core.io.txt2RasterIO import txt2RasterIO
-from core.tools.dict2Txt import dict2Txt
-from core.tools.raster2Txt import raster2Txt
+from typing import Any, Callable, MutableMapping, Sequence, cast
 from core.typing.fieldType import TYPE_Instance
 from core.typing.outputType import TYPE_Putout
 
-from copy import deepcopy
+from module.lisflood.information import MODULE_ROOT
 
-MODULE_ROOT = "module/lisflood/"
+from core.io.txt2RasterIO import txt2RasterIO
+from core.tools.dict2Txt import dict2Txt
+from core.tools.raster2Txt import raster2Txt
+
+from loguru import logger
 
 
-def sampleRun(putout: Callable[[TYPE_Putout], None],
-              instances: MutableMapping[str, TYPE_Instance],
-              optList: Sequence[str]):
-    logger.debug("Module Lisflood Run,optList:{opt}", opt=",".join(optList))
+def lisfloodRun(putout: Callable[[TYPE_Putout], None],
+                instances: MutableMapping[str, TYPE_Instance],
+                optList: Sequence[str]):
+    logger.debug("Module Lisflood Run,optList:{opt}.", opt=",".join(optList))
 
     ifManni = False
     if "mann" in optList: ifManni = True
@@ -79,9 +78,17 @@ def sampleRun(putout: Callable[[TYPE_Putout], None],
 
     subprocess.run(["../bin/lisflood", "auto.par"], cwd=tempDir)
 
-    water1h = os.path.join(tempDir, "results", "res-0001.wd")
     from core.field.waterField import WaterField
-    water = WaterField()
-    water.init()
-    water.define(txt2RasterIO, {"inFile": True, "inFilePath": water1h}, None)
-    putout({"water": {0: water}})
+    recordNum = cast(int, config.getOne("recordNum"))
+    for i in range(recordNum):
+        nameNum = "%04d" % i
+        outWaterFileName = os.path.join(tempDir, "results",
+                                        "res-%s.wd" % nameNum)
+        water = WaterField()
+        water.init()
+        water.define(txt2RasterIO, {
+            "inFile": True,
+            "inFilePath": outWaterFileName
+        }, None)
+        putout({"water": {i: water}})
+        pass

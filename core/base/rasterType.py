@@ -8,4 +8,4 @@ class TYPE_RASTER_DATA(TypedDict):
     nullData: float
     xllCorner: float
     yllCorner: float
-    radata: Sequence[Sequence[float]]
+    radata: Sequence[Sequence[float | float]]

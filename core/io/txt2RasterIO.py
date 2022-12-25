@@ -44,7 +44,7 @@ def txt2RasterIO(ioData: TYPE_IO_DATA) -> TYPE_IO_DATA:
                         break
                     if con.__len__()!=data["col"]:
                         logger.error("Col Number Wrong!")
-                    rdata.append(con)
+                    rdata.append(list(map(lambda x:float(x),con)))
     
                 # 行校验
                 trueRow=rdata.__len__()

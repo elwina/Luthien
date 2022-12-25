@@ -1,8 +1,8 @@
 from core.typing.moduleType import TYPE_Module
 from core.mod.moduleTemplate import ModuleTemplate
 
-from module.lisflood.information import MODULE_INSTANCE_INF, MODULE_NAME, MODULE_OUTPUT_INSTANCE_INF
-from module.lisflood.run import lisfloodRun as runFunc
+from module.landslideEva.information import MODULE_INSTANCE_INF, MODULE_NAME, MODULE_OUTPUT_INSTANCE_INF
+from module.landslideEva.run import landslideEvaRun as runFunc
 
 
 class Module(ModuleTemplate, TYPE_Module):
