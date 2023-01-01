@@ -29,7 +29,7 @@ def jsonIO(ioData: TYPE_IO_DATA) -> TYPE_IO_DATA:
 def _inFromFile(filepath) -> dict:
     logger.info("Read json file {path}", path=filepath)
     try:
-        with open(filepath) as fp:
+        with open(filepath, encoding="utf-8") as fp:
             re = json.load(fp)
             return re
     except Exception as e:

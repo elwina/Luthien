@@ -1,3 +1,5 @@
+from tqdm import tqdm
+
 from typing import Optional, Sequence
 from core.typing.linkType import TYPE_Link_Declare
 from core.typing.outputType import TYPE_Output_Action_Declare
@@ -16,6 +18,8 @@ class LinkManager:
 
     timenow: int
     nowLinkNum: int
+
+    pbar: tqdm
 
     def __init__(self):
         self.init()
@@ -38,6 +42,8 @@ class LinkManager:
         self.nowLinkNum = 0
         self.updateEnv()
 
+        self.pbar = tqdm(total=self.allEpochs * self.linkDeclare.__len__())
+
     def geneEpochs(self):
         '''总轮数生成器'''
         for i in range(self.allEpochs):
@@ -49,6 +55,7 @@ class LinkManager:
                     self.nowLinkNum = num
                     self.updateEnv()
                     yield link
+                    self.pbar.update(1)
 
             yield i, geneLink()
 
