@@ -87,6 +87,10 @@ class LinkManager:
         time = self.timenow
         if num is None: num = self.nowLinkNum
         recordInsideList = self.linkDeclare[num]["recordInside"]
+        recordInsideList = list(
+            filter(
+                lambda x: not (x["onlyrun"] == True and self.ifLinkRun() ==
+                               False), recordInsideList))
         return recordInsideList
 
     def getRecordDeclare(self, num: Optional[int] = None):

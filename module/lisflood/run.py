@@ -6,6 +6,7 @@ import subprocess
 import platform
 
 from typing import Any, Callable, MutableMapping, Sequence, cast
+from core.io.fileListIO import fileListIO
 from core.typing.fieldType import TYPE_Instance
 from core.typing.outputType import TYPE_Putout
 
@@ -101,3 +102,12 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         }, None)
         putout({"water": {i: water}})
         pass
+
+    from core.field.tempFileField import TempFileField
+    Files = TempFileField()
+    Files.init()
+    Files.define(fileListIO, {}, {
+        "mass": os.path.join(tempDir, "results", "res.mass"),
+        "max": os.path.join(tempDir, "results", "res.max"),
+    })
+    putout({"files": {0: Files}})

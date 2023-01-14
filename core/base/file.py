@@ -9,7 +9,7 @@ from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_TempEnv
 
 
 class FileBase:
-    fname: str
+    fname: str = ""
     data: MutableMapping[str, str] = {}
 
     def __init__(self, typeName: str):
@@ -19,7 +19,7 @@ class FileBase:
         fname = str(uuid.uuid4())
         self.fname = fname
         # 新建temp文件夹
-        tempDir = os.path.join("temp/", fname)
+        tempDir = os.path.join("temp", fname)
         os.mkdir(tempDir)
 
     def define(self, method: TYPE_IO, config: MutableMapping[str, Any],
@@ -32,3 +32,9 @@ class FileBase:
     def record(self, method: TYPE_Recorder, config: MutableMapping[str, Any],
                tempEnv: TYPE_Recorder_TempEnv):
         method({"config": config, "data": self.data, "tempEnv": tempEnv})
+
+    def getFile(self, name, dst):
+        shutil.copy(self.data[name], dst)
+
+    def getFileNames(self) -> Sequence[str]:
+        return list(self.data.keys())

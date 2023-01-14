@@ -4,7 +4,7 @@
     // basic config
     "timestep": 1,
     "timeUnit": "hour",
-    "timeEpoch": 3, // 运行几次
+    "timeEpoch": 1, // 运行几次
     "outputPath": "output/"
   },
   "instance": [
@@ -24,12 +24,6 @@
           },
           "data": null
         }
-      },
-      "record": {
-        // record routine declare
-        // Todo
-        "at": "se",
-        "recInf": []
       }
     },
     {
@@ -40,7 +34,7 @@
       }
     },
     {
-      "name": "file1",
+      "name": "sumoNetwork",
       "field": "tempFile",
       "init": {
         "use": "define",
@@ -48,8 +42,40 @@
           "method": "fileList",
           "config": {},
           "data": {
-            "good": "data/demtest.txt"
+            "network": "data/test165.net.xml"
           }
+        }
+      }
+    },
+    {
+      "name": "sumoRoute",
+      "field": "tempFile",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": {
+            "route": "data/si3.rou.xml"
+          }
+        }
+      }
+    },
+    {
+      "name": "sumoUni",
+      "field": "sumoUni",
+      "init": {
+        // init declare
+        "use": "define",
+        "define": {
+          // define declare
+          "method": "json",
+          "config": {
+            "outListConf": true,
+            "inFile": true,
+            "inFilePath": "data/sumo.json"
+          },
+          "data": null
         }
       }
     },
@@ -75,30 +101,28 @@
   "link": [
     {
       // link declare
-      "module": "lisflood",
-      "timeInter": 3, // 每一个timestep运行一次
+      "module": "sumo",
+      "timeInter": 1, // 每一个timestep运行一次
       "input": [
         // link input
         {
           // input declare
-          "into": "dem",
+          "into": "uniSumo",
           "use": "instance", // instance | define
-          "instance": "dem" //fieldname
+          "instance": "sumoUni" //fieldname
         },
         {
-          "into": "lisUni",
+          "into": "network",
           "use": "instance", // instance | define
-          "instance": "lisUni" //fieldname
-        }
-      ],
-      "output": [
+          "instance": "sumoNetwork" //fieldname
+        },
         {
-          // output action declare
-          "catch": "water",
-          "put": "water",
-          "timeInter": 1 //TODO 每n个timestep输出到instance一次
+          "into": "routeFiles",
+          "use": "instance", // instance | define
+          "instance": "sumoRoute" //fieldname
         }
       ],
+      "output": [],
       "recordInside": [
         {
           "catch": "files",
@@ -108,38 +132,6 @@
         }
       ],
       "record": []
-    },
-    {
-      // link declare
-      "module": "landslideEva",
-      "timeInter": 1, // 每一个timestep运行一次
-      "input": [
-        // link input
-        {
-          // input declare
-          "into": "water",
-          "use": "instance", // instance | define
-          "instance": "water" //fieldname
-        }
-      ],
-      "output": [],
-      "recordInside": [
-        {
-          // record declare
-          "catch": "eva",
-          "method": "raster",
-          "config": {},
-          "onlyrun": false
-        }
-      ],
-      "record": [
-        {
-          // record declare
-          "catch": "water",
-          "method": "raster",
-          "config": {}
-        }
-      ]
     }
   ]
 }
