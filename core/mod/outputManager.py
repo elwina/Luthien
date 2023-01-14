@@ -1,4 +1,4 @@
-from typing import Any, MutableMapping, Sequence
+from typing import Any, MutableMapping, MutableSequence
 from core.typing.outputType import TYPE_Output_Information, TYPE_Putout
 from core.typing.recordType import TYPE_Record_Declare
 
@@ -75,7 +75,7 @@ class outputManager:
                          time=time)
             return None
 
-    def makeRecords(self, recordList: Sequence[TYPE_Record_Declare]):
+    def makeRecords(self, recordList: MutableSequence[TYPE_Record_Declare]):
         '''记录'''
         for record in recordList:
             self.recordIns(record["catch"], record["method"], record["config"])

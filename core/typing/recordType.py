@@ -1,4 +1,4 @@
-from typing import Any, Callable, MutableMapping, Sequence, TypeVar, TypedDict
+from typing import Any, Callable, MutableMapping, MutableSequence, TypeVar, TypedDict
 
 
 class TYPE_Record_Declare(TypedDict):

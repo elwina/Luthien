@@ -1,4 +1,4 @@
-from typing import Any, MutableMapping, Sequence, TypedDict
+from typing import Any, MutableMapping, MutableSequence, TypedDict
 from core.typing.fieldType import Type_Instance_Declare
 from core.typing.fieldType import  TYPE_Field
 from core.typing.inputType import TYPE_Indata
@@ -66,7 +66,7 @@ class InstanceManager():
                     pass
         logger.success("Successfully init instances data")
 
-    def linkDataIn(self,linkInputList:Sequence[TYPE_Input_Declare])->TYPE_Indata:
+    def linkDataIn(self,linkInputList:MutableSequence[TYPE_Input_Declare])->TYPE_Indata:
         '''根据link input配置indata'''
         indata:TYPE_Indata={}
         for linkInput in linkInputList:
@@ -86,7 +86,7 @@ class InstanceManager():
                     pass
         return indata
 
-    def updateFromOutput(self,actionList:Sequence[TYPE_Output_Action_Declare],outMr:outputManager):
+    def updateFromOutput(self,actionList:MutableSequence[TYPE_Output_Action_Declare],outMr:outputManager):
         '''根据output action操作instance'''
         for action in actionList:
             catch=action["catch"]
@@ -98,7 +98,7 @@ class InstanceManager():
             else:
                 logger.error("Catch instance not put out!")
 
-    def makeRecords(self,recordList:Sequence[TYPE_Record_Declare],ifStart=False,ifEnd=False):
+    def makeRecords(self,recordList:MutableSequence[TYPE_Record_Declare],ifStart=False,ifEnd=False):
         '''记录record''' 
         linkDes=str(envGlobal.linkNowNum)
         if ifStart:linkDes="start"
@@ -125,14 +125,14 @@ class InstanceManager():
         ins.record(RECORDER_LIST[methodName], config,tempEnv)
 
     # 以下为待开发内容
-    def _getIdCharRecord(self,idChar:str)->Sequence[str]:
+    def _getIdCharRecord(self,idChar:str)->MutableSequence[str]:
         '''获得要在每个epoch前后记录的名单'''
         return list(filter(lambda x:self.instances[x]["declare"]["record"].__contains__(idChar) ,self.instances))
 
-    def getStartRecord(self)->Sequence[str]:
+    def getStartRecord(self)->MutableSequence[str]:
         return self._getIdCharRecord('s')
 
-    def getEndRecord(self)->Sequence[str]:
+    def getEndRecord(self)->MutableSequence[str]:
         return self._getIdCharRecord('e')
 
         

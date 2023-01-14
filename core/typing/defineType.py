@@ -1,4 +1,4 @@
-from typing import Any, Literal, MutableMapping, Sequence, TypedDict
+from typing import Any, Literal, MutableMapping, MutableSequence, TypedDict
 
 
 class TYPE_Define_Declare(TypedDict):

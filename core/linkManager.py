@@ -1,6 +1,6 @@
 from tqdm import tqdm
 
-from typing import Optional, Sequence
+from typing import Optional, MutableSequence
 from core.typing.linkType import TYPE_Link_Declare
 from core.typing.outputType import TYPE_Output_Action_Declare
 
@@ -10,7 +10,7 @@ from core.envGlobal import envGlobal
 
 
 class LinkManager:
-    linkDeclare: Sequence[TYPE_Link_Declare]
+    linkDeclare: MutableSequence[TYPE_Link_Declare]
 
     timestep: int
     timeUnit: str
@@ -76,8 +76,9 @@ class LinkManager:
         return inputList
 
     def getOutputAction(
-            self,
-            num: Optional[int] = None) -> Sequence[TYPE_Output_Action_Declare]:
+        self,
+        num: Optional[int] = None
+    ) -> MutableSequence[TYPE_Output_Action_Declare]:
         time = self.timenow
         if num is None: num = self.nowLinkNum
         actionList = self.linkDeclare[num]["output"]

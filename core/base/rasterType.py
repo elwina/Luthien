@@ -1,4 +1,4 @@
-from typing import Any, MutableMapping, Sequence, TypedDict
+from typing import Any, MutableMapping, MutableSequence, TypedDict
 
 
 class TYPE_RASTER_DATA(TypedDict):
@@ -8,4 +8,4 @@ class TYPE_RASTER_DATA(TypedDict):
     nullData: float
     xllCorner: float
     yllCorner: float
-    radata: Sequence[Sequence[float | float]]
+    radata: MutableSequence[MutableSequence[float | float]]
