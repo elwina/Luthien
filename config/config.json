@@ -1,113 +1,137 @@
 {
-    "version": 1,
-    "basic": { // basic config
-        "timestep": 1,
-        "timeUnit": "hour",
-        "timeEpoch": 3, // 运行几次
-        "outputPath": "output/"
+  "version": 1,
+  "basic": {
+    // basic config
+    "timestep": 1,
+    "timeUnit": "hour",
+    "timeEpoch": 3, // 运行几次
+    "outputPath": "output/"
+  },
+  "instance": [
+    {
+      // instance declare
+      "name": "dem",
+      "field": "dem",
+      "init": {
+        // init declare
+        "use": "define", // define | no | copy
+        "define": {
+          // define declare
+          "method": "txt2Raster",
+          "config": {
+            "inFile": true,
+            "inFilePath": "data/demtest.txt"
+          },
+          "data": null
+        }
+      },
+      "record": {
+        // record routine declare
+        // Todo
+        "at": "se",
+        "recInf": []
+      }
     },
-    "instance": [
-        { // instance declare
-            "name": "dem",
-            "field": "dem",
-            "init": {
-                // init declare
-                "use": "define", // define | no | copy
-                "define": {
-                    // define declare
-                    "method": "txt2Raster",
-                    "config": {
-                        "inFile": true,
-                        "inFilePath": "data/demtest.txt"
-                    },
-                    "data": null
-                }
-            },
-            "record": { // record routine declare
-                // Todo 
-                "at": "se",
-                "recInf": []
-            }
+    {
+      "name": "water",
+      "field": "rain",
+      "init": {
+        "use": "no"
+      }
+    },
+    {
+      "name": "file1",
+      "field": "tempFile",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": {
+            "good": "data/demtest.txt"
+          }
+        }
+      }
+    },
+    {
+      "name": "lisUni",
+      "field": "lisfloodUni",
+      "init": {
+        // init declare
+        "use": "define",
+        "define": {
+          // define declare
+          "method": "json",
+          "config": {
+            "outListConf": true,
+            "inFile": true,
+            "inFilePath": "data/test.json"
+          },
+          "data": null
+        }
+      }
+    }
+  ],
+  "link": [
+    {
+      // link declare
+      "module": "lisflood",
+      "timeInter": 3, // 每一个timestep运行一次
+      "input": [
+        // link input
+        {
+          // input declare
+          "into": "dem",
+          "use": "instance", // instance | define
+          "instance": "dem" //fieldname
         },
         {
-            "name": "water",
-            "field": "rain",
-            "init": {
-                "use": "no"
-            }
-        },
+          "into": "lisUni",
+          "use": "instance", // instance | define
+          "instance": "lisUni" //fieldname
+        }
+      ],
+      "output": [
         {
-            "name": "lisUni",
-            "field": "lisfloodUni",
-            "init": { // init declare
-                "use": "define",
-                "define": { // define declare
-                    "method": "json",
-                    "config": {
-                        "outListConf": true,
-                        "inFile": true,
-                        "inFilePath": "data/test.json"
-                    },
-                    "data": null
-                }
-            }
+          // output action declare
+          "catch": "water",
+          "put": "water",
+          "timeInter": 1 //TODO 每n个timestep输出到instance一次
         }
-    ],
-    "link": [
-        { // link declare
-            "module": "lisflood",
-            "timeInter": 3, // 每一个timestep运行一次
-            "input": [ // link input
-                {
-                    // input declare
-                    "into": "dem",
-                    "use": "instance", // instance | define
-                    "instance": "dem" //fieldname
-                },
-                {
-                    "into": "lisUni",
-                    "use": "instance", // instance | define
-                    "instance": "lisUni" //fieldname
-                }
-            ],
-            "output": [
-                { // output action declare
-                    "catch": "water",
-                    "put": "water",
-                    "timeInter": 1 //TODO 每n个timestep输出到instance一次
-                }
-            ],
-            "recordInside": [],
-            "record": []
-        },
-        { // link declare
-            "module": "landslideEva",
-            "timeInter": 1, // 每一个timestep运行一次
-            "input": [ // link input
-                {
-                    // input declare
-                    "into": "water",
-                    "use": "instance", // instance | define
-                    "instance": "water" //fieldname
-                }
-            ],
-            "output": [],
-            "recordInside": [
-                {
-                    // record declare
-                    "catch": "eva",
-                    "method": "raster",
-                    "config": {}
-                }
-            ],
-            "record": [
-                {
-                    // record declare
-                    "catch": "water",
-                    "method": "raster",
-                    "config": {}
-                }
-            ]
+      ],
+      "recordInside": [],
+      "record": []
+    },
+    {
+      // link declare
+      "module": "landslideEva",
+      "timeInter": 1, // 每一个timestep运行一次
+      "input": [
+        // link input
+        {
+          // input declare
+          "into": "water",
+          "use": "instance", // instance | define
+          "instance": "water" //fieldname
         }
-    ]
+      ],
+      "output": [],
+      "recordInside": [
+        {
+          // record declare
+          "catch": "eva",
+          "method": "raster",
+          "config": {}
+        }
+      ],
+      "record": [
+        {
+          // record declare
+          "catch": "water",
+          "method": "raster",
+          "config": {}
+        }
+      ]
+    }
+  ]
 }

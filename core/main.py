@@ -1,4 +1,6 @@
 import getopt
+import os
+import shutil
 import sys
 
 from core.controller import Controller
@@ -31,6 +33,11 @@ def start():
     logger.add(configGlobal.getConfig()["basic"]["outputPath"] + "main.log",
                mode="w")
     logger.info("Log system starts running.")
+
+    # 新建temp目录
+    tempDir = os.path.join("temp/")
+    shutil.rmtree(tempDir, ignore_errors=True)
+    os.mkdir(tempDir)
 
     # 初始化结束
 
