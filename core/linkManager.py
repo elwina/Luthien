@@ -42,7 +42,8 @@ class LinkManager:
         self.nowLinkNum = 0
         self.updateEnv()
 
-        self.pbar = tqdm(total=self.allEpochs * self.linkDeclare.__len__())
+        self.pbar = tqdm(total=self.allEpochs * self.linkDeclare.__len__(),
+                         disable=True)
 
     def geneEpochs(self):
         '''总轮数生成器'''

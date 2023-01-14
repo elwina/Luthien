@@ -5,7 +5,7 @@ import uuid
 from typing import Any, MutableMapping, Sequence
 
 from core.typing.ioType import TYPE_IO
-from core.typing.recordType import TYPE_Recorder_TempEnv
+from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_TempEnv
 
 
 class FileBase:
@@ -29,6 +29,6 @@ class FileBase:
         self.data = re["newData"]
         print(self.data)
 
-    def record(self, method: TYPE_IO, config: MutableMapping[str, Any],
-               tempEnv: TYPE_Recorder_TempEnv)
+    def record(self, method: TYPE_Recorder, config: MutableMapping[str, Any],
+               tempEnv: TYPE_Recorder_TempEnv):
         method({"config": config, "data": self.data, "tempEnv": tempEnv})
