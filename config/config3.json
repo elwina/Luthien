@@ -9,18 +9,15 @@
   },
   "instance": [
     {
-      // instance declare
       "name": "dem",
       "field": "dem",
       "init": {
-        // init declare
         "use": "define", // define | no | copy
         "define": {
-          // define declare
           "method": "txt2Raster",
           "config": {
             "inFile": true,
-            "inFilePath": "data/demtest.txt"
+            "inFilePath": "data/4326test.txt"
           },
           "data": null
         }
@@ -41,9 +38,19 @@
         "define": {
           "method": "fileList",
           "config": {},
-          "data": {
-            "network": "data/test165.net.xml"
-          }
+          "data": { "sumoNet": "data/test165.net.xml" }
+        }
+      }
+    },
+    {
+      "name": "road",
+      "field": "road",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "sumoNet2Road",
+          "config": { "filepath": "data/test165.net.xml" },
+          "data": {}
         }
       }
     },
@@ -62,13 +69,16 @@
       }
     },
     {
+      "name": "vssFile",
+      "field": "tempFile",
+      "init": { "use": "no" }
+    },
+    {
       "name": "sumoUni",
       "field": "sumoUni",
       "init": {
-        // init declare
         "use": "define",
         "define": {
-          // define declare
           "method": "json",
           "config": {
             "outListConf": true,
@@ -83,10 +93,24 @@
       "name": "lisUni",
       "field": "lisfloodUni",
       "init": {
-        // init declare
         "use": "define",
         "define": {
-          // define declare
+          "method": "json",
+          "config": {
+            "outListConf": true,
+            "inFile": true,
+            "inFilePath": "data/test.json"
+          },
+          "data": null
+        }
+      }
+    },
+    {
+      "name": "sumoSpeedUni",
+      "field": "sumoSpeedUni",
+      "init": {
+        "use": "no",
+        "define": {
           "method": "json",
           "config": {
             "outListConf": true,
@@ -101,28 +125,30 @@
   "link": [
     {
       // link declare
-      "module": "sumo",
+      "module": "lisflood",
       "timeInter": 1, // 每一个timestep运行一次
       "input": [
         // link input
         {
           // input declare
-          "into": "uniSumo",
+          "into": "dem",
           "use": "instance", // instance | define
-          "instance": "sumoUni" //fieldname
+          "instance": "dem" //fieldname
         },
         {
-          "into": "network",
+          "into": "lisUni",
           "use": "instance", // instance | define
-          "instance": "sumoNetwork" //fieldname
-        },
-        {
-          "into": "routeFiles",
-          "use": "instance", // instance | define
-          "instance": "sumoRoute" //fieldname
+          "instance": "lisUni" //fieldname
         }
       ],
-      "output": [],
+      "output": [
+        {
+          // output action declare
+          "catch": "water",
+          "put": "water",
+          "timeInter": 1 //TODO 每n个timestep输出到instance一次
+        }
+      ],
       "recordInside": [
         {
           "catch": "files",
@@ -131,6 +157,41 @@
           "onlyrun": true
         }
       ],
+      "record": []
+    },
+    {
+      "module": "sumoSpeed",
+      "timeInter": 1,
+      "input": [
+        {
+          "into": "sumoNet",
+          "use": "instance",
+          "instance": "sumoNetwork"
+        },
+        {
+          "into": "road",
+          "use": "instance",
+          "instance": "road"
+        },
+        {
+          "into": "sumoSpeedUni",
+          "use": "instance",
+          "instance": "sumoSpeedUni"
+        },
+        {
+          "into": "water",
+          "use": "instance",
+          "instance": "water"
+        }
+      ],
+      "output": [
+        {
+          "catch": "sumoSpeed",
+          "put": "sumoSpeed",
+          "timeInter": 1
+        }
+      ],
+      "recordInside": [],
       "record": []
     }
   ]

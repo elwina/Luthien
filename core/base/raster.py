@@ -1,4 +1,6 @@
+import os
 from typing import Any, MutableMapping
+import uuid
 from core.base.rasterType import TYPE_RASTER_DATA
 from core.typing.ioType import TYPE_IO
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
@@ -8,6 +10,7 @@ class RasterBase:
     '''基础类型:Raster,处理栅格'''
     '''data类型详见TYPE_RASTER_DATA'''
     data: TYPE_RASTER_DATA
+    filepath: str
 
     # 初始化函数
     def __init__(self, typeName: str):
@@ -39,11 +42,14 @@ class RasterBase:
                tempEnv: TYPE_Recorder_TempEnv):
         method({"config": config, "ins": self, "tempEnv": tempEnv})
 
-    def defineFromAsciiFile(self,file:str):
-        config={
-            "outRasterBase":True,
-            "inFile":True,
-            "inFilePath": file
-        }
+    def defineFromAsciiFile(self, file: str):
+        config = {"outRasterBase": True, "inFile": True, "inFilePath": file}
         from core.io.txt2RasterIO import txt2RasterIO
         txt2RasterIO({"config": config, "ins": self, "newData": {}})
+
+    def getTempFile(self):
+        filepath = os.path.join("temp", str(uuid.uuid4()) + ".txt")
+        from core.tools.raster2Txt import raster2Txt
+        raster2Txt(self.data, filepath)
+        return filepath
+

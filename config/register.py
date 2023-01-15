@@ -29,11 +29,13 @@ RECORDER_LIST: TYPE_RECORDER_LIST = {
 from module.lisflood.main import Module as lisflood
 from module.landslideEva.main import Module as landslideEva
 from module.sumo.main import Module as sumo
+from module.sumoSpeed.main import Module as sumoSpeed
 
 MODULE_LIST: TYPE_MODULE_LIST = {
     "lisflood": lisflood,
     "landslideEva": landslideEva,
-    "sumo": sumo
+    "sumo": sumo,
+    "sumoSpeed": sumoSpeed
 }
 
 from core.base.listConf import ListConfBase
@@ -56,6 +58,7 @@ from core.field.roadField import RoadField
 from module.lisflood.field.uniField import UniField as LisfloodUniField
 from module.sumo.field.uniField import UniField as SumoUniField
 from module.sumo.field.sumoNetField import SumoNetField
+from module.sumoSpeed.field.uniField import UniField as SumoSpeedUniField
 
 FIELD_LIST: TYPE_FIELD_LIST = {
     "dem": DemField,
@@ -64,5 +67,6 @@ FIELD_LIST: TYPE_FIELD_LIST = {
     "tempFile": TempFileField,
     "lisfloodUni": LisfloodUniField,
     "sumoUni": SumoUniField,
-    "sumoNet": SumoNetField
+    "sumoNet": SumoNetField,
+    "sumoSpeedUni": SumoSpeedUniField
 }

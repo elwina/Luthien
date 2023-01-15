@@ -13,3 +13,6 @@ class SumoNetField(FileBase, TYPE_Instance):
     def __init__(self):
         super().__init__("tempFile")
         self.init()
+
+    def getNetWorkFile(self,dst:str):
+        return self.getFile("sumoNet",dst)

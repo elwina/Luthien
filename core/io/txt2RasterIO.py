@@ -69,5 +69,6 @@ def txt2RasterIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
         if "outRasterBase" in config and config["outRasterBase"] == True:
             ioData["newData"]=data
             ins.data=data
+            ins.filepath=filepath
 
     return ioData
