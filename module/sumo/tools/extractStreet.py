@@ -1,7 +1,7 @@
-from typing import MutableMapping, MutableSequence, MutableSequence, cast
+from typing import MutableMapping, Sequence, cast
 import xml.etree.ElementTree as ET
 
-TYPE_Street_Dict = MutableMapping[str, MutableSequence[str]]
+TYPE_Street_Dict = MutableMapping[str, list[str]]
 
 
 def extractStreet(filename: str) -> TYPE_Street_Dict:
@@ -22,7 +22,7 @@ def extractStreet(filename: str) -> TYPE_Street_Dict:
     return streetDict
 
 
-if __file__ == '__main__':
+if __name__ == '__main__':
     filename = 'data/test165.net.xml'
     streetDict = extractStreet(filename)
     print(streetDict)

@@ -2,7 +2,7 @@ import os
 import shutil
 import uuid
 
-from typing import Any, MutableMapping, MutableSequence
+from typing import Any, MutableMapping, Sequence
 
 from core.typing.ioType import TYPE_IO
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_TempEnv
@@ -36,5 +36,5 @@ class FileBase:
     def getFile(self, name, dst):
         shutil.copy(self.data[name], dst)
 
-    def getFileNames(self) -> MutableSequence[str]:
+    def getFileNames(self) -> Sequence[str]:
         return list(self.data.keys())

@@ -13,6 +13,9 @@ class RasterBase:
     def __init__(self, typeName: str):
         self.typeName = typeName
 
+        def asd():
+            return "1"
+
     def init(self):
         '''每个子类必须调用此函数'''
         initData: TYPE_RASTER_DATA = {

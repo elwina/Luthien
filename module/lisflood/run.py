@@ -5,7 +5,7 @@ import shutil
 import subprocess
 import platform
 
-from typing import Any, Callable, MutableMapping, MutableSequence, cast
+from typing import Any, Callable, MutableMapping, Sequence, cast
 from core.io.fileListIO import fileListIO
 from core.typing.fieldType import TYPE_Instance
 from core.typing.outputType import TYPE_Putout
@@ -21,7 +21,7 @@ from loguru import logger
 
 def lisfloodRun(putout: Callable[[TYPE_Putout], None],
                 instances: MutableMapping[str, TYPE_Instance],
-                optList: MutableSequence[str]):
+                optList: Sequence[str]):
     logger.debug("Module Lisflood Run,optList:{opt}.", opt=",".join(optList))
 
     ifManni = False

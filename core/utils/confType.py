@@ -1,4 +1,4 @@
-from typing import  Mapping, MutableMapping, MutableSequence
+from typing import  Mapping, MutableMapping, Sequence
 from typing_extensions import Required, TypedDict
 
 '''
@@ -25,7 +25,7 @@ class _TYPE_A_INIT_DICT(TypedDict,total=False):
     name:Required[str]
     type:Required[str]
 
-_TYPE_INIT_DICT=MutableSequence[_TYPE_A_INIT_DICT]
+_TYPE_INIT_DICT=Sequence[_TYPE_A_INIT_DICT]
 '''
 _TYPE_A_INIT_DICT形如
     [

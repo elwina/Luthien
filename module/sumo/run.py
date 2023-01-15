@@ -5,7 +5,7 @@ import shutil
 import subprocess
 import platform
 
-from typing import Any, Callable, MutableMapping, MutableSequence, cast
+from typing import Any, Callable, MutableMapping, Sequence, cast
 from core.field.tempFileField import TempFileField
 from core.io.fileListIO import fileListIO
 from core.typing.fieldType import TYPE_Instance
@@ -21,8 +21,8 @@ from loguru import logger
 
 
 def sumoRun(putout: Callable[[TYPE_Putout], None],
-            instances: MutableMapping[str, TYPE_Instance],
-            optList: MutableSequence[str]):
+            instances: MutableMapping[str,
+                                      TYPE_Instance], optList: Sequence[str]):
     logger.debug("Module sumo Run,optList:{opt}.", opt=",".join(optList))
 
     # 新建temp文件夹
@@ -38,7 +38,7 @@ def sumoRun(putout: Callable[[TYPE_Putout], None],
     networkIns = cast(TempFileField, networkIns)
     networkIns.getFile("network", networkFilename)
 
-    cmd: MutableSequence[str] = ["sumo"]
+    cmd: Sequence[str] = ["sumo"]
     cmd.append("--net-file")
     cmd.append("auto.net.xml")
 
