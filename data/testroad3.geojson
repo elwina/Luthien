@@ -9,8 +9,7 @@
     {
       "type": "Feature",
       "properties": {
-        "name": "s1",
-        "id": "1"
+        "name": "s1"
       },
       "geometry": {
         "type": "MultiLineString",
