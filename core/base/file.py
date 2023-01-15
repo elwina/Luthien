@@ -25,8 +25,7 @@ class FileBase:
     def define(self, method: TYPE_IO, config: MutableMapping[str, Any],
                data: Any):
         config["fname"] = self.fname
-        re = method({"config": config, "oldData": self.data, "newData": data})
-        self.data = re["newData"]
+        re = method({"config": config, "ins": self, "newData": data})
         print(self.data)
 
     def record(self, method: TYPE_Recorder, config: MutableMapping[str, Any],

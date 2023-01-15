@@ -4,7 +4,7 @@ from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Record
 from core.base.vectorType import TYPE_VECTOR_DATA, TYPE_VECTOR_TYPE
 
 
-class Vector:
+class VectorBase:
     data: TYPE_VECTOR_DATA
 
     def __init__(self, typeName: str):
@@ -16,5 +16,4 @@ class Vector:
     # 接口函数
     def define(self, method: TYPE_IO, config: MutableMapping[str, Any],
                data: Any):
-        re = method({"config": config, "oldData": self.data, "newData": data})
-        self.data = re["newData"]
+        re = method({"config": config, "ins": self, "newData": data})

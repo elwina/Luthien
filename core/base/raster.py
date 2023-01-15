@@ -33,8 +33,7 @@ class RasterBase:
     def define(self, method: TYPE_IO, config: MutableMapping[str, Any],
                data: Any):
         config["outRasterBase"] = True
-        re = method({"config": config, "oldData": self.data, "newData": data})
-        self.data = re["newData"]
+        re = method({"config": config, "ins": self, "newData": data})
 
     def record(self, method: TYPE_Recorder, config: MutableMapping[str, Any],
                tempEnv: TYPE_Recorder_TempEnv):

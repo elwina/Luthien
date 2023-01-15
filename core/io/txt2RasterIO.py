@@ -1,3 +1,5 @@
+from typing import cast
+from core.base.rasterType import TYPE_RASTER_DATA
 from core.typing.ioType import TYPE_IO_Data
 
 from loguru import logger
@@ -11,7 +13,9 @@ config
 
 
 def txt2RasterIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
+    from core.base.raster import RasterBase
     config = ioData["config"]
+    ins: RasterBase = ioData["ins"]
     data = {}
     if "inFile" in config and config["inFile"] == True:
         filepath = config["inFilePath"]
@@ -61,7 +65,9 @@ def txt2RasterIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
         logger.success("Read Done {path},row:{row},col:{col}",
                     path=filepath,row=data["row"],col=data["col"])
 
+        data=cast(TYPE_RASTER_DATA,data)
         if "outRasterBase" in config and config["outRasterBase"] == True:
             ioData["newData"]=data
+            ins.data=data
 
     return ioData

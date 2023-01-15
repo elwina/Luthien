@@ -13,8 +13,11 @@ config
 
 
 def jsonIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
+    from core.base.listConf import ListConfBase
+
     config = ioData["config"]
-    oldData = ioData["oldData"]
+    ins: ListConfBase = ioData["ins"]
+    oldData = ioData["ins"].data
     data = {}
     if "inFile" in config and config["inFile"] == True:
         data = _inFromFile(config["inFilePath"])
@@ -23,6 +26,7 @@ def jsonIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
         for name in data:
             oldData[name] = data[name]
         ioData["newData"] = oldData
+        ins.data = oldData
     return ioData
 
 

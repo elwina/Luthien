@@ -10,15 +10,14 @@ config
 
 
 def geojson2VectorIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
+    from core.base.vector import VectorBase
+
     config = ioData["config"]
-    oldData = ioData["oldData"]
+    ins: VectorBase = ioData["ins"]
     data = {}
     if "inFile" in config and config["inFile"] == True:
-        filepath=(config["inFilePath"])
+        filepath = (config["inFilePath"])
 
-
-    if "outListConf" in config and config["outListConf"] == True:
-        for name in data:
-            oldData[name] = data[name]
-        ioData["newData"] = oldData
+    if "outVectorBase" in config and config["outVectorBase"] == True:
+        pass
     return ioData

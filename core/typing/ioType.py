@@ -3,7 +3,7 @@ from typing import Any, Callable, MutableMapping, TypeVar, TypedDict
 
 class TYPE_IO_Data(TypedDict):
     config: MutableMapping[str, Any]
-    oldData: Any
+    ins: Any
     newData: Any
 
 
