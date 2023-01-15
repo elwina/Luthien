@@ -7,6 +7,7 @@
 - tqdm
 - conda install rasterio
 - conda install gdal
+- pyproj
 
 # cli support
 - sumo 

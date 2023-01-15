@@ -35,7 +35,7 @@
     },
     {
       "name": "sumoNetwork",
-      "field": "tempFile",
+      "field": "sumoNet",
       "init": {
         "use": "define",
         "define": {

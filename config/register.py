@@ -6,11 +6,16 @@ from core.typing.recordType import TYPE_RECORDER_LIST
 from core.io.txt2RasterIO import txt2RasterIO
 from core.io.jsonIO import jsonIO
 from core.io.fileListIO import fileListIO
+from core.io.geojson2VectorIO import geojson2VectorIO
+
+from module.sumo.io.sumoNet2RoadIO import sumoNet2RoadIO
 
 IO_LIST: TYPE_IO_LIST = {
     "json": jsonIO,
     "txt2Raster": txt2RasterIO,
-    "fileList": fileListIO
+    "fileList": fileListIO,
+    "geojson2Vector": geojson2VectorIO,
+    "sumoNet2Road": sumoNet2RoadIO
 }
 
 from core.recorder.rasterRecorder import rasterRecorder
@@ -33,19 +38,31 @@ MODULE_LIST: TYPE_MODULE_LIST = {
 
 from core.base.listConf import ListConfBase
 from core.base.raster import RasterBase
+from core.base.vector import VectorBase
+from core.base.file import FileBase
 
-BASE_LIST = {"listConf": ListConfBase, "raster": RasterBase}
+BASE_LIST = {
+    "listConf": ListConfBase,
+    "raster": RasterBase,
+    "vector": VectorBase,
+    "file": FileBase
+}
 
 from core.field.demField import DemField
 from core.field.waterField import WaterField
 from core.field.tempFileField import TempFileField
+from core.field.roadField import RoadField
+
 from module.lisflood.field.uniField import UniField as LisfloodUniField
 from module.sumo.field.uniField import UniField as SumoUniField
+from module.sumo.field.sumoNetField import SumoNetField
 
 FIELD_LIST: TYPE_FIELD_LIST = {
     "dem": DemField,
     "rain": WaterField,
+    "road": RoadField,
     "tempFile": TempFileField,
     "lisfloodUni": LisfloodUniField,
-    "sumoUni": SumoUniField
+    "sumoUni": SumoUniField,
+    "sumoNet": SumoNetField
 }

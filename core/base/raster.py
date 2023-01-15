@@ -38,3 +38,12 @@ class RasterBase:
     def record(self, method: TYPE_Recorder, config: MutableMapping[str, Any],
                tempEnv: TYPE_Recorder_TempEnv):
         method({"config": config, "ins": self, "tempEnv": tempEnv})
+
+    def defineFromAsciiFile(self,file:str):
+        config={
+            "outRasterBase":True,
+            "inFile":True,
+            "inFilePath": file
+        }
+        from core.io.txt2RasterIO import txt2RasterIO
+        txt2RasterIO({"config": config, "ins": self, "newData": {}})

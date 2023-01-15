@@ -66,6 +66,11 @@ class VectorBase:
         f.close()
         return filepath
 
+    def getOgrDatasource(self):
+        driver = ogr.GetDriverByName('GeoJSON')
+        dataSource = driver.Open(self.getTempFile(), 0)
+        return dataSource
+
 
 if __name__ == "__main__":
     v = VectorBase("Vector")
