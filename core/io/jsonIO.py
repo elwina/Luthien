@@ -1,6 +1,6 @@
 import commentjson as json
 
-from core.typing.ioType import TYPE_IO_DATA
+from core.typing.ioType import TYPE_IO_Data
 
 from loguru import logger
 '''
@@ -12,7 +12,7 @@ config
 '''
 
 
-def jsonIO(ioData: TYPE_IO_DATA) -> TYPE_IO_DATA:
+def jsonIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
     config = ioData["config"]
     oldData = ioData["oldData"]
     data = {}

@@ -1,6 +1,6 @@
 from typing import Any, MutableMapping
 from core.base.listConfType import TYPE_LIST_CONF_DATA, TYPE_LIST_CONF_IN_DATA
-from core.typing.ioType import TYPE_IO, TYPE_IO_DATA
+from core.typing.ioType import TYPE_IO, TYPE_IO_Data
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
 from core.utils.confType import generateInitDict
 

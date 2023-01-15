@@ -37,6 +37,6 @@ _TYPE_A_INIT_DICT形如
 '''
 
 
-def generateInitDict(list:_TYPE_INIT_DICT)->MutableMapping[str, TYPE_CONF_VALUE]:
+def generateInitDict(list:_TYPE_INIT_DICT)->dict[str, TYPE_CONF_VALUE]:
     '''根据init dict生成dict'''
     return dict(zip([item["name"] for item in list],[generateInitValue(item["type"]) for item in list]))
