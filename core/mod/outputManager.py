@@ -89,7 +89,7 @@ class outputManager:
         method = RECORDER_LIST[methodName]
         method({
             "config": config,
-            "data": ins.data,
+            "ins": ins,
             "tempEnv": {
                 "insName": name,
                 "ifModule": True,

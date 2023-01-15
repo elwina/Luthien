@@ -24,7 +24,7 @@ class TYPE_Recorder_Env(TypedDict):
 
 class TYPE_Recorder_Data(TypedDict):
     config: MutableMapping[str, Any]
-    data: Any
+    ins: Any
     tempEnv: TYPE_Recorder_TempEnv
 
 

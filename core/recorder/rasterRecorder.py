@@ -6,7 +6,7 @@ from core.recorderGlobal import recorderGlobal as rGl
 
 
 def rasterRecorder(rec: TYPE_Recorder_Data) -> None:
-    rdata = rec['data']
+    rdata = rec['ins'].data
     tempEnv = rec['tempEnv']
     recEnv: TYPE_Recorder_Env = {
         "insName": tempEnv['insName'],

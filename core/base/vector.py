@@ -39,6 +39,10 @@ class VectorBase:
         config["inGeoType"] = self.data.type
         re = method({"config": config, "ins": self, "newData": data})
 
+    def record(self, method: TYPE_Recorder, config: MutableMapping[str, Any],
+               tempEnv: TYPE_Recorder_TempEnv):
+        method({"config": config, "ins": self, "tempEnv": tempEnv})
+
     def toGeoJSONString(self) -> str:
         s = {}
         s["type"] = "FeatureCollection"

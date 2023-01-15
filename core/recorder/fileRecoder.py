@@ -12,7 +12,7 @@ filelist []记录什么文件
 
 
 def fileRecorder(rec: TYPE_Recorder_Data) -> None:
-    fdata: MutableMapping[str, str] = rec['data']
+    fdata: MutableMapping[str, str] = rec['ins'].data
     config: MutableMapping[str, str] = rec["config"]
 
     files = []
