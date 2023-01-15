@@ -1,3 +1,8 @@
+import json
+import os
+from osgeo import ogr
+import uuid
+
 from typing import Any, MutableMapping, MutableSequence
 
 from core.typing.ioType import TYPE_IO, TYPE_IO_Data
@@ -35,7 +40,6 @@ class VectorBase:
         re = method({"config": config, "ins": self, "newData": data})
 
     def toGeoJSONString(self) -> str:
-        import json
         s = {}
         s["type"] = "FeatureCollection"
         s["features"] = []
@@ -51,15 +55,20 @@ class VectorBase:
         re = json.dumps(s)
         return re
 
+    def getTempFile(self):
+        filepath = os.path.join("temp", str(uuid.uuid4()) + ".geojson")
+        f = open(filepath, "w")
+        f.write(self.toGeoJSONString())
+        f.close()
+        return filepath
+
 
 if __name__ == "__main__":
     v = VectorBase("Vector")
     v.init("MultiLineString")
     from core.io.geojson2VectorIO import geojson2VectorIO
-    v.define(
-        geojson2VectorIO, {
-            "outVectorBase": True,
-            "inFile": True,
-            "inFilePath": "data\\testroad.geojson"
-        }, {})
-    print(v.toGeoJSONString())
+    v.define(geojson2VectorIO, {
+        "outVectorBase": True,
+        "inFile": True,
+        "inFilePath": "data\\a.geojson"
+    }, {})

@@ -30,7 +30,7 @@ class FileBase:
 
     def record(self, method: TYPE_Recorder, config: MutableMapping[str, Any],
                tempEnv: TYPE_Recorder_TempEnv):
-        method({"config": config, "data": self.data, "tempEnv": tempEnv})
+        method({"config": config, "ins": self, "tempEnv": tempEnv})
 
     def getFile(self, name, dst):
         shutil.copy(self.data[name], dst)

@@ -14,7 +14,7 @@
       "env": {
         "PYTHONPATH": "${workspaceFolder}/"
       },
-      "justMyCode": true
+      "justMyCode": false
     },
     {
       "name": "Python: Main.py",
