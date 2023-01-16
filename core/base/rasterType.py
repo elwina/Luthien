@@ -1,11 +1,13 @@
+from dataclasses import dataclass, field
 from typing import Any, MutableMapping, Sequence, TypedDict
 
 
-class TYPE_RASTER_DATA(TypedDict):
-    row: int
-    col: int
-    cellSize: float
-    nullData: float
-    xllCorner: float
-    yllCorner: float
-    radata: Sequence[Sequence[float | int]]
+@dataclass
+class TYPE_RASTER_DATA:
+    row: int = 0
+    col: int = 0
+    cellSize: float = 0
+    nullData: float = 0
+    xllCorner: float = 0
+    yllCorner: float = 0
+    radata: Sequence[Sequence[float | int]] = field(default_factory=list)

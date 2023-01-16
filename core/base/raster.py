@@ -21,15 +21,13 @@ class RasterBase:
 
     def init(self):
         '''每个子类必须调用此函数'''
-        initData: TYPE_RASTER_DATA = {
-            "row": 2,
-            "col": 3,
-            "cellSize": 100.0,
-            "nullData": -9999.0,
-            "xllCorner": 0.0,
-            "yllCorner": 0.0,
-            "radata": [[0., 0., 0.], [0., 0., 0.]]
-        }
+        initData = TYPE_RASTER_DATA(row=2,
+                                    col=3,
+                                    cellSize=100.0,
+                                    nullData=-9999.0,
+                                    xllCorner=0.0,
+                                    yllCorner=0.0,
+                                    radata=[[0., 0., 0.], [0., 0., 0.]])
         self.data = initData
 
     # 接口函数
@@ -52,4 +50,3 @@ class RasterBase:
         from core.tools.raster2Txt import raster2Txt
         raster2Txt(self.data, filepath)
         return filepath
-

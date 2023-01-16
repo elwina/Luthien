@@ -21,7 +21,7 @@ def landslideEvaRun(putout: Callable[[TYPE_Putout], None],
 
     waterIns = cast(RasterBase, instances["water"])
     evaIns = deepcopy(waterIns)
-    evaIns.data["radata"] = _judge(evaIns.data["radata"], threshold)
+    evaIns.data.radata = _judge(evaIns.data.radata, threshold)
 
     putout({"eva": {0: evaIns}})
 

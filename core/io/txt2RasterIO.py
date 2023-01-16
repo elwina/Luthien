@@ -16,7 +16,7 @@ def txt2RasterIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
     from core.base.raster import RasterBase
     config = ioData["config"]
     ins: RasterBase = ioData["ins"]
-    data = {}
+    data = TYPE_RASTER_DATA()
     if "inFile" in config and config["inFile"] == True:
         filepath = config["inFilePath"]
         logger.info("Read Txt File {path}", path=filepath)
@@ -28,17 +28,17 @@ def txt2RasterIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
                     con = line.split()
                     match con[0] :
                         case "nrows":
-                            data["row"]=int(con[1])
+                            data.row=int(con[1])
                         case "ncols":
-                            data["col"]=int(con[1])
+                            data.col=int(con[1])
                         case "cellsize":
-                            data["cellSize"]=float(con[1])
+                            data.cellSize=float(con[1])
                         case "NODATA_value":
-                            data["nullData"]=float(con[1])
+                            data.nullData=float(con[1])
                         case "xllcorner":
-                            data["xllCorner"]=float(con[1])
+                            data.xllCorner=float(con[1])
                         case "yllcorner":
-                            data["yllCorner"]=float(con[1])
+                            data.yllCorner=float(con[1])
 
                 rdata=[]
                 lines = fp.readlines()
@@ -46,16 +46,16 @@ def txt2RasterIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
                     con = line.split()
                     if con.__len__()==0:
                         break
-                    if con.__len__()!=data["col"]:
+                    if con.__len__()!=data.col:
                         logger.error("Col Number Wrong!")
                     rdata.append(list(map(lambda x:float(x),con)))
     
                 # 行校验
                 trueRow=rdata.__len__()
-                if trueRow !=data["row"]:
+                if trueRow !=data.row:
                     logger.error("Row Number Wrong!")
 
-                data["radata"]  =rdata
+                data.radata  =rdata
 
         except Exception as e:
             logger.error(e)
@@ -63,7 +63,7 @@ def txt2RasterIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
 
         # 简要报告
         logger.success("Read Done {path},row:{row},col:{col}",
-                    path=filepath,row=data["row"],col=data["col"])
+                    path=filepath,row=data.row,col=data.col)
 
         data=cast(TYPE_RASTER_DATA,data)
         if "outRasterBase" in config and config["outRasterBase"] == True:
