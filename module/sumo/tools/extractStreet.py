@@ -43,7 +43,7 @@ def extractStreet2MultiLineString(filename: str):
     convert = net.convertXY2LonLat
 
     from core.field.roadField import RoadField
-    from core.base.vector import VectorData, AVector
+    from core.base.vectorType import VectorData, AVector
     road = RoadField()
     data = VectorData()
     data.type = "MultiLineString"

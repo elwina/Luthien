@@ -16,7 +16,7 @@ def geojson2VectorIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
     intype = config["inGeoType"]
     ins: VectorBase = ioData["ins"]
 
-    from core.base.vector import VectorData
+    from core.base.vectorType import VectorData
     data = VectorData()
 
     if "inFile" in config and config["inFile"] == True:
@@ -26,7 +26,7 @@ def geojson2VectorIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
         dataSource = driver.Open(filepath, 0)
         layer = dataSource.GetLayer()
 
-        from core.base.vector import AVector
+        from core.base.vectorType import AVector
         objects: MutableSequence[AVector] = []
 
         if intype == "MultiLineString":
@@ -57,7 +57,7 @@ def geojson2VectorIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
 
             layer.ResetReading()
 
-            from core.base.vector import VectorData
+            from core.base.vectorType import VectorData
             data = VectorData()
             data.type = "MultiLineString"
             data.objects = objects

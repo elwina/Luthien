@@ -7,19 +7,9 @@ from typing import Any, MutableMapping, MutableSequence
 
 from core.typing.ioType import TYPE_IO, TYPE_IO_Data
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
-from core.base.vectorType import TYPE_VECTOR_TYPE
+from core.base.vectorType import TYPE_VECTOR_TYPE, VectorData
 
 
-class AVector:
-    properties: MutableMapping[str, Any]
-    coordinates: MutableSequence[MutableSequence[tuple[
-        float, float]]] | MutableSequence[tuple[float, float]] | tuple[float,
-                                                                       float]
-
-
-class VectorData:
-    type: TYPE_VECTOR_TYPE
-    objects: MutableSequence[AVector]
 
 
 class VectorBase:
