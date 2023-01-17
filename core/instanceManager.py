@@ -91,12 +91,18 @@ class InstanceManager():
         for action in actionList:
             catch=action["catch"]
             time=envGlobal.epoch
-            catchIns=outMr.getOutput(catch,time)
+            catchIns=outMr.getOutputData(catch)
             if catchIns is not None:
-                self.instances[action["put"]]["instance"]=catchIns
+                self.instances[catch]["instance"].iTM.store(catchIns)
                 logger.success("Output {out} is put out into instance {ins}.",out=catch,ins=action["put"])
             else:
                 logger.error("Catch instance not put out!")
+            self.instances[catch]["instance"].iTM.checkTime()
+
+    def updateInsTime(self):
+        '''更新instance时间'''
+        for name in self.instances:
+            self.instances[name]["instance"].iTM.checkTime()
 
     def makeRecords(self,recordList:Sequence[TYPE_Record_Declare],ifStart=False,ifEnd=False):
         '''记录record''' 

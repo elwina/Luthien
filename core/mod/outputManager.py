@@ -1,4 +1,5 @@
-from typing import Any, MutableMapping, Sequence
+from copy import deepcopy
+from typing import Any, MutableMapping, Protocol, Sequence
 from core.typing.outputType import TYPE_Output_Information, TYPE_Putout
 from core.typing.recordType import TYPE_Record_Declare
 
@@ -14,12 +15,12 @@ class outputManager:
     暂时无作用,备用
     '''
 
-    instances: MutableMapping[int, MutableMapping[str, Any]]
+    instances: MutableMapping[str, MutableMapping[int, Any]]
     '''
     instances形如
     {
-        absoulteTime:{
-            out1:instance
+        out1:{
+            atime:instance
         }
     }
     '''
@@ -30,6 +31,8 @@ class outputManager:
     def init(self, inf: TYPE_Output_Information):
         self.information = inf
         self.instances = {}
+        for name in inf:
+            self.instances[name] = {}
 
     def _getTimenow(self):
         return envGlobal.epoch
@@ -37,14 +40,11 @@ class outputManager:
     def clearCache(self):
         '''清除缓存的函数,备用'''
         self.instances = dict(
-            filter(lambda x: x[0] >= self._getTimenow(),
-                   self.instances.items()))
-
-    def _check(self, name: str, time: int):
-        if time in self.instances:
-            if name in self.instances[time]:
-                return True
-        return False
+            map(
+                lambda x: (x[0],
+                           dict(
+                               filter(lambda y: y[0] >= self._getTimenow(), x[
+                                   1].items()))), self.instances.items()))
 
     def putout(self, data: TYPE_Putout):
         '''
@@ -61,19 +61,14 @@ class outputManager:
             for rtime in data[name]:
                 ins = data[name][rtime]
                 atime = self._getTimenow() + rtime
-                if atime not in self.instances:
-                    self.instances[atime] = {}
-                self.instances[atime][name] = ins
+                self.instances[name][atime] = deepcopy(ins)
 
-    def getOutput(self, name: str, time: int):
-        '''获得output根据名称和绝对时间'''
-        if self._check(name, time):
-            return self.instances[time][name]
-        else:
-            logger.error("A output not found,name:{name},time:{time}.",
-                         name=name,
-                         time=time)
-            return None
+    def getOutputData(self, name: str) -> MutableMapping[int, Any]:
+        '''获得output ins data'''
+        if name in self.instances:
+            return dict(
+                map(lambda x: (x[0], x[1].data), self.instances[name].items()))
+        return {}
 
     def makeRecords(self, recordList: Sequence[TYPE_Record_Declare]):
         '''记录'''
@@ -81,10 +76,10 @@ class outputManager:
             self.recordIns(record["catch"], record["method"], record["config"])
         logger.success("Sucessfully make records in outMr.")
 
-    def recordIns(self, name, methodName: str, config: MutableMapping[str,
-                                                                      Any]):
+    def recordIns(self, name: str, methodName: str,
+                  config: MutableMapping[str, Any]):
         '''记录instance传入ins.data'''
-        ins = self.instances[self._getTimenow()][name]
+        ins = self.instances[name][self._getTimenow()]
         from config.register import RECORDER_LIST
         method = RECORDER_LIST[methodName]
         method({

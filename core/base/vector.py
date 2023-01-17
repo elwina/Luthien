@@ -4,19 +4,19 @@ from osgeo import ogr
 import uuid
 
 from typing import Any, MutableMapping, MutableSequence
+from core.base.base import BaseBase
 
 from core.typing.ioType import TYPE_IO, TYPE_IO_Data
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
 from core.base.vectorType import TYPE_VECTOR_TYPE, VectorData
 
 
-
-
-class VectorBase:
+class VectorBase(BaseBase):
     data: VectorData
 
     def __init__(self, typeName: str):
         self.typeName = typeName
+        super().__init__()
 
     def init(self, type: TYPE_VECTOR_TYPE):
         self.data = VectorData()

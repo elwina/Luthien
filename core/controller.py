@@ -62,6 +62,7 @@ class Controller():
                 self.dealOut()
                 self.recordData()
 
+            self.iMr.updateInsTime()
             logger.success("Epoch {num} end.", num=epoch)
         logger.success("Run done.")
 

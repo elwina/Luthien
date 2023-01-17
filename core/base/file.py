@@ -3,17 +3,19 @@ import shutil
 import uuid
 
 from typing import Any, MutableMapping, Sequence
+from core.base.base import BaseBase
 
 from core.typing.ioType import TYPE_IO
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_TempEnv
 
 
-class FileBase:
+class FileBase(BaseBase):
     fname: str = ""
     data: MutableMapping[str, str] = {}
 
     def __init__(self, typeName: str):
         self.typeName = typeName
+        super().__init__()
 
     def init(self):
         fname = str(uuid.uuid4())

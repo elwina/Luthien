@@ -1,12 +1,13 @@
 import os
 from typing import Any, MutableMapping
 import uuid
+from core.base.base import BaseBase
 from core.base.rasterType import TYPE_RASTER_DATA
 from core.typing.ioType import TYPE_IO
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
 
 
-class RasterBase:
+class RasterBase(BaseBase):
     '''基础类型:Raster,处理栅格'''
     '''data类型详见TYPE_RASTER_DATA'''
     data: TYPE_RASTER_DATA
@@ -15,9 +16,7 @@ class RasterBase:
     # 初始化函数
     def __init__(self, typeName: str):
         self.typeName = typeName
-
-        def asd():
-            return "1"
+        super().__init__()
 
     def init(self):
         '''每个子类必须调用此函数'''

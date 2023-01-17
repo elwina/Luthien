@@ -1,11 +1,12 @@
 from typing import Any, MutableMapping
+from core.base.base import BaseBase
 from core.base.listConfType import TYPE_LIST_CONF_DATA, TYPE_LIST_CONF_IN_DATA
 from core.typing.ioType import TYPE_IO, TYPE_IO_Data
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
 from core.utils.confType import generateInitDict
 
 
-class ListConfBase:
+class ListConfBase(BaseBase):
     '''基础类型:ListConf,处理一一对应的配置关系'''
     '''
     TYPE_LIST_CONF_IN_DATA形如
@@ -27,6 +28,8 @@ class ListConfBase:
     # 初始化函数
     def __init__(self, typeName: str):
         self.typeName = typeName
+        super().__init__()
+
 
     def init(self, list: TYPE_LIST_CONF_IN_DATA):
         '''每个子类必须在__init__中调用此函数'''

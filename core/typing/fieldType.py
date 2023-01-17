@@ -1,8 +1,7 @@
-from typing import Any, MutableMapping, Protocol, List, Dict, Type, TypedDict
+from typing import Any, MutableMapping, Protocol, List, Dict, Type, TypeVar, TypedDict
 from core.typing.defineType import TYPE_Init_Declare
 from core.typing.ioType import TYPE_IO
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
-
 
 class TYPE_Field(Protocol):
     '''Field与Instance的类型定义'''
@@ -12,6 +11,9 @@ class TYPE_Field(Protocol):
 
     data: Any
     '''存储所有数据'''
+
+    from core.insTimeManager import InsTimeManager
+    iTM: InsTimeManager
 
     def __init__(self):
         pass
