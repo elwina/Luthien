@@ -5,7 +5,7 @@ class TYPE_Record_Declare(TypedDict):
     catch: str
     method: str
     config: MutableMapping
-    onlyrun: bool
+    time: str
 
 
 class TYPE_Recorder_TempEnv(TypedDict):

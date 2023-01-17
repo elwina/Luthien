@@ -76,7 +76,7 @@
     {
       // link declare
       "module": "lisflood",
-      "timeInter": 3, // 每一个timestep运行一次
+      "time": "once", // 每一个timestep运行一次
       "input": [
         // link input
         {
@@ -95,8 +95,7 @@
         {
           // output action declare
           "catch": "water",
-          "put": "water",
-          "timeInter": 1 //TODO 每n个timestep输出到instance一次
+          "put": "water"
         }
       ],
       "recordInside": [
@@ -104,7 +103,7 @@
           "catch": "files",
           "method": "file",
           "config": { "all": true },
-          "onlyrun": true
+          "time": "once"
         }
       ],
       "record": []
@@ -112,7 +111,7 @@
     {
       // link declare
       "module": "landslideEva",
-      "timeInter": 1, // 每一个timestep运行一次
+      "time": "always", // 每一个timestep运行一次
       "input": [
         // link input
         {
@@ -129,7 +128,7 @@
           "catch": "eva",
           "method": "raster",
           "config": {},
-          "onlyrun": false
+          "time": ""
         }
       ],
       "record": [
@@ -137,7 +136,8 @@
           // record declare
           "catch": "water",
           "method": "raster",
-          "config": {}
+          "config": {},
+          "time": ""
         }
       ]
     }

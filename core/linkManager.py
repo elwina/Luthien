@@ -7,6 +7,7 @@ from core.typing.outputType import TYPE_Output_Action_Declare
 from loguru import logger
 from core.configGlobal import configGlobal
 from core.envGlobal import envGlobal
+from core.utils.timeString import ifTimeRun
 
 
 class LinkManager:
@@ -14,7 +15,7 @@ class LinkManager:
 
     timestep: int
     timeUnit: str
-    allEpochs: int
+    allEpoches: int
 
     timenow: int
     nowLinkNum: int
@@ -32,22 +33,23 @@ class LinkManager:
         basicConfig = configGlobal.getConfig()["basic"]
         self.timestep = basicConfig["timestep"]
         self.timeUnit = basicConfig["timeUnit"]
-        self.allEpochs = basicConfig["timeEpoch"]
+        self.allEpoches = basicConfig["timeEpoch"]
         # 定义env config
         envGlobal.timestep = self.timestep
         envGlobal.timeUnit = self.timeUnit
+        envGlobal.allEpoches = self.allEpoches
 
         logger.info("Set time to 0.")
         self.timenow = 0
         self.nowLinkNum = 0
         self.updateEnv()
 
-        self.pbar = tqdm(total=self.allEpochs * self.linkDeclare.__len__(),
+        self.pbar = tqdm(total=self.allEpoches * self.linkDeclare.__len__(),
                          disable=True)
 
     def geneEpochs(self):
         '''总轮数生成器'''
-        for i in range(self.allEpochs):
+        for i in range(self.allEpoches):
             self.timenow = i
             self.updateEnv()
 
@@ -64,10 +66,8 @@ class LinkManager:
         '''返回第num个link是否需要跑'''
         if num is None: num = self.nowLinkNum
         time = self.timenow
-        if time % self.linkDeclare[num]["timeInter"] == 0:
-            return True
-        else:
-            return False
+        ts = self.linkDeclare[num]["time"]
+        return ifTimeRun(ts, time)
 
     def getInputDeclare(self, num: Optional[int] = None):
         time = self.timenow
@@ -81,22 +81,22 @@ class LinkManager:
         time = self.timenow
         if num is None: num = self.nowLinkNum
         actionList = self.linkDeclare[num]["output"]
-        return list(filter(lambda x: time % x["timeInter"] == 0, actionList))
+        return actionList
 
     def getRecordInside(self, num: Optional[int] = None):
         time = self.timenow
         if num is None: num = self.nowLinkNum
         recordInsideList = self.linkDeclare[num]["recordInside"]
         recordInsideList = list(
-            filter(
-                lambda x: not (x["onlyrun"] == True and self.ifLinkRun() ==
-                               False), recordInsideList))
+            filter(lambda x: ifTimeRun(x["time"]), recordInsideList))
         return recordInsideList
 
     def getRecordDeclare(self, num: Optional[int] = None):
         time = self.timenow
         if num is None: num = self.nowLinkNum
         recordList = self.linkDeclare[num]["record"]
+        recordList = list(
+            filter(lambda x: ifTimeRun(x["time"]), recordList))
         return recordList
 
     def updateEnv(self):

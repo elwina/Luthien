@@ -14,7 +14,7 @@ class TYPE_Input_Declare(TypedDict):
 
 class TYPE_Link_Declare(TypedDict):
     module: str
-    timeInter: int
+    time: str
     input: Sequence[TYPE_Input_Declare]
     output: Sequence[TYPE_Output_Action_Declare]
     recordInside: Sequence[TYPE_Record_Declare]

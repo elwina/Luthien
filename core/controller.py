@@ -41,6 +41,7 @@ class Controller():
         '''启动函数'''
         for epoch, links in self.lMr.geneEpochs():
             logger.info("Epoch {num} start.", num=epoch)
+            self.iMr.updateInsTime()
 
             for link in links:
                 logger.info("Now process module {module_name}",
@@ -54,15 +55,14 @@ class Controller():
                                 module_name=link["module"])
                     self.dataIn()
                     self.runOne()
+                    self.dealOut()
                 else:
                     # 不需要跑,直接处理数据
                     logger.info("No Run it")
 
                 # 处理数据
-                self.dealOut()
                 self.recordData()
 
-            self.iMr.updateInsTime()
             logger.success("Epoch {num} end.", num=epoch)
         logger.success("Run done.")
 

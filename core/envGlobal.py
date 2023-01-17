@@ -3,6 +3,7 @@ class _EnvGlobal:
 
     timestep: int
     timeUnit: str
+    allEpoches: int
 
     epoch: int
 
