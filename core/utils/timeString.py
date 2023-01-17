@@ -3,6 +3,7 @@ always
 once
 a0-1-3从0开始每1跑一次直到3
 a0-1从0开始每1跑一次
+b0-1-2-3-4列举跑的时间
 '''
 
 
@@ -31,6 +32,11 @@ def parseTime(ts: str, allEpoches=0) -> list:
             step = int(step)
             end = int(end)
         return list(range(start, end + 1, step))
+
+    if ts.startswith("b"):
+        tss = ts[1:]
+        arr=tss.split("-")
+        return list(map(int, arr))
 
     return list(range(allEpoches))
 

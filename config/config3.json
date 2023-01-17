@@ -4,7 +4,7 @@
     // basic config
     "timestep": 1,
     "timeUnit": "hour",
-    "timeEpoch": 1, // 运行几次
+    "timeEpoch": 3, // 运行几次
     "outputPath": "output/"
   },
   "instance": [
@@ -124,13 +124,10 @@
   ],
   "link": [
     {
-      // link declare
       "module": "lisflood",
-      "timeInter": 1, // 每一个timestep运行一次
+      "time": "once",
       "input": [
-        // link input
         {
-          // input declare
           "into": "dem",
           "use": "instance", // instance | define
           "instance": "dem" //fieldname
@@ -143,10 +140,8 @@
       ],
       "output": [
         {
-          // output action declare
           "catch": "water",
-          "put": "water",
-          "timeInter": 1 //TODO 每n个timestep输出到instance一次
+          "put": "water"
         }
       ],
       "recordInside": [
@@ -154,14 +149,21 @@
           "catch": "files",
           "method": "file",
           "config": { "all": true },
-          "onlyrun": true
+          "time": "once"
         }
       ],
-      "record": []
+      "record": [
+        {
+          "catch": "water",
+          "method": "raster",
+          "config": {},
+          "time": "always"
+        }
+      ]
     },
     {
       "module": "sumoSpeed",
-      "timeInter": 1,
+      "time": "once",
       "input": [
         {
           "into": "sumoNet",
@@ -185,14 +187,27 @@
         }
       ],
       "output": [
+        // {
+        //   "catch": "vssFile",
+        //   "put": "vssFile"
+        // }
+      ],
+      "recordInside": [
         {
-          "catch": "sumoSpeed",
-          "put": "sumoSpeed",
-          "timeInter": 1
+          "catch": "streetMeanWaterJson",
+          "method": "json",
+          "config": {},
+          "time": "once"
         }
       ],
-      "recordInside": [],
-      "record": []
+      "record": [
+        // {
+        //   "catch": "vssFile",
+        //   "method": "file",
+        //   "config": { "all": true },
+        //   "time": "once"
+        // }
+      ]
     }
   ]
 }

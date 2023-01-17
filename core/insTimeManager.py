@@ -44,3 +44,13 @@ class InsTimeManager():
         else:
             time = time - 1
         return ins
+
+    def getKeyframe(self):
+        time=envGlobal.epoch
+        return list(filter(lambda t:t>=time,self.keyframe.keys()))
+    
+    def geneKeyFrame(self):
+        for time in self.getKeyframe():
+            self.jumpTime(time)
+            yield time,self
+        self.checkTime()

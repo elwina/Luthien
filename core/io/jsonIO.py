@@ -1,3 +1,4 @@
+from typing import Any
 import commentjson as json
 
 from core.typing.ioType import TYPE_IO_Data
@@ -6,6 +7,7 @@ from loguru import logger
 '''
 config
     outListConf:True  #* 以listConf中的out输出
+    outJson:True #* 以jsonBase的形式输出
 
     inFile:True #* 以文件的形式输入配置
     inFilePath:"" #* 文件路径
@@ -27,10 +29,15 @@ def jsonIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
             oldData[name] = data[name]
         ioData["newData"] = oldData
         ins.data = oldData
+
+    if "outJson" in config and config["outJson"] == True:
+        ins.data = data
+        ioData["newData"]=data
+        
     return ioData
 
 
-def _inFromFile(filepath) -> dict:
+def _inFromFile(filepath) -> Any:
     logger.info("Read json file {path}", path=filepath)
     try:
         with open(filepath, encoding="utf-8") as fp:

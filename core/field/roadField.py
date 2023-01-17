@@ -9,3 +9,10 @@ class RoadField(VectorBase, TYPE_Field):
     def __init__(self):
         super().__init__("road")
         self.init("MultiLineString")
+
+    def getAStreet(self, name: str):
+        return self.getInsByOneProp("name", name)
+
+    def getAllStreets(self):
+        streets:list[str]=list(set(list(map(lambda aVec:aVec.properties.get("name","NONAME"),self.data.objects))))
+        return streets

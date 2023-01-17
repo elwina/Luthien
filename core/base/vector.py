@@ -1,9 +1,11 @@
+from copy import deepcopy
 import json
 import os
 from osgeo import ogr
 import uuid
 
 from typing import Any, MutableMapping, MutableSequence
+from typing_extensions import Self
 from core.base.base import BaseBase
 
 from core.typing.ioType import TYPE_IO, TYPE_IO_Data
@@ -60,6 +62,14 @@ class VectorBase(BaseBase):
         driver = ogr.GetDriverByName('GeoJSON')
         dataSource = driver.Open(self.getTempFile(), 0)
         return dataSource
+
+    def getInsByOneProp(self, propname, value) -> Self:
+        newIns = deepcopy(self)
+        newIns.data.objects = list(
+            filter(
+                lambda aVec: propname in aVec.properties.keys() and aVec.
+                properties.get(propname) == value, newIns.data.objects))
+        return newIns
 
 
 if __name__ == "__main__":

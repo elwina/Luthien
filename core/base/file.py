@@ -28,7 +28,6 @@ class FileBase(BaseBase):
                data: Any):
         config["fname"] = self.fname
         re = method({"config": config, "ins": self, "newData": data})
-        print(self.data)
 
     def record(self, method: TYPE_Recorder, config: MutableMapping[str, Any],
                tempEnv: TYPE_Recorder_TempEnv):
