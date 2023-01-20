@@ -46,7 +46,7 @@ class Controller():
             for link in links:
                 logger.info("Now process module {module_name}",
                             module_name=link["module"])
-                self.mo = self.modules[link["module"]]
+                self.mo = self.modules[link["module"]] 
 
                 # 检查是否需要跑
                 if self.lMr.ifLinkRun():

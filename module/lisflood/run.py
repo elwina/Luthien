@@ -47,7 +47,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
             "hours"
             "\n"
         ]
-        strList.append("0\t" + str(rainBase) + "\n")
+        strList.append(str(rainBase) + "\t0" + "\n")
         for hourM1 in range(totalHours):
             hour = hourM1 + 1
             rainIn = rainBase + hour * rainAddPerhour
@@ -74,7 +74,8 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         "saveint": config.getOne("saveInt"),
         "fpfric": config.getOne("fpfric"),
         "rainfall": "auto.rain",
-        "adaptoff": ""
+        "adaptoff": "",
+        "latlong": "on"
     }
     parFilename = os.path.join(tempDir, "auto.par")
     dict2Txt(parDict, parFilename)
@@ -97,11 +98,12 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         water = WaterField()
         water.init()
         water.define(txt2RasterIO, {
-            "inFile": True,
+            "inDriver": "AAIGrid",
             "inFilePath": outWaterFileName
         }, None)
         # 从meter转换为mm
         water.timesANum(1000)
+        water.data.xllCorner, water.data.yllCorner, water.data.cellSize = dem.data.xllCorner, dem.data.yllCorner, dem.data.cellSize
         putout({"water": {i: water}})
         pass
 

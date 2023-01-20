@@ -13,7 +13,7 @@ def arrayRaster2Txt(dataset, outputRasterFile):
                              xllCorner=xllcorner,
                              yllCorner=yllcorner,
                              cellSize=cellsize,
-                             nullData=band.GetNoDataValueAsInt64(),
+                             nullData=band.GetNoDataValue(),
                              radata=reArr)
     from core.tools.raster2Txt import raster2Txt
     raster2Txt(wdata, outputRasterFile)

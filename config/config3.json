@@ -16,8 +16,8 @@
         "define": {
           "method": "txt2Raster",
           "config": {
-            "inFile": true,
-            "inFilePath": "data/4326test.txt"
+            "driver": "GTiff",
+            "inFilePath": "data/4336sq.tif"
           },
           "data": null
         }
@@ -135,6 +135,21 @@
     }
   ],
   "link": [
+    // {
+    //   "module": "lisflood",
+    //   "time": "never",
+    //   "input": [],
+    //   "output": [],
+    //   "recordInside": [],
+    //   "record": [
+    //     {
+    //       "catch": "dem",
+    //       "method": "raster",
+    //       "config": {},
+    //       "time": "once"
+    //     }
+    //   ]
+    // },
     {
       "module": "lisflood",
       "time": "once",

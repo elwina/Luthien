@@ -126,7 +126,7 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
             edgeRData = edgeRaster.data
             waterInEdge = water.maskData(edgeRData)
             if waterInEdge is not None:
-                edgeWater[time][edgeid] = listMean(waterInEdge)
+                edgeWater[time][edgeid] = listMean(waterInEdge) / 10  # mm2cm
             else:
                 edgeWater[time][edgeid] = -1
 

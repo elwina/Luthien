@@ -11,7 +11,6 @@ class RasterBase(BaseBase):
     '''基础类型:Raster,处理栅格'''
     '''data类型详见TYPE_RASTER_DATA'''
     data: TYPE_RASTER_DATA
-    filepath: str
 
     # 初始化函数
     def __init__(self, typeName: str):
@@ -40,7 +39,7 @@ class RasterBase(BaseBase):
         method({"config": config, "ins": self, "tempEnv": tempEnv})
 
     def defineFromAsciiFile(self, file: str):
-        config = {"outRasterBase": True, "inFile": True, "inFilePath": file}
+        config = {"outRasterBase": True, "inDriver": "AAIGrid", "inFilePath": file}
         from core.io.txt2RasterIO import txt2RasterIO
         txt2RasterIO({"config": config, "ins": self, "newData": {}})
 

@@ -13,6 +13,9 @@ MODULE_INSTANCE_INF: TYPE_Information = {
     },
     "mann": {
         "required": False
+    },
+    "addFiles": {
+        "required": False
     }
 }
 
