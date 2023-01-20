@@ -4,8 +4,8 @@ from typing_extensions import Required, TypedDict
 from core.typing.fieldType import TYPE_Instance
 
 
-class _TYPE_Indata_Declare(TypedDict, total=False):
-    method: Required[Literal["in"]]
+class _TYPE_Indata_Declare(TypedDict):
+    method: Literal["in"]
     instance: TYPE_Instance
 
 

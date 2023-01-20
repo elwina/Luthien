@@ -50,17 +50,18 @@ class RasterBase(BaseBase):
         raster2Txt(self.data, filepath)
         return filepath
 
-    def maskData(self, maskRaster: TYPE_RASTER_DATA)->Sequence[float | int]|None:
+    def maskData(self,
+                 maskRaster: TYPE_RASTER_DATA) -> Sequence[float | int] | None:
         '''掩膜,要求一样多的格子'''
-        re=[]
-        data=self.data
-        novalue=data.nullData
-        rdata=data.radata
+        re = []
+        data = self.data
+        novalue = data.nullData
+        rdata = data.radata
 
-        maskNovalue=maskRaster.nullData
-        maskData=maskRaster.radata
+        maskNovalue = maskRaster.nullData
+        maskData = maskRaster.radata
 
-        if data.row!=maskRaster.row or data.col!=maskRaster.col:
+        if data.row != maskRaster.row or data.col != maskRaster.col:
             return None
 
         for i in range(data.row):
@@ -69,3 +70,14 @@ class RasterBase(BaseBase):
                     re.append(rdata[i][j])
 
         return re
+
+    def timesANum(self, num: float | int):
+        '''乘以一个数'''
+        data = self.data
+        novalue = data.nullData
+        rdata = data.radata
+
+        for i in range(data.row):
+            for j in range(data.col):
+                if rdata[i][j] != novalue:
+                    rdata[i][j] *= num

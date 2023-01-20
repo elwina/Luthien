@@ -1,6 +1,6 @@
 from copy import deepcopy
 
-from typing import Any, Callable, MutableMapping, Sequence, cast
+from typing import Any, Callable, MutableMapping, MutableSequence, Sequence, cast
 from core.base.listConf import ListConfBase
 from core.base.raster import RasterBase
 from core.typing.fieldType import TYPE_Instance
@@ -26,8 +26,8 @@ def landslideEvaRun(putout: Callable[[TYPE_Putout], None],
     putout({"eva": {0: evaIns}})
 
 
-def _judge(radata: Sequence[Sequence[float]],
-           threshold: float) -> Sequence[Sequence[int]]:
+def _judge(radata: Sequence[MutableSequence[float | int]],
+           threshold: float) -> Sequence[MutableSequence[float | int]]:
     return list(
         map(lambda row: list(map(lambda x: 1
                                  if x >= threshold else 0, row)), radata))

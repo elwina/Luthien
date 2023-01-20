@@ -21,4 +21,4 @@ MODULE_INSTANCE_INF: TYPE_Information = {
     }
 }
 
-MODULE_OUTPUT_INSTANCE_INF: TYPE_Output_Information = {"xml": {},"road":{},"streetMeanWaterJson":{}}
+MODULE_OUTPUT_INSTANCE_INF: TYPE_Output_Information = {"xml": {},"road":{},"streetMeanWaterJson":{},"timeRoadSpeedJson":{}}

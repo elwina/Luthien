@@ -16,3 +16,8 @@ class RoadField(VectorBase, TYPE_Field):
     def getAllStreets(self):
         streets:list[str]=list(set(list(map(lambda aVec:aVec.properties.get("name","NONAME"),self.data.objects))))
         return streets
+
+    def updateProp(self, name: str, prop: str, value):
+        for aVec in self.data.objects:
+            if aVec.properties.get("name") == name:
+                aVec.properties[prop] = value

@@ -1,6 +1,6 @@
 {
-    "rainFromConf": 1,
-    "rainBase": 0,
-    "rainAddPerhour": 500,
-    "recordNum": 3
+  "rainFromConf": 1,
+  "rainBase": 0,
+  "rainAddPerhour": 3,
+  "recordNum": 3
 }

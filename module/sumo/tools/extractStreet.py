@@ -33,11 +33,11 @@ def extractStreet2MultiLineString(filename: str):
     '''
     从sumo生成的xml文件中提取steet信息
     '''
-    origin=sys.path.copy()
+    origin = sys.path.copy()
     if 'SUMO_HOME' in os.environ:
         sys.path.append(os.path.join(os.environ['SUMO_HOME'], 'tools'))
     import sumolib
-    sys.path=origin
+    sys.path = origin
 
     net = sumolib.net.readNet(filename)
     convert = net.convertXY2LonLat
@@ -75,39 +75,46 @@ def extractStreet2MultiLineString(filename: str):
             laneid = cast(str, lane.attrib.get('id'))
             newObj[name].properties['lanes'].append(laneid)
 
-        fromjuction = edge.attrib.get('from')
-        tojuction = edge.attrib.get('to')
+        speed = net.getEdge(edgeid).getSpeed()
+        print(speed)
+        newObj[name].properties['speed'] = speed
+        # # 手工查询shape
+        # fromjuction = edge.attrib.get('from')
+        # tojuction = edge.attrib.get('to')
 
-        frompos = []
-        topos = []
+        # frompos = []
+        # topos = []
 
-        if root.find(f'junction[@id="{fromjuction}"]') is not None:
-            j = cast(ET.Element, root.find(f'junction[@id="{fromjuction}"]'))
-            x = j.attrib.get('x')
-            y = j.attrib.get('y')
-            if x is not None and y is not None:
-                frompos = [(float(x), float(y))]
+        # if root.find(f'junction[@id="{fromjuction}"]') is not None:
+        #     j = cast(ET.Element, root.find(f'junction[@id="{fromjuction}"]'))
+        #     x = j.attrib.get('x')
+        #     y = j.attrib.get('y')
+        #     if x is not None and y is not None:
+        #         frompos = [(float(x), float(y))]
 
-        if root.find(f'junction[@id="{tojuction}"]') is not None:
-            j = cast(ET.Element, root.find(f'junction[@id="{tojuction}"]'))
-            x = j.attrib.get('x')
-            y = j.attrib.get('y')
-            if x is not None and y is not None:
-                topos = [(float(x), float(y))]
+        # if root.find(f'junction[@id="{tojuction}"]') is not None:
+        #     j = cast(ET.Element, root.find(f'junction[@id="{tojuction}"]'))
+        #     x = j.attrib.get('x')
+        #     y = j.attrib.get('y')
+        #     if x is not None and y is not None:
+        #         topos = [(float(x), float(y))]
 
-        shapepos = []
-        shape = edge.attrib.get('shape')
-        if shape is not None:
-            for pos in shape.split(' '):
-                x = pos.split(',')[0]
-                y = pos.split(',')[1]
-                if x is not None and y is not None:
-                    shapepos.append((float(x), float(y)))
-        coo: MutableSequence[tuple[float, float]] = frompos + shapepos + topos
-        coo = [convert(x, y) for x, y in coo]
+        # shapepos = []
+        # shape = edge.attrib.get('shape')
+        # if shape is not None:
+        #     for pos in shape.split(' '):
+        #         x = pos.split(',')[0]
+        #         y = pos.split(',')[1]
+        #         if x is not None and y is not None:
+        #             shapepos.append((float(x), float(y)))
+        # coo: MutableSequence[tuple[float, float]] = frompos + shapepos + topos
+        # coo = [convert(x, y) for x, y in coo]
+
+        newcoo = net.getEdge(edgeid).getShape(includeJunctions=True)
+        newcoo = [convert(x, y) for x, y in newcoo]
 
         cast(MutableSequence[MutableSequence[tuple[float, float]]],
-             newObj[name].coordinates).append(coo)
+             newObj[name].coordinates).append(newcoo)
 
     data.objects = list(newObj.values())
     road.data = data

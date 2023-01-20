@@ -198,6 +198,12 @@
           "method": "json",
           "config": {},
           "time": "once"
+        },
+        {
+          "catch": "timeRoadSpeedJson",
+          "method": "json",
+          "config": {},
+          "time": "once"
         }
       ],
       "record": [
@@ -207,6 +213,12 @@
         //   "config": { "all": true },
         //   "time": "once"
         // }
+        {
+          "catch": "road",
+          "method": "vector",
+          "config": {},
+          "time": "once"
+        }
       ]
     }
   ]

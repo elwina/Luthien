@@ -100,6 +100,8 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
             "inFile": True,
             "inFilePath": outWaterFileName
         }, None)
+        # 从meter转换为mm
+        water.timesANum(1000)
         putout({"water": {i: water}})
         pass
 

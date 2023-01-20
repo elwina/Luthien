@@ -52,5 +52,5 @@ class InsTimeManager():
     def geneKeyFrame(self):
         for time in self.getKeyframe():
             self.jumpTime(time)
-            yield time,self
+            yield time,self.ins
         self.checkTime()

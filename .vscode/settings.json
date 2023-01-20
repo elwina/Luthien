@@ -1,5 +1,8 @@
 {
   "python.formatting.provider": "yapf",
   "python.analysis.typeCheckingMode": "basic",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "python.analysis.diagnosticMode": "workspace",
+  "python.analysis.useLibraryCodeForTypes": false,
+  "python.globalModuleInstallation": true
 }

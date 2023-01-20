@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Any, MutableMapping, Sequence, TypedDict
+from typing import Any, MutableMapping, MutableSequence, Sequence, TypedDict
 
 
 @dataclass
@@ -10,4 +10,4 @@ class TYPE_RASTER_DATA:
     nullData: float = 0
     xllCorner: float = 0
     yllCorner: float = 0
-    radata: Sequence[Sequence[float | int]] = field(default_factory=list)
+    radata: Sequence[MutableSequence[float | int]] = field(default_factory=list)

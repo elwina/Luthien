@@ -55,7 +55,7 @@ class inputManager:
             logger.error("No enough required instances:{lack}",lack=",".join(lackInstances))
         
 
-    def requiredInstancesName(self):
+    def requiredInstancesName(self)->list[str]:
         '''返回required instances名字的列表'''
         return list(map(lambda x:x,filter(lambda x:self.information[x]["required"]==True,self.information)))
 

@@ -21,11 +21,13 @@ IO_LIST: TYPE_IO_LIST = {
 from core.recorder.rasterRecorder import rasterRecorder
 from core.recorder.fileRecoder import fileRecorder
 from core.recorder.jsonRecoder import jsonRecorder
+from core.recorder.vectorRecorder import vectorRecorder
 
 RECORDER_LIST: TYPE_RECORDER_LIST = {
     "raster": rasterRecorder,
     "file": fileRecorder,
-    "json": jsonRecorder
+    "json": jsonRecorder,
+    "vector": vectorRecorder
 }
 
 from module.lisflood.main import Module as lisflood

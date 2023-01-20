@@ -48,7 +48,7 @@ class VectorBase(BaseBase):
                 "coordinates": obj.coordinates
             }
             s["features"].append(aFeat)
-        re = json.dumps(s)
+        re = json.dumps(s,ensure_ascii=False)
         return re
 
     def getTempFile(self):
