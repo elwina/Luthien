@@ -90,14 +90,15 @@ class InstanceManager():
         '''根据output action操作instance'''
         for action in actionList:
             catch=action["catch"]
+            put=action["put"]
             time=envGlobal.epoch
             catchIns=outMr.getOutputData(catch)
             if catchIns is not None:
-                self.instances[catch]["instance"].iTM.store(catchIns)
+                self.instances[put]["instance"].iTM.store(catchIns)
                 logger.success("Output {out} is put out into instance {ins}.",out=catch,ins=action["put"])
             else:
                 logger.error("Catch instance not put out!")
-            self.instances[catch]["instance"].iTM.checkTime()
+            self.instances[put]["instance"].iTM.checkTime()
 
     def updateInsTime(self):
         '''更新instance时间'''

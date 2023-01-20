@@ -3,6 +3,8 @@ import sys
 from typing import MutableMapping, MutableSequence, Sequence, cast
 import xml.etree.ElementTree as ET
 
+from core.base.vectorType import AVector
+
 TYPE_Street_Dict = MutableMapping[str, list[str]]
 
 
@@ -76,7 +78,6 @@ def extractStreet2MultiLineString(filename: str):
             newObj[name].properties['lanes'].append(laneid)
 
         speed = net.getEdge(edgeid).getSpeed()
-        print(speed)
         newObj[name].properties['speed'] = speed
         # # 手工查询shape
         # fromjuction = edge.attrib.get('from')
@@ -121,7 +122,48 @@ def extractStreet2MultiLineString(filename: str):
     return road
 
 
+def extractEdge2MultiLineString(filename: str):
+    origin = sys.path.copy()
+    if 'SUMO_HOME' in os.environ:
+        sys.path.append(os.path.join(os.environ['SUMO_HOME'], 'tools'))
+    import sumolib
+    sys.path = origin
+
+    net = sumolib.net.readNet(filename)
+    convert = net.convertXY2LonLat
+
+    from core.field.roadField import RoadField
+    from core.base.vectorType import VectorData, AVector
+    road = RoadField()
+    data = VectorData()
+    data.type = "MultiLineString"
+    data.objects = []
+    newObj: MutableMapping[str, AVector] = {}
+
+    edges = net.getEdges(withInternal=False)
+    for edge in edges:
+        id = edge.getID()
+        newObj[id] = AVector()
+        newObj[id].properties = {'id': id, 'lanes': []}
+        lanes = edge.getLanes()
+        lanes = list(map(lambda l: l.getID(), lanes))
+        newObj[id].properties['lanes'] = lanes
+
+        speed = edge.getSpeed()
+        newObj[id].properties['speed'] = speed
+
+        newcoo = net.getEdge(id).getShape(includeJunctions=True)
+        newcoo = [convert(x, y) for x, y in newcoo]
+        newObj[id].coordinates = []
+        cast(MutableSequence[MutableSequence[tuple[float, float]]],
+             newObj[id].coordinates).append(newcoo)
+
+    data.objects = list(newObj.values())
+    road.data = data
+    return road
+
+
 if __name__ == '__main__':
     filename = 'data/test165.net.xml'
-    road = extractStreet2MultiLineString(filename)
-    print(road.getTempFile())
+    road = extractEdge2MultiLineString(filename)
+    print(road.toGeoJSONString())

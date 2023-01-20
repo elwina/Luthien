@@ -8,6 +8,8 @@ from core.typing.ioType import TYPE_IO_Data
 '''
 config:
     filepath: str
+
+    outEdge: bool
 '''
 
 
@@ -17,8 +19,13 @@ def sumoNet2RoadIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
     config = ioData["config"]
 
     filepath = config["filepath"]
-    from module.sumo.tools.extractStreet import extractStreet2MultiLineString
-    newins = extractStreet2MultiLineString(filepath)
+    if "outEdge" in config and config["outEdge"] == True:
+        from module.sumo.tools.extractStreet import extractEdge2MultiLineString
+        newins = extractEdge2MultiLineString(filepath)
+    else:
+        from module.sumo.tools.extractStreet import extractStreet2MultiLineString
+        newins = extractStreet2MultiLineString(filepath)
+
     ins.data = deepcopy(newins.data)
     ioData["newData"] = deepcopy(ins.data)
     return ioData

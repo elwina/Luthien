@@ -4,7 +4,7 @@ import os
 from osgeo import ogr
 import uuid
 
-from typing import Any, MutableMapping, MutableSequence
+from typing import Any, MutableMapping, MutableSequence, Sequence
 from typing_extensions import Self
 from core.base.base import BaseBase
 
@@ -63,13 +63,16 @@ class VectorBase(BaseBase):
         dataSource = driver.Open(self.getTempFile(), 0)
         return dataSource
 
-    def getInsByOneProp(self, propname, value) -> Self:
+    def getInsByOneProp(self, propname:str, value) -> Self:
         newIns = deepcopy(self)
         newIns.data.objects = list(
             filter(
                 lambda aVec: propname in aVec.properties.keys() and aVec.
                 properties.get(propname) == value, newIns.data.objects))
         return newIns
+
+    def getAllAProp(self,propname:str,default="UNDEFINED")->Sequence[str]:
+        return list(set(list(map(lambda aVec:aVec.properties.get(propname,default),self.data.objects))))
 
 
 if __name__ == "__main__":

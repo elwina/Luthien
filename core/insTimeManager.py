@@ -1,14 +1,18 @@
 from asyncio import Protocol
 from copy import deepcopy
-from typing import Any, Generic, MutableMapping,TypeVar
+from typing import Any, Generic, MutableMapping, TypeVar
 
 from core.envGlobal import envGlobal
 
+
 class _TYPE_Field_Local(Protocol):
-    data:Any
+    data: Any
+
 
 class InsTimeManager():
     ins: _TYPE_Field_Local
+
+    # 存放的是data
     keyframe: MutableMapping[int, Any]
 
     def __init__(self, ins: _TYPE_Field_Local):
@@ -46,11 +50,11 @@ class InsTimeManager():
         return ins
 
     def getKeyframe(self):
-        time=envGlobal.epoch
-        return list(filter(lambda t:t>=time,self.keyframe.keys()))
-    
+        time = envGlobal.epoch
+        return list(filter(lambda t: t >= time, self.keyframe.keys()))
+
     def geneKeyFrame(self):
         for time in self.getKeyframe():
             self.jumpTime(time)
-            yield time,self.ins
+            yield time, self.ins
         self.checkTime()

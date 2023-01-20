@@ -1,3 +1,4 @@
+from copy import deepcopy
 import math
 import os
 from pathlib import Path
@@ -10,12 +11,15 @@ import uuid
 from core.base.listConf import ListConfBase
 from core.base.raster import RasterBase
 from core.base.json import JsonBase
+from core.base.vectorType import VectorData
+from core.envGlobal import _EnvGlobal
 from core.typing.fieldType import TYPE_Instance
 from core.typing.outputType import TYPE_Putout
 
 from module.sumoSpeed.information import MODULE_ROOT
 from core.tools.vector2raster import vector2raster
 
+from core.envGlobal import envGlobal as eGl
 from loguru import logger
 
 
@@ -30,6 +34,7 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
     from core.field.waterField import WaterField
     sumoSpeedUni = cast(UniField, instances["sumoSpeedUni"])
     road = cast(RoadField, instances["road"])
+    sroad = cast(RoadField, instances["edgeRoad"])
     water = cast(WaterField, instances["water"])
 
     # 新建temp文件夹
@@ -101,14 +106,62 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
     timeRoadSpeedJson.data = timeRoadSpeed
     putout({"timeRoadSpeedJson": {0: timeRoadSpeedJson}})
 
+    # 按照id
+    allEdgeid = sroad.getAllAProp("id")
+    edgeWater: MutableMapping[int, MutableMapping[str, Any]] = {}
+    for time, ins in water.iTM.geneKeyFrame():
+        edgeWater[time] = {}
+        for edgeid in allEdgeid:
+            edgePath = os.path.join(tempDir, "autoedge%s.geojson" % edgeid)
+            shutil.copy(
+                sroad.getInsByOneProp("id", edgeid).getTempFile(), edgePath)
+
+            outRasterPath = os.path.join(tempDir,
+                                         "autoedgeinraster%s.ascii" % edgeid)
+            vector2raster(edgePath, rasterPath, outRasterPath)
+            edgeRaster = RasterBase("edgeRoad")
+            edgeRaster.init()
+            edgeRaster.defineFromAsciiFile(outRasterPath)
+
+            edgeRData = edgeRaster.data
+            waterInEdge = water.maskData(edgeRData)
+            if waterInEdge is not None:
+                edgeWater[time][edgeid] = listMean(waterInEdge)
+            else:
+                edgeWater[time][edgeid] = -1
+
+    edgeSpeedJson = JsonBase("edgeSpeed")
+    edgeSpeedJson.init()
+    edgeSpeedJson.data = edgeWater
+    putout({"edgeSpeedJson": {0: edgeSpeedJson}})
+
+    # 更新sroad
+    newSroad = deepcopy(sroad)
+    for time in edgeWater:
+        data: VectorData = deepcopy(newSroad.iTM.getTimeIns(time).data)
+        for obj in data.objects:
+            edgeid = obj.properties["id"]
+            depth = edgeWater[time][edgeid]
+            if depth != -1:
+                v0 = obj.properties.get("speed", 30)
+                if v0 == 0: v0 = 30
+                speed, change = newSpeed(v0, depth)
+                obj.properties["speed"] = speed
+                obj.properties["change"] = change
+        newSroad.data = data
+        putout({"sroad": {time - eGl.epoch: newSroad}})
+
 
 def newSpeed(v0: float, depth: float):
     x = depth
     a = 7.5
     b = 3
+    v0 = v0 * 0.1
     v = 0.5 * v0 * math.tanh((-x + a) / b) + 0.5 * v0
     return v, (v - v0) / v0
 
 
 def listMean(list: Sequence):
+    if len(list) == 0:
+        return 0
     return sum(list) / len(list)

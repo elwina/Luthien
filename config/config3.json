@@ -55,6 +55,18 @@
       }
     },
     {
+      "name": "edgeRoad",
+      "field": "road",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "sumoNet2Road",
+          "config": { "filepath": "data/test165.net.xml", "outEdge": true },
+          "data": {}
+        }
+      }
+    },
+    {
       "name": "sumoRoute",
       "field": "tempFile",
       "init": {
@@ -176,6 +188,11 @@
           "instance": "road"
         },
         {
+          "into": "edgeRoad",
+          "use": "instance",
+          "instance": "edgeRoad"
+        },
+        {
           "into": "sumoSpeedUni",
           "use": "instance",
           "instance": "sumoSpeedUni"
@@ -187,6 +204,10 @@
         }
       ],
       "output": [
+        {
+          "catch": "sroad",
+          "put": "edgeRoad"
+        }
         // {
         //   "catch": "vssFile",
         //   "put": "vssFile"
@@ -204,6 +225,12 @@
           "method": "json",
           "config": {},
           "time": "once"
+        },
+        {
+          "catch": "edgeSpeedJson",
+          "method": "json",
+          "config": {},
+          "time": "once"
         }
       ],
       "record": [
@@ -218,6 +245,12 @@
           "method": "vector",
           "config": {},
           "time": "once"
+        },
+        {
+          "catch": "edgeRoad",
+          "method": "vector",
+          "config": {},
+          "time": "always"
         }
       ]
     }

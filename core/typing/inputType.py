@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from typing import Literal, MutableMapping, Optional
 from typing_extensions import Required, TypedDict
 
