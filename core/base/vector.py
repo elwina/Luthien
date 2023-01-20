@@ -48,7 +48,7 @@ class VectorBase(BaseBase):
                 "coordinates": obj.coordinates
             }
             s["features"].append(aFeat)
-        re = json.dumps(s,ensure_ascii=False)
+        re = json.dumps(s, ensure_ascii=False)
         return re
 
     def getTempFile(self):
@@ -63,7 +63,7 @@ class VectorBase(BaseBase):
         dataSource = driver.Open(self.getTempFile(), 0)
         return dataSource
 
-    def getInsByOneProp(self, propname:str, value) -> Self:
+    def getInsByOneProp(self, propname: str, value) -> Self:
         newIns = deepcopy(self)
         newIns.data.objects = list(
             filter(
@@ -71,15 +71,19 @@ class VectorBase(BaseBase):
                 properties.get(propname) == value, newIns.data.objects))
         return newIns
 
-    def getAllAProp(self,propname:str,default="UNDEFINED")->Sequence[str]:
-        return list(set(list(map(lambda aVec:aVec.properties.get(propname,default),self.data.objects))))
+    def getAllAProp(self, propname: str, default="UNDEFINED") -> Sequence[str]:
+        return list(
+            set(
+                list(
+                    map(lambda aVec: aVec.properties.get(propname, default),
+                        self.data.objects))))
 
 
 if __name__ == "__main__":
     v = VectorBase("Vector")
     v.init("MultiLineString")
-    from core.io.geojson2VectorIO import geojson2VectorIO
-    v.define(geojson2VectorIO, {
+    from core.io.geojsonVectorIO import geojsonVectorIO
+    v.define(geojsonVectorIO, {
         "outVectorBase": True,
         "inFile": True,
         "inFilePath": "data\\a.geojson"

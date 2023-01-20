@@ -4,13 +4,12 @@ from core.typing.ioType import TYPE_IO_Data
 config
     outVectorBase: bool
 
-    inFile: bool
     inFilePath: str
     inGeoType: str
 '''
 
 
-def geojson2VectorIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
+def geojsonVectorIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
     from core.base.vector import VectorBase
     config = ioData["config"]
     intype = config["inGeoType"]
@@ -19,7 +18,7 @@ def geojson2VectorIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
     from core.base.vectorType import VectorData
     data = VectorData()
 
-    if "inFile" in config and config["inFile"] == True:
+    if "inFilePath" in config and config["inFilePath"] != "":
         filepath = config["inFilePath"]
         from osgeo import ogr
         driver = ogr.GetDriverByName('GeoJSON')

@@ -3,18 +3,18 @@ from core.typing.moduleType import TYPE_MODULE_LIST
 from core.typing.fieldType import TYPE_FIELD_LIST
 from core.typing.recordType import TYPE_RECORDER_LIST
 
-from core.io.txt2RasterIO import txt2RasterIO
+from core.io.rasterIO import rasterIO
 from core.io.jsonIO import jsonIO
 from core.io.fileListIO import fileListIO
-from core.io.geojson2VectorIO import geojson2VectorIO
+from core.io.geojsonVectorIO import geojsonVectorIO
 
 from module.sumo.io.sumoNet2RoadIO import sumoNet2RoadIO
 
 IO_LIST: TYPE_IO_LIST = {
     "json": jsonIO,
-    "txt2Raster": txt2RasterIO,
+    "txt2Raster": rasterIO,
     "fileList": fileListIO,
-    "geojson2Vector": geojson2VectorIO,
+    "geojson2Vector": geojsonVectorIO,
     "sumoNet2Road": sumoNet2RoadIO
 }
 

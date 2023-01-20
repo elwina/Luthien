@@ -12,7 +12,7 @@ from core.typing.outputType import TYPE_Putout
 
 from module.lisflood.information import MODULE_ROOT
 
-from core.io.txt2RasterIO import txt2RasterIO
+from core.io.rasterIO import rasterIO
 from core.tools.dict2Txt import dict2Txt
 from core.tools.raster2Txt import raster2Txt
 
@@ -97,7 +97,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
                                         "res-%s.wd" % nameNum)
         water = WaterField()
         water.init()
-        water.define(txt2RasterIO, {
+        water.define(rasterIO, {
             "inDriver": "AAIGrid",
             "inFilePath": outWaterFileName
         }, None)

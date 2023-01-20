@@ -39,9 +39,13 @@ class RasterBase(BaseBase):
         method({"config": config, "ins": self, "tempEnv": tempEnv})
 
     def defineFromAsciiFile(self, file: str):
-        config = {"outRasterBase": True, "inDriver": "AAIGrid", "inFilePath": file}
-        from core.io.txt2RasterIO import txt2RasterIO
-        txt2RasterIO({"config": config, "ins": self, "newData": {}})
+        config = {
+            "outRasterBase": True,
+            "inDriver": "AAIGrid",
+            "inFilePath": file
+        }
+        from core.io.rasterIO import rasterIO
+        rasterIO({"config": config, "ins": self, "newData": {}})
 
     def getTempFile(self):
         filepath = os.path.join("temp", str(uuid.uuid4()) + ".txt")

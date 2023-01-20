@@ -18,7 +18,7 @@ config
 '''
 
 
-def txt2RasterIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
+def rasterIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
     from core.base.raster import RasterBase
     config = ioData["config"]
     ins: RasterBase = ioData["ins"]
