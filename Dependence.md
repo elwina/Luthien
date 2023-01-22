@@ -8,6 +8,7 @@
 - conda install rasterio
 - conda install gdal
 - pyproj
+- bottle
 
 # cli support
 - sumo 

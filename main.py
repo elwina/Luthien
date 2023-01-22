@@ -1,6 +1,7 @@
 import getopt as getopt
 import sys
 from core.main import start
+from web.web import serverRun
 
 
 def runDefault():
@@ -16,4 +17,7 @@ else:
     match command:
         case "run":
             start()
+        case "web":
+            serverRun()
+        
                     

@@ -4,12 +4,17 @@ from core.mod.inputManager import inputManager
 from core.mod.outputManager import outputManager
 
 from core.typing.fieldType import TYPE_Field
-from core.typing.inputType import TYPE_Indata
+from core.typing.inputType import TYPE_Indata, TYPE_Information
+from core.typing.outputType import TYPE_Output_Information
 
 
 class TYPE_Module(Protocol):
     inMr: inputManager
     outMr: outputManager
+
+    moduleName: str
+    inInf: TYPE_Information
+    outInf: TYPE_Output_Information
 
     def prepareData(self, indata: TYPE_Indata) -> None:
         pass

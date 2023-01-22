@@ -3,6 +3,6 @@
   "python.analysis.typeCheckingMode": "basic",
   "editor.formatOnSave": true,
   "python.analysis.diagnosticMode": "workspace",
-  "python.analysis.useLibraryCodeForTypes": false,
+  "python.analysis.useLibraryCodeForTypes": true,
   "python.globalModuleInstallation": true
 }
