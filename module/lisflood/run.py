@@ -74,8 +74,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         "saveint": config.getOne("saveInt"),
         "fpfric": config.getOne("fpfric"),
         "rainfall": "auto.rain",
-        "adaptoff": "",
-        "latlong": "on"
+        "adaptoff": ""
     }
     parFilename = os.path.join(tempDir, "auto.par")
     dict2Txt(parDict, parFilename)

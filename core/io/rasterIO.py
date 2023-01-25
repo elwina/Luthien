@@ -108,7 +108,10 @@ def readAscii(filepath:str):
                 case "cellsize":
                     data.cellSize=float(con[1])
                 case "NODATA_value":
-                    data.nullData=float(con[1])
+                    try:
+                        data.nullData=float(con[1])
+                    except:
+                        data.nullData = -9999
                 case "xllcorner":
                     data.xllCorner=float(con[1])
                 case "yllcorner":

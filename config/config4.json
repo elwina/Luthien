@@ -1,0 +1,213 @@
+{
+  "version": 1,
+  "basic": {
+    // basic config
+    "timestep": 1,
+    "timeUnit": "hour",
+    "timeEpoch": 3, // 运行几次
+    "outputPath": "output/"
+  },
+  "instance": [
+    {
+      "name": "dem",
+      "field": "dem",
+      "init": {
+        "use": "define", // define | no | copy
+        "define": {
+          "method": "txt2Raster",
+          "config": {
+            "inDriver": "GTiff",
+            "inFilePath": "data/s1/biga.tif"
+          },
+          "data": null
+        }
+      }
+    },
+    {
+      "name": "lisFiles",
+      "field": "tempFile",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": {
+            "bci": "data/s1/bci.bci"
+          }
+        }
+      }
+    },
+    {
+      "name": "water",
+      "field": "rain",
+      "init": {
+        "use": "no"
+      }
+    },
+    {
+      "name": "sumoNetwork",
+      "field": "sumoNet",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": { "sumoNet": "data/test165.net.xml" }
+        }
+      }
+    },
+    {
+      "name": "road",
+      "field": "road",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "sumoNet2Road",
+          "config": { "filepath": "data/test165.net.xml" },
+          "data": {}
+        }
+      }
+    },
+    {
+      "name": "edgeRoad",
+      "field": "road",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "sumoNet2Road",
+          "config": { "filepath": "data/test165.net.xml", "outEdge": true },
+          "data": {}
+        }
+      }
+    },
+    {
+      "name": "sumoRoute",
+      "field": "tempFile",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": {
+            "route": "data/si3.rou.xml"
+          }
+        }
+      }
+    },
+    {
+      "name": "vssFile",
+      "field": "tempFile",
+      "init": { "use": "no" }
+    },
+    {
+      "name": "sumoUni",
+      "field": "sumoUni",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "json",
+          "config": {
+            "outListConf": true,
+            "inFile": true,
+            "inFilePath": "data/sumo.json"
+          },
+          "data": null
+        }
+      }
+    },
+    {
+      "name": "lisUni",
+      "field": "lisfloodUni",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "json",
+          "config": {
+            "outListConf": true,
+            "inFile": true,
+            "inFilePath": "data/test.json"
+          },
+          "data": null
+        }
+      }
+    },
+    {
+      "name": "sumoSpeedUni",
+      "field": "sumoSpeedUni",
+      "init": {
+        "use": "no",
+        "define": {
+          "method": "json",
+          "config": {
+            "outListConf": true,
+            "inFile": true,
+            "inFilePath": "data/test.json"
+          },
+          "data": null
+        }
+      }
+    }
+  ],
+  "link": [
+    // {
+    //   "module": "lisflood",
+    //   "time": "never",
+    //   "input": [],
+    //   "output": [],
+    //   "recordInside": [],
+    //   "record": [
+    //     {
+    //       "catch": "dem",
+    //       "method": "raster",
+    //       "config": {},
+    //       "time": "once"
+    //     }
+    //   ]
+    // },
+    {
+      "module": "lisflood",
+      "time": "once",
+      "input": [
+        {
+          "into": "dem",
+          "use": "instance", // instance | define
+          "instance": "dem" //fieldname
+        },
+        {
+          "into": "lisUni",
+          "use": "instance", // instance | define
+          "instance": "lisUni" //fieldname
+        }
+      ],
+      "output": [
+        {
+          "catch": "water",
+          "put": "water"
+        }
+      ],
+      "recordInside": [
+        {
+          "catch": "files",
+          "method": "file",
+          "config": { "all": true },
+          "time": "never"
+        }
+      ],
+      "record": [
+        {
+          "catch": "dem",
+          "method": "raster",
+          "config": {},
+          "time": "once"
+        },
+
+        {
+          "catch": "water",
+          "method": "raster",
+          "config": {},
+          "time": "always"
+        }
+      ]
+    }
+  ]
+}
