@@ -3,6 +3,7 @@ from pathlib import Path
 import shutil
 from typing import MutableMapping, cast
 from core.typing.ioType import TYPE_IO_Data
+from uuid import uuid4
 
 
 def fileListIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
@@ -16,7 +17,7 @@ def fileListIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
     newData: MutableMapping[str, str] = ioData["newData"]
 
     for i, v in newData.items():
-        newpath = os.path.join("temp", fname, Path(v).name)
+        newpath = os.path.join("temp", fname, str(uuid4())+"".join(Path(v).name))
         shutil.copyfile(v, newpath)
         newData[i] = newpath
 

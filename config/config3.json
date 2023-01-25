@@ -182,6 +182,24 @@
               }
             }
           }
+        },
+        {
+          "into": "addFiles",
+          "use": "new",
+          "new": {
+            "field": "tempFile",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "fileMerge",
+                "config": {
+                  "inAll": true,
+                  "inFileIns": ["sumoNetwork", "sumoRoute"]
+                },
+                "data": {}
+              }
+            }
+          }
         }
       ],
       "output": [

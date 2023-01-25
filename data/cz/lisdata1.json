@@ -1,0 +1,8 @@
+{
+  "rainFromConf": 1,
+  "rainBase": 2,
+  "rainAddPerhour": 0,
+  "recordNum": 3,
+  "bciFromFile": "bci",
+  "fpfric": 0.04
+}

@@ -6,6 +6,7 @@ import subprocess
 import platform
 
 from typing import Any, Callable, MutableMapping, Sequence, cast
+from core.base.file import FileBase
 from core.io.fileListIO import fileListIO
 from core.typing.fieldType import TYPE_Instance
 from core.typing.outputType import TYPE_Putout
@@ -24,9 +25,6 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
                 optList: Sequence[str]):
     logger.debug("Module Lisflood Run,optList:{opt}.", opt=",".join(optList))
 
-    ifManni = False
-    if "mann" in optList: ifManni = True
-
     # 新建temp文件夹
     tempDir = os.path.join(Path(MODULE_ROOT), "temp")
     shutil.rmtree(tempDir, ignore_errors=True)
@@ -34,6 +32,19 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
 
     from core.base.listConf import ListConfBase
     config = cast(ListConfBase, instances["lisUni"])
+
+    if "addFiles" in optList:
+        global addFiles
+        addFiles=cast(FileBase,instances["addFiles"])
+
+    # dem处理
+    from core.field.demField import DemField
+    dem = cast(DemField, instances["dem"])
+    demFilename = os.path.join(tempDir, "dem.ascii")
+    raster2Txt(dem.data, demFilename)
+
+    # 雨水处理
+    ifRain = False
     if config.getOne("rainFromConf") == 1:
         # 生成.rain
         rainBase = cast(int, config.getOne("rainBase"))
@@ -56,13 +67,18 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         rainFilename = os.path.join(tempDir, "auto.rain")
         with open(rainFilename, "w") as fp:
             fp.write(rainString)
-    else:
-        rainFilename = ""
+        ifRain = True
+    if config.getOne("rainFromFile")!="":
+        rainFilename = os.path.join(tempDir, "auto.rain")
+        addFiles.getFile(config.getOne("rainFromFile"),rainFilename)
+        ifRain=True
 
-    from core.field.demField import DemField
-    dem = cast(DemField, instances["dem"])
-    demFilename = os.path.join(tempDir, "dem.ascii")
-    raster2Txt(dem.data, demFilename)
+    # 边界条件
+    ifBci=False
+    if config.getOne("bciFromFile")!="":
+        rainFilename = os.path.join(tempDir, "auto.bci")
+        addFiles.getFile(config.getOne("bciFromFile"), rainFilename)
+        ifBci = True
 
     parDict = {
         "DEMfile": "dem.ascii",
@@ -73,9 +89,13 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         "massint": 100,
         "saveint": config.getOne("saveInt"),
         "fpfric": config.getOne("fpfric"),
-        "rainfall": "auto.rain",
         "adaptoff": ""
     }
+    if ifRain:
+        parDict["rainfall"] = "auto.rain"
+    if ifBci:
+        parDict["bcifile"]="auto.bci"
+
     parFilename = os.path.join(tempDir, "auto.par")
     dict2Txt(parDict, parFilename)
 

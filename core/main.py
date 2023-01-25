@@ -9,6 +9,7 @@ from core.controller import Controller
 from config.register import IO_LIST, RECORDER_LIST, MODULE_LIST, BASE_LIST, FIELD_LIST
 from core.recorderGlobal import recorderGlobal
 from core.configGlobal import configGlobal
+from core.envGlobal import envGlobal
 from loguru import logger
 
 
@@ -44,4 +45,5 @@ def start():
     # 开始运行
     logger.info("Controller starts running.")
     ct = Controller()
+    envGlobal.ct=ct
     ct.run()

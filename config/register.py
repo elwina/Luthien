@@ -7,6 +7,7 @@ from core.io.rasterIO import rasterIO
 from core.io.jsonIO import jsonIO
 from core.io.fileListIO import fileListIO
 from core.io.geojsonVectorIO import geojsonVectorIO
+from core.io.fileMergeIO import fileMergeIO
 
 from module.sumo.io.sumoNet2RoadIO import sumoNet2RoadIO
 
@@ -14,6 +15,7 @@ IO_LIST: TYPE_IO_LIST = {
     "json": jsonIO,
     "txt2Raster": rasterIO,
     "fileList": fileListIO,
+    "fileMerge":fileMergeIO,
     "geojson2Vector": geojsonVectorIO,
     "sumoNet2Road": sumoNet2RoadIO
 }

@@ -1,4 +1,4 @@
-from typing import  Mapping, MutableMapping, Sequence
+from typing import  Literal, Mapping, MutableMapping, Sequence
 from typing_extensions import Required, TypedDict
 
 '''
@@ -6,6 +6,7 @@ from typing_extensions import Required, TypedDict
 '''
 
 TYPE_CONF_VALUE=str|int|float
+TYPE_CONF_TYPE = Literal["int","float","string"]
 
 def generateInitValue(type:str):
     match type:

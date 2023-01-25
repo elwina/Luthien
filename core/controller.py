@@ -5,7 +5,6 @@ from core.instanceManager import InstanceManager
 from core.linkManager import LinkManager
 
 from loguru import logger
-from core.envGlobal import envGlobal
 
 
 class Controller():

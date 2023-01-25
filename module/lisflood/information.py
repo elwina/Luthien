@@ -11,9 +11,6 @@ MODULE_INSTANCE_INF: TYPE_Information = {
     "lisUni": {
         "required": True
     },
-    "mann": {
-        "required": False
-    },
     "addFiles": {
         "required": False
     }

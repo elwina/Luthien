@@ -36,5 +36,8 @@ class FileBase(BaseBase):
     def getFile(self, name, dst):
         shutil.copy(self.data[name], dst)
 
+    def getAFilePath(self, name: str):
+        return self.data[name]
+
     def getFileNames(self) -> Sequence[str]:
         return list(self.data.keys())
