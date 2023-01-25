@@ -16,7 +16,7 @@
         "define": {
           "method": "txt2Raster",
           "config": {
-            "driver": "GTiff",
+            "inDriver": "GTiff",
             "inFilePath": "data/4336sq.tif"
           },
           "data": null
@@ -101,22 +101,22 @@
         }
       }
     },
-    {
-      "name": "lisUni",
-      "field": "lisfloodUni",
-      "init": {
-        "use": "define",
-        "define": {
-          "method": "json",
-          "config": {
-            "outListConf": true,
-            "inFile": true,
-            "inFilePath": "data/test.json"
-          },
-          "data": null
-        }
-      }
-    },
+    // {
+    //   "name": "lisUni",
+    //   "field": "lisfloodUni",
+    //   "init": {
+    //     "use": "define",
+    //     "define": {
+    //       "method": "json",
+    //       "config": {
+    //         "outListConf": true,
+    //         "inFile": true,
+    //         "inFilePath": "data/test.json"
+    //       },
+    //       "data": null
+    //     }
+    //   }
+    // },
     {
       "name": "sumoSpeedUni",
       "field": "sumoSpeedUni",
@@ -159,10 +159,29 @@
           "use": "instance", // instance | define
           "instance": "dem" //fieldname
         },
+        // {
+        //   "into": "lisUni",
+        //   "use": "instance", // instance | define
+        //   "instance": "lisUni" //fieldname
+        // },
         {
           "into": "lisUni",
-          "use": "instance", // instance | define
-          "instance": "lisUni" //fieldname
+          "use": "new",
+          "new": {
+            "field": "lisfloodUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "outListConf": true,
+                  "inFile": true,
+                  "inFilePath": "data/test.json"
+                },
+                "data": null
+              }
+            }
+          }
         }
       ],
       "output": [

@@ -74,16 +74,31 @@ class InstanceManager():
                 # 处理input declare
                 case "instance":
                     # 选择instance放入
-                    if "instance" in linkInput:
-                        insName=linkInput["instance"]
-                        ins=self.getInstance(insName)
-                        indata[linkInput["into"]]={
-                            "method":"in",
-                            "instance":ins
-                            }
-                case "define":
-                    # 待开发：匿名instance
-                    pass
+                    insName=linkInput["instance"]
+                    ins=self.getInstance(insName)
+                    indata[linkInput["into"]]={
+                        "method":"in",
+                        "instance":ins
+                        }
+                case "new":
+                    # 匿名instance
+                    insDeclare=linkInput["new"]
+                    from config.register import FIELD_LIST
+                    Field = FIELD_LIST[insDeclare["field"]]
+                    ins = Field()
+                    initInf=insDeclare["init"]
+                    initWay=initInf["use"]
+                    match initWay:
+                        case "define":
+                            from config.register import IO_LIST
+                            defineData=initInf["define"]
+                            ins.define(IO_LIST[defineData["method"]],defineData["config"], defineData["data"])                        
+                        case "no":
+                            pass
+                    indata[linkInput["into"]]={
+                        "method":"in",
+                        "instance":ins
+                        }
         return indata
 
     def updateFromOutput(self,actionList:Sequence[TYPE_Output_Action_Declare],outMr:outputManager):
