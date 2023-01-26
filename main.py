@@ -1,5 +1,6 @@
 import getopt as getopt
 import sys
+from cli.cli import cli
 from core.main import start
 from web.web import serverRun
 
@@ -19,5 +20,7 @@ else:
             start()
         case "web":
             serverRun()
+        case "cli":
+            cli()
         
                     

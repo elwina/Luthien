@@ -6,10 +6,6 @@ UNI_INPUT_DICT_DEFAULT: TYPE_LIST_CONF_IN_DATA = [{
     "name": "version",
     "type": "int",
     "default": 1
-}, {
-    "name": "threshold",
-    "type": "float",
-    "default": 1
 }]
 
 

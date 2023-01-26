@@ -4,5 +4,11 @@
   "editor.formatOnSave": true,
   "python.analysis.diagnosticMode": "workspace",
   "python.analysis.useLibraryCodeForTypes": true,
-  "python.globalModuleInstallation": true
+  "python.globalModuleInstallation": true,
+  "python.linting.ignorePatterns": [
+    "**/site-packages/**/*.py",
+    ".vscode/*.py",
+    "template/**/*.py"
+  ],
+  "python.analysis.exclude": ["template/**/*.py"]
 }
