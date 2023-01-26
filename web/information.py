@@ -9,7 +9,7 @@ def getInf():
     from config.register import MODULE_LIST, IO_LIST, RECORDER_LIST
     for (name, Mo) in MODULE_LIST.items():
         m = Mo()
-        moInf = {"name": name, "input": m.inInf, "output": m.inInf}
+        moInf = {"name": name, "input": m.inInf, "output": m.outInf}
         inf["module"].append(moInf)
 
     inf["IO"] = list(IO_LIST.keys())

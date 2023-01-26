@@ -46,12 +46,20 @@ export type Link_Declare = {
 
 export enum Input_Use {
   instance = "instance",
+  new = "new",
 }
 export type Input_Declare = {
   [U in Input_Use]: {
     into: string;
     use: U;
-    instance: U extends Input_Use.instance ? string : never;
+    instance: U extends Input_Use.instance
+      ? string
+      : U extends Input_Use.new
+      ? {
+          field: string;
+          init: Init_Declare;
+        }
+      : never;
   };
 }[Input_Use];
 
