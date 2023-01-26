@@ -160,6 +160,7 @@ def extractEdge2MultiLineString(filename: str):
 
     data.objects = list(newObj.values())
     road.data = data
+
     return road
 
 

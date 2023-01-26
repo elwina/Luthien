@@ -1,16 +1,18 @@
 from copy import deepcopy
 import json
+import math
 import os
 from osgeo import ogr
 import uuid
+from pyproj import Transformer,CRS,Proj
 
-from typing import Any, MutableMapping, MutableSequence, Sequence
-from typing_extensions import Self
+from typing import Any, Generator, Iterator, MutableMapping, MutableSequence, Sequence, Type, cast
+from typing_extensions import Self,assert_type
 from core.base.base import BaseBase
 
 from core.typing.ioType import TYPE_IO, TYPE_IO_Data
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_Env, TYPE_Recorder_TempEnv
-from core.base.vectorType import TYPE_VECTOR_TYPE, VectorData
+from core.base.vectorType import TYPE_COO, TYPE_COO_SST, TYPE_COO_ST, TYPE_COO_T, TYPE_VECTOR_TYPE, AVector, VectorData
 
 
 class VectorBase(BaseBase):
@@ -77,6 +79,42 @@ class VectorBase(BaseBase):
                 list(
                     map(lambda aVec: aVec.properties.get(propname, default),
                         self.data.objects))))
+
+    def getDataTyped(self):
+        match self.data.type:
+            case "Point":
+                return TYPE_COO_T
+            case "MultiPoint":
+                return TYPE_COO_ST
+            case "LineString":
+                return TYPE_COO_ST
+            case "MultiLineString":
+                return TYPE_COO_SST
+            case "Polygon":
+                return TYPE_COO_ST
+            case "MultiPolygon":
+                return TYPE_COO_SST
+           
+    def trans2Proj(self,inproj:int,outproj:int):
+        dataType=self.getDataTyped()
+        for obj in self.data.objects:
+            if dataType==TYPE_COO_SST:
+                obj.coordinates=cast(TYPE_COO_SST,obj.coordinates)
+                for coos in obj.coordinates:
+                    for i,coo in enumerate(coos):
+                        coos[i]=self._transOneCoord(coo,inproj,outproj)
+            elif dataType==TYPE_COO_ST:
+                obj.coordinates=cast(TYPE_COO_ST,obj.coordinates)
+                for i,coo in enumerate(obj.coordinates):
+                    obj.coordinates[i]=self._transOneCoord(coo,inproj,outproj)
+            elif dataType==TYPE_COO_T:
+                obj.coordinates=cast(TYPE_COO_T,obj.coordinates)
+                obj.coordinates=self._transOneCoord(obj.coordinates,inproj,outproj)
+
+    def _transOneCoord(self,coo:tuple[float, float], inproj:int, outproj:int)->tuple[float, float]:
+        transformer = Transformer.from_crs(inproj,outproj)
+        newcoo=transformer.transform(coo[1],coo[0])
+        return newcoo
 
 
 if __name__ == "__main__":

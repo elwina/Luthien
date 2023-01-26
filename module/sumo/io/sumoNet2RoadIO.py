@@ -10,6 +10,10 @@ config:
     filepath: str
 
     outEdge: bool
+
+    outProj:int
+    inProj:int
+
 '''
 
 
@@ -25,6 +29,9 @@ def sumoNet2RoadIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
     else:
         from module.sumo.tools.extractStreet import extractStreet2MultiLineString
         newins = extractStreet2MultiLineString(filepath)
+
+    if "outProj" in config and "inProj" in config:
+        newins.trans2Proj(config["inProj"], config["outProj"])
 
     ins.data = deepcopy(newins.data)
     ioData["newData"] = deepcopy(ins.data)

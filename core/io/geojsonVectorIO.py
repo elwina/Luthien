@@ -4,8 +4,12 @@ from core.typing.ioType import TYPE_IO_Data
 config
     outVectorBase: bool
 
+    inOldData: bool
     inFilePath: str
     inGeoType: str
+
+    outProj:int
+    inProj:int
 '''
 
 
@@ -17,6 +21,9 @@ def geojsonVectorIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
 
     from core.base.vectorType import VectorData
     data = VectorData()
+
+    if "inOldData" in config and config["inOldData"] == True:
+        data = ins.data
 
     if "inFilePath" in config and config["inFilePath"] != "":
         filepath = config["inFilePath"]
@@ -61,7 +68,12 @@ def geojsonVectorIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
             data.type = "MultiLineString"
             data.objects = objects
 
+    ins.data = data
+    if "outProj" in config and "inProj" in config:
+        ins.trans2Proj(config["inProj"], config["outProj"])
+        data = ins.data
+
     if "outVectorBase" in config and config["outVectorBase"] == True:
-        ins.data = data
         ioData["newData"] = data
+
     return ioData

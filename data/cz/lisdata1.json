@@ -3,6 +3,6 @@
   "rainBase": 2,
   "rainAddPerhour": 0,
   "recordNum": 3,
-  "bciFromFile": "bci",
+  "bciFromFile": "",
   "fpfric": 0.04
 }
