@@ -5,13 +5,15 @@ from pathlib import Path
 import shutil
 import subprocess
 import platform
+import xml.dom.minidom
 
 from typing import Any, Callable, MutableMapping, Sequence, cast
-import uuid
 from core.base.listConf import ListConfBase
 from core.base.raster import RasterBase
 from core.base.json import JsonBase
 from core.base.vectorType import VectorData
+from core.field.tempFileField import TempFileField
+from core.io.fileListIO import fileListIO
 from core.typing.fieldType import TYPE_Instance
 from core.typing.outputType import TYPE_Putout
 
@@ -117,8 +119,37 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
         edgeSpeedJson.data = edgeSpeed[time]
         putout({"edgeSpeedJson": {time - timenow: edgeSpeedJson}})
 
-    if road is not None and uni.getOne("ifStreet") == 1:
+    # Output7 vssAddFile
+    vssXml = xml.dom.minidom.Document()
+    vssRoot = vssXml.createElement("additional")
+    for edgeid in allEdgeid:
+        vssEdge = vssXml.createElement("variableSpeedSign")
+        vssEdge.setAttribute("id", "vss" + edgeid)
+        props = sroad.getObjByOneProp("id", edgeid)
+        if props is not None and "lanes" in props.properties:
+            vssEdge.setAttribute("lanes", " ".join(props.properties["lanes"]))
 
+            from core.utils.timePeriod import timeStepSeconds
+            tss = timeStepSeconds()
+            for time in edgeSpeed:
+                timeSeconds = time * tss
+                vssEdgeTime = vssXml.createElement("step")
+                vssEdgeTime.setAttribute("time", str(timeSeconds))
+                vssEdgeTime.setAttribute("speed",
+                                         str(edgeSpeed[time][edgeid]["speed"]))
+                vssEdge.appendChild(vssEdgeTime)
+        vssRoot.appendChild(vssEdge)
+
+    vssXml.appendChild(vssRoot)
+    vssPath = os.path.join(tempDir, "vss.add.xml")
+    with open(vssPath, "w") as f:
+        vssXml.writexml(f, indent="", addindent="\t", newl="\n")
+    vssAddFile=TempFileField()
+    vssAddFile.init()
+    vssAddFile.define(fileListIO,{},{"vss":vssPath})
+    putout({"vssAddFile": {0:vssAddFile}})
+
+    if road is not None and uni.getOne("ifStreet") == 1:
         # 按街道进行平均计算
         streets = road.getAllStreets()
         waterTimes = water.iTM.getKeyframe()

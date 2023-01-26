@@ -91,6 +91,13 @@
       }
     },
     {
+      "name": "sumoVssAddFile",
+      "field": "tempFile",
+      "init": {
+        "use": "no"
+      }
+    },
+    {
       "name": "sumoUni",
       "field": "sumoUni",
       "init": {
@@ -225,6 +232,10 @@
         {
           "catch": "sroad",
           "put": "edgeRoad"
+        },
+        {
+          "catch": "vssAddFile",
+          "put": "sumoVssAddFile"
         }
       ],
       "recordInside": [
@@ -265,6 +276,12 @@
           "method": "vector",
           "config": {},
           "time": "always"
+        },
+        {
+          "catch": "sumoVssAddFile",
+          "method": "file",
+          "config": { "all": true },
+          "time": "once"
         }
       ]
     }

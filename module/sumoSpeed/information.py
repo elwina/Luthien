@@ -31,5 +31,6 @@ MODULE_OUTPUT_INSTANCE_INF: TYPE_Output_Information = {
     "sroad": {},  # edgeRoad
     "streetWaterJson": {},
     "road": {},
-    "streetSpeedJson": {}
+    "streetSpeedJson": {},
+    "vssAddFile":{}
 }

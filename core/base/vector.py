@@ -80,6 +80,13 @@ class VectorBase(BaseBase):
                     map(lambda aVec: aVec.properties.get(propname, default),
                         self.data.objects))))
 
+    def getObjByOneProp(self, propname: str, value) -> AVector|None:
+        for aVec in self.data.objects:
+            if propname in aVec.properties.keys() and aVec.properties.get(
+                    propname) == value:
+                return aVec
+        return None
+
     def getDataTyped(self):
         match self.data.type:
             case "Point":
