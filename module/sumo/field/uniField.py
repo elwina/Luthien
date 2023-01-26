@@ -7,11 +7,14 @@ UNI_INPUT_DICT_DEFAULT: TYPE_LIST_CONF_IN_DATA = [{
     "type": "int",
     "default": 1
 }, {
-    "name": "route",
+    "name": "routeFiles",
     "type": "int",
     "default": 0
-}
-,{
+}, {
+    "name": "addFiles",
+    "type": "int",
+    "default": 0
+}, {
     "name": "out--tripinfo-output",
     "type": "int",
     "default": 0

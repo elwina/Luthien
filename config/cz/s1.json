@@ -96,23 +96,6 @@
       "init": {
         "use": "no"
       }
-    },
-    {
-      "name": "sumoUni",
-      "field": "sumoUni",
-      "init": {
-        "use": "define",
-        "define": {
-          "method": "json",
-          "config": {
-            "outListConf": true,
-            "inFile": true,
-
-            "inFilePath": "data/sumodata1.json"
-          },
-          "data": null
-        }
-      }
     }
   ],
   "link": [
@@ -284,6 +267,70 @@
           "time": "once"
         }
       ]
+    },
+    {
+      "module": "sumo",
+      "time": "once",
+      "input": [
+        {
+          "into": "sumoUni",
+          "use": "new",
+          "new": {
+            "field": "sumoUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "inFile": true,
+                  "inFilePath": "data/cz/sumodata1.json"
+                },
+                "data": null
+              }
+            }
+          }
+        },
+        {
+          "into": "network",
+          "use": "instance",
+          "instance": "sumoNetwork"
+        },
+        {
+          "into": "routeFiles",
+          "use": "instance",
+          "instance": "sumoRoute"
+        },
+        {
+          "into": "addFiles",
+          "use": "new",
+          "new": {
+            "field": "tempFile",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "fileMerge",
+                "config": {
+                  "inFileIns": "sumoVssAddFile",
+                  "inDetail": {
+                    "vss": "sumoVssAddFile:vss"
+                  }
+                },
+                "data": {}
+              }
+            }
+          }
+        }
+      ],
+      "output": [],
+      "recordInside": [
+        {
+          "catch": "files",
+          "method": "file",
+          "config": { "all": true },
+          "time": "once"
+        }
+      ],
+      "record": []
     }
   ]
 }

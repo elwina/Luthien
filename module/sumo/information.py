@@ -5,13 +5,16 @@ MODULE_NAME: str = "sumo"
 MODULE_ROOT = "module/sumo/"
 
 MODULE_INSTANCE_INF: TYPE_Information = {
-    "uniSumo": {
+    "sumoUni": {
         "required": True,
     },
     "network": {
         "required": True
     },
     "routeFiles": {
+        "required": False
+    },
+    "addFiles": {
         "required": False
     }
 }
