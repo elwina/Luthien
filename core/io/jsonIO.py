@@ -32,8 +32,8 @@ def jsonIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
 
     if "outJson" in config and config["outJson"] == True:
         ins.data = data
-        ioData["newData"]=data
-        
+        ioData["newData"] = data
+
     return ioData
 
 

@@ -91,11 +91,6 @@
       }
     },
     {
-      "name": "vssFile",
-      "field": "tempFile",
-      "init": { "use": "no" }
-    },
-    {
       "name": "sumoUni",
       "field": "sumoUni",
       "init": {
@@ -107,23 +102,6 @@
             "inFile": true,
 
             "inFilePath": "data/sumodata1.json"
-          },
-          "data": null
-        }
-      }
-    },
-    {
-      "name": "sumoSpeedUni",
-      "field": "sumoSpeedUni",
-      "init": {
-        "use": "no",
-        "define": {
-          "method": "json",
-          "config": {
-            "outListConf": true,
-            "inFile": true,
-
-            "inFilePath": "data/test.json"
           },
           "data": null
         }
@@ -182,14 +160,7 @@
           "put": "water"
         }
       ],
-      "recordInside": [
-        {
-          "catch": "files",
-          "method": "file",
-          "config": { "all": true },
-          "time": "once"
-        }
-      ],
+      "recordInside": [],
       "record": [
         {
           "catch": "water",
@@ -210,6 +181,31 @@
       "time": "once",
       "input": [
         {
+          "into": "sumoSpeedUni",
+          "use": "new",
+          "new": {
+            "field": "sumoSpeedUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "outListConf": true,
+                  "inFile": true,
+
+                  "inFilePath": "data/cz/sumoSpeedData1.json"
+                },
+                "data": null
+              }
+            }
+          }
+        },
+        {
+          "into": "water",
+          "use": "instance",
+          "instance": "water"
+        },
+        {
           "into": "sumoNet",
           "use": "instance",
           "instance": "sumoNetwork"
@@ -223,16 +219,6 @@
           "into": "edgeRoad",
           "use": "instance",
           "instance": "edgeRoad"
-        },
-        {
-          "into": "sumoSpeedUni",
-          "use": "instance",
-          "instance": "sumoSpeedUni"
-        },
-        {
-          "into": "water",
-          "use": "instance",
-          "instance": "water"
         }
       ],
       "output": [
@@ -240,38 +226,34 @@
           "catch": "sroad",
           "put": "edgeRoad"
         }
-        // {
-        //   "catch": "vssFile",
-        //   "put": "vssFile"
-        // }
       ],
       "recordInside": [
         {
-          "catch": "streetMeanWaterJson",
+          "catch": "edgeWaterJson",
           "method": "json",
           "config": {},
-          "time": "once"
-        },
-        {
-          "catch": "timeRoadSpeedJson",
-          "method": "json",
-          "config": {},
-          "time": "once"
+          "time": "always"
         },
         {
           "catch": "edgeSpeedJson",
           "method": "json",
           "config": {},
-          "time": "once"
+          "time": "always"
+        },
+        {
+          "catch": "streetWaterJson",
+          "method": "json",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "streetSpeedJson",
+          "method": "json",
+          "config": {},
+          "time": "always"
         }
       ],
       "record": [
-        // {
-        //   "catch": "vssFile",
-        //   "method": "file",
-        //   "config": { "all": true },
-        //   "time": "once"
-        // }
         {
           "catch": "road",
           "method": "vector",

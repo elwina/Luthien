@@ -12,7 +12,6 @@ from core.base.listConf import ListConfBase
 from core.base.raster import RasterBase
 from core.base.json import JsonBase
 from core.base.vectorType import VectorData
-from core.envGlobal import _EnvGlobal
 from core.typing.fieldType import TYPE_Instance
 from core.typing.outputType import TYPE_Putout
 
@@ -32,81 +31,27 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
     from module.sumoSpeed.field.uniField import UniField
     from core.field.roadField import RoadField
     from core.field.waterField import WaterField
-    sumoSpeedUni = cast(UniField, instances["sumoSpeedUni"])
-    road = cast(RoadField, instances["road"])
+    uni = cast(UniField, instances["sumoSpeedUni"])
     sroad = cast(RoadField, instances["edgeRoad"])
     water = cast(WaterField, instances["water"])
+
+    road = None
+    if "road" in instances:
+        road = cast(RoadField, instances["road"])
+
+    timenow = eGl.epoch
 
     # 新建temp文件夹
     tempDir = os.path.join(MODULE_ROOT, "temp")
     shutil.rmtree(tempDir, ignore_errors=True)
     os.mkdir(tempDir)
 
+    # water为模板栅格
     rasterPath = os.path.join(tempDir, "autowater.txt")
     shutil.copy(water.getTempFile(), rasterPath)
     outRasterPath = os.path.join(tempDir, "autoroadinraster.txt")
 
-    streets = road.getAllStreets()
-    waterTimes = water.iTM.getKeyframe()
-
-    def getAMeanWater():
-        meanOneWater: MutableMapping[str, float] = {}
-        for index, street in enumerate(streets):
-            roadPath = os.path.join(tempDir, "autoroad%d.geojson" % index)
-            shutil.copy(road.getAStreet(street).getTempFile(), roadPath)
-
-            vector2raster(roadPath, rasterPath, outRasterPath)
-            roadRaster = RasterBase("road")
-            roadRaster.init()
-            roadRaster.defineFromAsciiFile(outRasterPath)
-
-            roadRData = roadRaster.data
-            waterinroad = water.maskData(roadRData)
-            if waterinroad is not None:
-                meanOneWater[street] = listMean(waterinroad)
-            else:
-                meanOneWater[street] = -1
-        return meanOneWater
-
-    meanWaterList: dict[str, list[float | int]] = dict(
-        zip(streets, [[] for _ in range(len(streets))]))
-    for time, ins in water.iTM.geneKeyFrame():
-        meanAWater = getAMeanWater()
-        for street in streets:
-            meanWaterList[street].append(meanAWater[street])
-
-    meanWater: MutableMapping[str, float] = dict(
-        map(lambda x: (x[0], listMean(list(filter(lambda y: y != -1, x[1])))),
-            meanWaterList.items()))
-
-    streetMeanWaterJson = JsonBase("streetMeanWater")
-    streetMeanWaterJson.init()
-    streetMeanWaterJson.data = meanWater
-    putout({"streetMeanWaterJson": {0: streetMeanWaterJson}})
-
-    # 将积水与路况挂钩
-    # 使用会议论文拟合公式
-    timeRoadSpeed: MutableMapping[int, MutableMapping[str, Any]] = {}
-    for ind in range(water.iTM.getKeyframe().__len__()):
-        time = waterTimes[ind]
-        timeRoadSpeed[time] = {}
-        for street in streets:
-            depth = meanWaterList[street][ind]
-            if depth != -1:
-                v0 = road.getAStreet(street).data.objects[0].properties.get(
-                    "speed", 30)
-                if v0 == 0: v0 = 30
-                speed, change = newSpeed(v0, depth)
-                timeRoadSpeed[time][street] = {
-                    "speed": speed,
-                    "change": change
-                }
-    timeRoadSpeedJson = JsonBase("timeRoadSpeed")
-    timeRoadSpeedJson.init()
-    timeRoadSpeedJson.data = timeRoadSpeed
-    putout({"timeRoadSpeedJson": {0: timeRoadSpeedJson}})
-
-    # 按照id
+    # 计算每个edge的积水深度
     allEdgeid = sroad.getAllAProp("id")
     edgeWater: MutableMapping[int, MutableMapping[str, Any]] = {}
     for time, ins in water.iTM.geneKeyFrame():
@@ -126,34 +71,128 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
             edgeRData = edgeRaster.data
             waterInEdge = water.maskData(edgeRData)
             if waterInEdge is not None:
-                edgeWater[time][edgeid] = listMean(waterInEdge) / 10  # mm2cm
+                edgeWater[time][edgeid] = listMean(waterInEdge)
             else:
                 edgeWater[time][edgeid] = -1
 
-    edgeSpeedJson = JsonBase("edgeSpeed")
-    edgeSpeedJson.init()
-    edgeSpeedJson.data = edgeWater
-    putout({"edgeSpeedJson": {0: edgeSpeedJson}})
+    # Output1 edgeWaterJson 该时间每个edge的积水深度
+    edgeWaterJson = JsonBase("edgeWater")
+    edgeWaterJson.init()
+    for time in edgeWater:
+        edgeWaterJson.data = edgeWater[time]
+        putout({"edgeWaterJson": {time - timenow: edgeWaterJson}})
 
-    # 更新sroad
+    # Output3 edgeSpeedJson 该时间每个edge的速度
+    edgeSpeed: MutableMapping[int, MutableMapping[str, dict]] = {}
+
+    # Output2 sroad 更新水深，根据速度公式计算每个edge的速度
     newSroad = deepcopy(sroad)
     for time in edgeWater:
-        data: VectorData = deepcopy(newSroad.iTM.getTimeIns(time).data)
+        data: VectorData = newSroad.iTM.getTimeIns(time).data
+        edgeSpeed[time] = {}
         for obj in data.objects:
-            edgeid = obj.properties["id"]
+            edgeid: str = obj.properties["id"]
             depth = edgeWater[time][edgeid]
             if depth != -1:
+                obj.properties["water_depth"] = depth
+
+                # 核心速度公式区域
                 v0 = obj.properties.get("speed", 30)
                 if v0 == 0: v0 = 30
                 speed, change = newSpeed(v0, depth)
+
                 obj.properties["speed"] = speed
                 obj.properties["change"] = change
+
+                edgeSpeed[time][edgeid] = {}
+                edgeSpeed[time][edgeid]["speed"] = speed
+                edgeSpeed[time][edgeid]["change"] = change
         newSroad.data = data
-        putout({"sroad": {time - eGl.epoch: newSroad}})
+        putout({"sroad": {time - timenow: newSroad}})
+
+    # Output3 edgeSpeedJson 该时间每个edge的速度
+    edgeSpeedJson = JsonBase("edgeSpeed")
+    edgeSpeedJson.init()
+    for time in edgeSpeed:
+        edgeSpeedJson.data = edgeSpeed[time]
+        putout({"edgeSpeedJson": {time - timenow: edgeSpeedJson}})
+
+    if road is not None and uni.getOne("ifStreet") == 1:
+
+        # 按街道进行平均计算
+        streets = road.getAllStreets()
+        waterTimes = water.iTM.getKeyframe()
+
+        # {街道:值}
+        def getAMeanWater() -> dict[str, float]:
+            meanOneWater: MutableMapping[str, float] = {}
+            for index, street in enumerate(streets):
+                roadPath = os.path.join(tempDir, "autoroad%d.geojson" % index)
+                shutil.copy(road.getAStreet(street).getTempFile(), roadPath)
+
+                vector2raster(roadPath, rasterPath, outRasterPath)
+                roadRaster = RasterBase("road")
+                roadRaster.init()
+                roadRaster.defineFromAsciiFile(outRasterPath)
+
+                roadRData = roadRaster.data
+                waterinroad = water.maskData(roadRData)
+                if waterinroad is not None:
+                    meanOneWater[street] = listMean(waterinroad)
+                else:
+                    meanOneWater[street] = -1
+            return meanOneWater
+
+        streetWater: MutableMapping[int, MutableMapping[str, float]] = {}
+        for time, ins in water.iTM.geneKeyFrame():
+            meanAWater = getAMeanWater()
+            streetWater[time] = meanAWater
+
+        # Output4 streetWaterJson 该时间每个街道的积水深度
+        streetWaterJson = JsonBase("streetWaterJson")
+        streetWaterJson.init()
+        for time in streetWater:
+            streetWaterJson.data = streetWater[time]
+            putout({"streetWaterJson": {time - timenow: streetWaterJson}})
+
+        # Output5 road 更新水深，根据速度公式计算每个street的速度
+        timeRoadSpeed: MutableMapping[int, MutableMapping[str, dict]] = {}
+        newRoad = deepcopy(road)
+        for time in waterTimes:
+            newRoad.iTM.jumpTime(time)
+            timeRoadSpeed[time] = {}
+            for street in streets:
+                depth = streetWater[time][street]
+                if depth != -1:
+                    props = newRoad.getAStreet(
+                        street).data.objects[0].properties
+                    props["water_depth"] = depth
+
+                    v0 = props.get("speed", 30)
+
+                    # 核心速度公式区域
+                    if v0 == 0: v0 = 30
+                    speed, change = newSpeed(v0, depth)
+
+                    props["speed"] = speed
+                    props["change"] = change
+                    timeRoadSpeed[time][street] = {
+                        "depth": depth,
+                        "speed": speed,
+                        "change": change
+                    }
+            putout({"road": {time - timenow: newRoad}})
+
+        # Output6 streetSpeedJson 该时间每个街道的速度
+        streetSpeedJson = JsonBase("streetSpeedJson")
+        streetSpeedJson.init()
+        for time in timeRoadSpeed:
+            streetSpeedJson.data = timeRoadSpeed[time]
+            putout({"streetSpeedJson": {time - timenow: streetSpeedJson}})
 
 
 def newSpeed(v0: float, depth: float):
-    x = depth
+    x = depth / 10  # mm -> cm
     a = 7.5
     b = 3
     v0 = v0 * 0.1

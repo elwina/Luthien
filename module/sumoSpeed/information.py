@@ -8,28 +8,28 @@ MODULE_NAME: str = "sumoSpeed"
 MODULE_ROOT = os.path.join("module", "sumoSpeed")
 
 MODULE_INSTANCE_INF: TYPE_Information = {
-    "water": {
-        "required": True
-    },
     "sumoSpeedUni": {
         "required": True
     },
-    "road": {
+    "water": {
         "required": True
     },
-    "sumoNet": {
+    "road": {
         "required": False
     },
     "edgeRoad": {
         "required": True
+    },
+    "sumoNet": {
+        "required": False
     }
 }
 
 MODULE_OUTPUT_INSTANCE_INF: TYPE_Output_Information = {
-    "xml": {},
-    "road": {},
-    "streetMeanWaterJson": {},
-    "timeRoadSpeedJson": {},
+    "edgeWaterJson": {},
     "edgeSpeedJson": {},
-    "sroad": {}
+    "sroad": {},  # edgeRoad
+    "streetWaterJson": {},
+    "road": {},
+    "streetSpeedJson": {}
 }

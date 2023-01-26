@@ -14,7 +14,7 @@ class RecorderGlobal:
         strList: list[str] = []
 
         strList.append("Out")
-        strList.append(str(self.total))
+        strList.append("%04d" % (self.total))
         self.total = self.total + 1
 
         module = envGlobal.moduleNow if recEnv["ifModule"] else "main"

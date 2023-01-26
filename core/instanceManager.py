@@ -107,9 +107,9 @@ class InstanceManager():
             catch=action["catch"]
             put=action["put"]
             time=envGlobal.epoch
-            catchIns=outMr.getOutputData(catch)
-            if catchIns is not None:
-                self.instances[put]["instance"].iTM.store(catchIns)
+            catchData=outMr.getOutputData(catch)
+            if catchData is not None:
+                self.instances[put]["instance"].iTM.store(catchData)
                 logger.success("Output {out} is put out into instance {ins}.",out=catch,ins=action["put"])
             else:
                 logger.error("Catch instance not put out!")
