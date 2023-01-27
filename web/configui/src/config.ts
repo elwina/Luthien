@@ -25,7 +25,7 @@ export enum Init_Use {
 export type Init_Declare = {
   [U in Init_Use]: {
     use: U;
-    define: U extends Init_Use.define ? Define_Declare : never;
+    define?: U extends Init_Use.define ? Define_Declare : void;
   };
 }[Init_Use];
 
@@ -52,7 +52,7 @@ export type Input_Declare = {
   [U in Input_Use]: {
     into: string;
     use: U;
-    instance: U extends Input_Use.instance
+    instance?: U extends Input_Use.instance
       ? string
       : U extends Input_Use.new
       ? {
