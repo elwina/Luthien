@@ -10,5 +10,6 @@
     ".vscode/*.py",
     "template/**/*.py"
   ],
-  "python.analysis.exclude": ["template/**/*.py"]
+  "python.analysis.exclude": ["template/**/*.py"],
+  "typescript.tsdk": "./web/configui/node_modules/typescript/lib"
 }
