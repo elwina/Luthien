@@ -6,6 +6,9 @@
   import { onMount } from "svelte";
   import type { Config, Link_Declare } from "./config";
   import * as information from "./information.json";
+  import stripJsonComments from "strip-json-comments";
+  import { DateTime } from "luxon";
+  import uniqolor from "uniqolor";
 
   const inf: Information = information;
   const ModulesList = inf.module;
@@ -38,6 +41,29 @@
     instance: [],
     link: [],
   };
+
+  const scolors: string[] = [
+    "#C62828",
+    "#6A1B9A",
+    "#283593",
+    "#00838F",
+    "#2E7D32",
+    "#9E9D24",
+    "#FF8F00",
+    "#E91E63",
+    "#673AB7",
+    "#2196F3",
+    "#00BCD4",
+    "#4CAF50",
+    "#CDDC39",
+    "#FFC107",
+    "#FF5722",
+    "#607D8B",
+  ];
+
+  $: insColor = new Map(
+    config.instance.map((item, i) => [item.name, scolors[i % scolors.length]])
+  );
 
   const initStr = JSON.stringify(config, null, "  ");
   let editBox = {
@@ -115,7 +141,7 @@
         readOnly: false,
         fontSize: 16, // 字体大小
         scrollBeyondLastLine: false, // 取消代码后面一大段空白
-        overviewRulerBorder: false, // 不要滚动条的边框
+        overviewRulerBorder: true, // 不要滚动条的边框
         tabSize: 2,
         insertSpaces: true,
       }
@@ -130,6 +156,33 @@
     editBox.edit = editor.getValue();
     editBox.update();
     config = config;
+  }
+
+  let loadFiles: FileList;
+  function load() {
+    const reader = new FileReader();
+    // 读取文件
+    reader.readAsText(loadFiles[0], "UTF-8");
+    reader.onload = () => {
+      config = JSON.parse(stripJsonComments(reader.result as string));
+    };
+  }
+
+  let downloadURL: string = "";
+  function getFilename() {
+    return (
+      "config-auto-" + DateTime.now().toFormat("yyyy-MM-dd-HH-mm-ss") + ".json"
+    );
+  }
+  function download() {
+    if (downloadURL) {
+      URL.revokeObjectURL(downloadURL);
+    }
+    const blob = new Blob([JSON.stringify(config, null, "  ")], {
+      type: "application/json",
+    });
+    const objectURL = URL.createObjectURL(blob);
+    downloadURL = objectURL;
   }
 
   let selectModule: string;
@@ -193,7 +246,6 @@
 
 <main>
   <div id="left">
-    {JSON.stringify(config, null, "  ")}
     {#each config.link as link, linkid}
       <div class="link">
         {link.module}
@@ -222,14 +274,19 @@
       <button on:click={addLink}>Add Module</button>
     </div>
   </div>
+
   <div id="middle">
-    {#each config.instance as instance}
-      <div>{instance.name}</div>
-      <button
-        on:click={() => {
-          editIns(instance.name);
-        }}>edit</button
-      >
+    {#each config.instance as instance, i}
+      <div class="ins">
+        <span style:color={insColor.get(instance.name)}>{instance.name}</span>
+        <span>{instance.field}</span>
+        <span>{instance.init.use}</span>
+        <button
+          on:click={() => {
+            editIns(instance.name);
+          }}>edit</button
+        >
+      </div>
     {/each}
     <select bind:value={selectField}>
       {#each Field as field}
@@ -260,10 +317,18 @@
   </div>
   <div id="right">
     <div>
-      <button on:click={editConfig}>config</button>
-      <button on:click={format}>format</button><button on:click={save}
-        >save</button
+      <button on:click={editConfig}>主配置</button>
+      <button on:click={format}>格式化</button><button on:click={save}
+        >暂存</button
       >
+      <input
+        type="file"
+        bind:files={loadFiles}
+        on:change={load}
+        accept=".json"
+      />
+      <button on:click={download}>保存</button>
+      <a href={downloadURL} download={getFilename()}>下载连接</a>
     </div>
     <div id="editor" />
   </div>
@@ -281,6 +346,11 @@
   #middle {
     height: 100vh;
     width: 30vw;
+
+    padding: 10px;
+
+    display: flex;
+    flex-direction: column;
   }
   #right {
     height: 100vh;
@@ -291,5 +361,12 @@
   #editor {
     flex-grow: 1;
     height: max-content;
+  }
+
+  .ins {
+    width: 100%;
+    height: 30px;
+
+    border: solid;
   }
 </style>
