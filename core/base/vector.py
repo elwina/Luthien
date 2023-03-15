@@ -5,6 +5,7 @@ import os
 from osgeo import ogr
 import uuid
 from pyproj import Transformer,CRS,Proj
+from numba import jit
 
 from typing import Any, Generator, Iterator, MutableMapping, MutableSequence, Sequence, Type, cast
 from typing_extensions import Self,assert_type
@@ -107,7 +108,7 @@ class VectorBase(BaseBase):
                 return TYPE_COO_ST
             case "MultiPolygon":
                 return TYPE_COO_SST
-           
+
     def trans2Proj(self,inproj:int,outproj:int):
         dataType=self.getDataTyped()
         for obj in self.data.objects:
@@ -125,8 +126,8 @@ class VectorBase(BaseBase):
                 obj.coordinates=self._transOneCoord(obj.coordinates,inproj,outproj)
 
     def _transOneCoord(self,coo:tuple[float, float], inproj:int, outproj:int)->tuple[float, float]:
-        transformer = Transformer.from_crs(inproj,outproj)
-        newcoo=transformer.transform(coo[1],coo[0])
+        transformer = Transformer.from_crs(inproj,outproj,always_xy=True)
+        newcoo=transformer.transform(coo[0],coo[1])
         return newcoo
 
 

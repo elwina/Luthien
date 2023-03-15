@@ -13,6 +13,12 @@ MODULE_INSTANCE_INF: TYPE_Information = {
     },
     "addFiles": {
         "required": False
+    },
+    "pointXY": {
+        "required": False
+    },
+    "pointWater": {
+        "required": False
     }
 }
 

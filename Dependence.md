@@ -13,6 +13,7 @@
 - conda install scipy
 - conda install numpy
 - conda install -c conda-forge matplotlib
+- numba
 
 # cli support
 - sumo 

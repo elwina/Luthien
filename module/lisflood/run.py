@@ -7,6 +7,8 @@ import platform
 
 from typing import Any, Callable, MutableMapping, Sequence, cast
 from core.base.file import FileBase
+from core.base.json import JsonBase
+from core.base.vector import VectorBase
 from core.io.fileListIO import fileListIO
 from core.typing.fieldType import TYPE_Instance
 from core.typing.outputType import TYPE_Putout
@@ -35,7 +37,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
 
     if "addFiles" in optList:
         global addFiles
-        addFiles=cast(FileBase,instances["addFiles"])
+        addFiles = cast(FileBase, instances["addFiles"])
 
     # dem处理
     from core.field.demField import DemField
@@ -65,20 +67,35 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
             strList.append(str(rainIn) + "\t" + str(hour) + "\n")
         rainString = "".join(strList)
         rainFilename = os.path.join(tempDir, "auto.rain")
-        with open(rainFilename, "w") as fp:
+        with open(rainFilename, "w", encoding="utf-8") as fp:
             fp.write(rainString)
         ifRain = True
-    if config.getOne("rainFromFile")!="":
+    if config.getOne("rainFromFile") != "":
         rainFilename = os.path.join(tempDir, "auto.rain")
-        addFiles.getFile(config.getOne("rainFromFile"),rainFilename)
-        ifRain=True
+        addFiles.getFile(config.getOne("rainFromFile"), rainFilename)
+        ifRain = True
 
     # 边界条件
-    ifBci=False
-    if config.getOne("bciFromFile")!="":
-        rainFilename = os.path.join(tempDir, "auto.bci")
-        addFiles.getFile(config.getOne("bciFromFile"), rainFilename)
+    ifBci = False
+    bciFilename = os.path.join(tempDir, "auto.bci")
+    if config.getOne("bciFromFile") != "":
+        addFiles.getFile(config.getOne("bciFromFile"), bciFilename)
         ifBci = True
+
+    ifBdy=False
+    bdyFilename = os.path.join(tempDir, "auto.bdy")
+    if config.getOne("bciFromPoint")==1:
+        pointXYIns=cast(VectorBase,instances["pointXY"])
+        pointWaterIns=cast(JsonBase,instances["pointWater"])
+        from module.lisflood.tools.pointBci import getBciBdy
+        bci,bdy=getBciBdy(pointXYIns,pointWaterIns)
+
+        with open(bciFilename, mode="w+", encoding="utf-8") as fp:
+            fp.write("".join(bci))
+            ifBci = True
+        with open(bdyFilename,mode="w",encoding="utf-8") as fp:
+            fp.write("".join(bdy))
+            ifBdy=True
 
     parDict = {
         "DEMfile": "dem.ascii",
@@ -94,7 +111,10 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
     if ifRain:
         parDict["rainfall"] = "auto.rain"
     if ifBci:
-        parDict["bcifile"]="auto.bci"
+        parDict["bcifile"] = "auto.bci"
+    if ifBdy:
+        parDict["bdyfile"] = "auto.bdy"
+
 
     parFilename = os.path.join(tempDir, "auto.par")
     dict2Txt(parDict, parFilename)

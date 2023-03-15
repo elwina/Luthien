@@ -1,0 +1,10 @@
+{
+  "simTime": 10800,
+  "recordNum": 3,
+
+  "rainFromConf": 1,
+  "rainBase": 2,
+  "rainAddPerhour": 0,
+  "bciFromFile": "",
+  "fpfric": 0.04
+}

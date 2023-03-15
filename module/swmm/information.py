@@ -16,4 +16,4 @@ MODULE_INSTANCE_INF: TYPE_Information = {
     }
 }
 
-MODULE_OUTPUT_INSTANCE_INF: TYPE_Output_Information = {"floodNode": {}}
+MODULE_OUTPUT_INSTANCE_INF: TYPE_Output_Information = {"floodNode": {},"pointWaterJson":{}}

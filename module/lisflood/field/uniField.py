@@ -54,6 +54,17 @@ UNI_INPUT_DICT_DEFAULT: TYPE_LIST_CONF_IN_DATA = [
         "name": "bciFromFile",
         "type": "string",
         "default": ""
+    },
+    {
+        "name": "bdyFromFile",
+        "type": "string",
+        "default": ""
+    },
+    # 来自swmm的点溢流
+    {
+        "name": "bciFromPoint",
+        "type": "int",
+        "default": 0
     }
 ]
 

@@ -7,6 +7,7 @@ from swmm.toolkit.shared_enum import NodeAttribute
 
 from typing import Any, Callable, MutableMapping, Sequence, cast
 from core.base.file import FileBase
+from core.base.json import JsonBase
 from core.typing.fieldType import TYPE_Instance
 from core.typing.outputType import TYPE_Putout
 
@@ -50,9 +51,18 @@ def swmmRun(putout: Callable[[TYPE_Putout], None],
         subprocess.run(cmd, shell=True, cwd=tempDir)
 
     nodeIns = nodeExtract(inpPath)
+    nodeIns.trans2Proj(3395, 32650)
+
+    pjson: dict[str, list[float]] = {}
 
     totalTime = cast(int, uni.getOne("totalTime"))
     with Output(outPath) as out:
+        floodData: dict[str, float] = out.node_attribute(
+            NodeAttribute.FLOODING_LOSSES,  # type: ignore
+            0)  # type: ignore
+        for key in floodData:
+            pjson[key] = []
+
         for t in range(totalTime):
             floodData: dict[str, float] = out.node_attribute(
                 NodeAttribute.FLOODING_LOSSES,  # type: ignore
@@ -63,4 +73,11 @@ def swmmRun(putout: Callable[[TYPE_Putout], None],
                 nodeid = obj.properties["nodeid"]
                 if nodeid in floodData:
                     obj.properties["flood"] = floodData[nodeid]
+                    pjson[nodeid].append(floodData[nodeid])
             putout({"floodNode": {t: nodeIns}})
+
+    # pointWaterJson
+    pointWaterJson = JsonBase("pointWater")
+    pointWaterJson.init()
+    pointWaterJson.data = pjson
+    putout({"pointWaterJson": {0: pointWaterJson}})
