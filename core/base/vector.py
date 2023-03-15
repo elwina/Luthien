@@ -86,6 +86,12 @@ class VectorBase(BaseBase):
                     propname) == value:
                 return aVec
         return None
+    
+    def getObjByOnePropNew(self, propname: str, value) -> AVector|None:
+        vecs=list(filter(lambda aV:propname in aV.properties and aV.properties[propname]==value,self.data.objects))
+        if vecs.__len__()!=0:
+            return vecs[0]        
+        return None
 
     def getDataTyped(self):
         match self.data.type:

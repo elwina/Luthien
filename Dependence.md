@@ -9,6 +9,10 @@
 - conda install gdal
 - pyproj
 - bottle
+- pyswmm
+- conda install scipy
+- conda install numpy
+- conda install -c conda-forge matplotlib
 
 # cli support
 - sumo 

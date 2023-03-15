@@ -15,7 +15,7 @@ IO_LIST: TYPE_IO_LIST = {
     "json": jsonIO,
     "txt2Raster": rasterIO,
     "fileList": fileListIO,
-    "fileMerge":fileMergeIO,
+    "fileMerge": fileMergeIO,
     "geojson2Vector": geojsonVectorIO,
     "sumoNet2Road": sumoNet2RoadIO
 }
@@ -36,12 +36,14 @@ from module.lisflood.main import Module as lisflood
 from module.landslideEva.main import Module as landslideEva
 from module.sumo.main import Module as sumo
 from module.sumoSpeed.main import Module as sumoSpeed
+from module.swmm.main import Module as swmm
 
 MODULE_LIST: TYPE_MODULE_LIST = {
     "lisflood": lisflood,
     "landslideEva": landslideEva,
     "sumo": sumo,
-    "sumoSpeed": sumoSpeed
+    "sumoSpeed": sumoSpeed,
+    "swmm": swmm
 }
 
 from core.base.listConf import ListConfBase
@@ -65,6 +67,7 @@ from module.lisflood.field.uniField import UniField as LisfloodUniField
 from module.sumo.field.uniField import UniField as SumoUniField
 from module.sumo.field.sumoNetField import SumoNetField
 from module.sumoSpeed.field.uniField import UniField as SumoSpeedUniField
+from module.swmm.field.uniField import UniField as SwmmUniField
 
 FIELD_LIST: TYPE_FIELD_LIST = {
     "dem": DemField,
@@ -74,5 +77,6 @@ FIELD_LIST: TYPE_FIELD_LIST = {
     "lisfloodUni": LisfloodUniField,
     "sumoUni": SumoUniField,
     "sumoNet": SumoNetField,
-    "sumoSpeedUni": SumoSpeedUniField
+    "sumoSpeedUni": SumoSpeedUniField,
+    "swmmUni":SwmmUniField
 }

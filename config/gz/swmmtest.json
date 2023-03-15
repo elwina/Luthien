@@ -1,0 +1,173 @@
+{
+  "version": 1,
+  "description": "swmm test",
+  "basic": {
+    // basic config
+    "timestep": 1,
+    "timeUnit": "hour",
+    "timeEpoch": 18, // 运行几次
+    "outputPath": "output/gzswmm/"
+  },
+  "instance": [
+    {
+      "name": "dem",
+      "field": "dem",
+      "init": {
+        "use": "define", // define | no | copy
+        "define": {
+          "method": "txt2Raster",
+          "config": {
+            "inDriver": "GTiff",
+            "inFilePath": "data/cz/4336sq_utm.tif"
+          },
+          "data": null
+        }
+      }
+    },
+    {
+      "name": "water",
+      "field": "rain",
+      "init": {
+        "use": "no"
+      }
+    },
+    {
+      "name": "sumoNetwork",
+      "field": "sumoNet",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": { "sumoNet": "data/cz/test165.net.xml" }
+        }
+      }
+    },
+    {
+      "name": "road",
+      "field": "road",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "sumoNet2Road",
+          "config": {
+            "filepath": "data/cz/test165.net.xml",
+            "inProj": 4326,
+            "outProj": 32650
+          },
+          "data": {}
+        }
+      }
+    },
+    {
+      "name": "edgeRoad",
+      "field": "road",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "sumoNet2Road",
+          "config": {
+            "filepath": "data/cz/test165.net.xml",
+            "outEdge": true,
+            "inProj": 4326,
+            "outProj": 32650
+          },
+          "data": {}
+        }
+      }
+    },
+    {
+      "name": "sumoRoute",
+      "field": "tempFile",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": {
+            "route": "data/cz/si3.rou.xml"
+          }
+        }
+      }
+    },
+    {
+      "name": "sumoVssAddFile",
+      "field": "tempFile",
+      "init": {
+        "use": "no"
+      }
+    },
+    {
+      "name": "rainFile",
+      "field": "tempFile",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": {
+            "rain": "data/ngz/rain.txt"
+          }
+        }
+      }
+    }
+  ],
+  "link": [
+    {
+      "module": "swmm",
+      "time": "once",
+      "input": [
+        {
+          "into": "swmmUni",
+          "use": "new",
+          "new": {
+            "field": "swmmUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "inFile": true,
+                  "inFilePath": "data/ngz/swmmUni.json"
+                },
+                "data": null
+              }
+            }
+          }
+        },
+        {
+          "into": "rainFile",
+          "use": "instance",
+          "instance": "rainFile"
+        },
+        {
+          "into": "inpFile",
+          "use": "new",
+          "new": {
+            "field": "tempFile",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "fileList",
+                "config": {},
+                "data": {
+                  "inp": "data/ngz/swmmf_TT1.inp"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "output": [],
+      "recordInside": [
+        {
+          "catch": "floodNode",
+          "method": "vector",
+          "config": {},
+          "time": "always"
+        }
+      ],
+      "record": []
+    }
+  ]
+}
