@@ -1,0 +1,443 @@
+{
+  "version": 1,
+  "description": "模拟常州实验地区,sumo,lisflood生成地表径流,sumospeed分析每条道路平均积水情况,生成每段道路速度下降值,生成sumo速度文件",
+  "basic": {
+    // basic config
+    "timestep": 1,
+    "timeUnit": "hour",
+    "timeEpoch": 3, // 运行几次
+    "outputPath": "output/czs2-2/"
+  },
+  "instance": [
+    {
+      "name": "dem",
+      "field": "dem",
+      "init": {
+        "use": "define", // define | no | copy
+        "define": {
+          "method": "txt2Raster",
+          "config": {
+            "inDriver": "GTiff",
+            "inFilePath": "data/cz/4336sq_utm.tif"
+          },
+          "data": null
+        }
+      }
+    },
+    {
+      "name": "water",
+      "field": "rain",
+      "init": {
+        "use": "no"
+      }
+    },
+    {
+      "name": "sumoNetwork",
+      "field": "sumoNet",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": { "sumoNet": "data/cz/test165.net.xml" }
+        }
+      }
+    },
+    {
+      "name": "road",
+      "field": "road",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "sumoNet2Road",
+          "config": {
+            "filepath": "data/cz/test165.net.xml",
+            "inProj": 4326,
+            "outProj": 32650
+          },
+          "data": {}
+        }
+      }
+    },
+    {
+      "name": "edgeRoad",
+      "field": "road",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "sumoNet2Road",
+          "config": {
+            "filepath": "data/cz/test165.net.xml",
+            "outEdge": true,
+            "inProj": 4326,
+            "outProj": 32650
+          },
+          "data": {}
+        }
+      }
+    },
+    {
+      "name": "sumoRoute",
+      "field": "tempFile",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": {
+            "route": "data/cz/si3.rou.xml"
+          }
+        }
+      }
+    },
+    {
+      "name": "sumoVssAddFile",
+      "field": "tempFile",
+      "init": {
+        "use": "no"
+      }
+    },
+    {
+      "name": "rainFile",
+      "field": "tempFile",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": { "rain": "data/cz/rain.txt" }
+        }
+      }
+    },
+    {
+      "name": "pointXY",
+      "field": "drainPoint",
+      "init": {
+        "use": "no"
+      }
+    },
+    {
+      "name": "pointWaterJson",
+      "field": "tempFile",
+      "init": {
+        "use": "no"
+      }
+    }
+  ],
+  "link": [
+    {
+      "module": "swmm",
+      "time": "once",
+      "input": [
+        {
+          "into": "swmmUni",
+          "use": "new",
+          "new": {
+            "field": "swmmUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "inFile": true,
+                  "inFilePath": "data/cz/swmmUni.json"
+                },
+                "data": null
+              }
+            }
+          }
+        },
+        {
+          "into": "inpFile",
+          "use": "new",
+          "new": {
+            "field": "tempFile",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "fileList",
+                "config": {},
+                "data": {
+                  "inp": "data/cz/CZSWMM.inp"
+                }
+              }
+            }
+          }
+        },
+        {
+          "into": "rainFile",
+          "use": "instance",
+          "instance": "rainFile"
+        }
+      ],
+      "output": [
+        {
+          "catch": "floodNode",
+          "put": "pointXY"
+        },
+        {
+          "catch": "pointWaterJson",
+          "put": "pointWaterJson"
+        }
+      ],
+      "recordInside": [
+        {
+          "catch": "floodNode",
+          "method": "vector",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "pointWaterJson",
+          "method": "json",
+          "config": {},
+          "time": "once"
+        }
+      ],
+      "record": []
+    },
+    {
+      "module": "lisflood",
+      "time": "once",
+      "input": [
+        {
+          "into": "dem",
+          "use": "instance",
+          "instance": "dem"
+        },
+        {
+          "into": "lisUni",
+          "use": "new",
+          "new": {
+            "field": "lisfloodUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "inFile": true,
+                  "inFilePath": "data/cz/lisdata1.json"
+                },
+                "data": null
+              }
+            }
+          }
+        },
+        {
+          "into": "addFiles",
+          "use": "new",
+          "new": {
+            "field": "tempFile",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "fileList",
+                "config": {},
+                "data": {
+                  "bci": ""
+                }
+              }
+            }
+          }
+        },
+        {
+          "into": "pointXY",
+          "use": "instance",
+          "instance": "pointXY"
+        },
+        {
+          "into": "pointWater",
+          "use": "instance",
+          "instance": "pointWaterJson"
+        }
+      ],
+      "output": [
+        {
+          "catch": "water",
+          "put": "water"
+        }
+      ],
+      "recordInside": [],
+      "record": [
+        {
+          "catch": "water",
+          "method": "raster",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "dem",
+          "method": "raster",
+          "config": {},
+          "time": "once"
+        }
+      ]
+    },
+    {
+      "module": "sumoSpeed",
+      "time": "once",
+      "input": [
+        {
+          "into": "sumoSpeedUni",
+          "use": "new",
+          "new": {
+            "field": "sumoSpeedUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "outListConf": true,
+                  "inFile": true,
+
+                  "inFilePath": "data/cz/sumoSpeedData1.json"
+                },
+                "data": null
+              }
+            }
+          }
+        },
+        {
+          "into": "water",
+          "use": "instance",
+          "instance": "water"
+        },
+        {
+          "into": "sumoNet",
+          "use": "instance",
+          "instance": "sumoNetwork"
+        },
+        {
+          "into": "road",
+          "use": "instance",
+          "instance": "road"
+        },
+        {
+          "into": "edgeRoad",
+          "use": "instance",
+          "instance": "edgeRoad"
+        }
+      ],
+      "output": [
+        {
+          "catch": "sroad",
+          "put": "edgeRoad"
+        },
+        {
+          "catch": "vssAddFile",
+          "put": "sumoVssAddFile"
+        }
+      ],
+      "recordInside": [
+        {
+          "catch": "edgeWaterJson",
+          "method": "json",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "edgeSpeedJson",
+          "method": "json",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "streetWaterJson",
+          "method": "json",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "streetSpeedJson",
+          "method": "json",
+          "config": {},
+          "time": "always"
+        }
+      ],
+      "record": [
+        {
+          "catch": "road",
+          "method": "vector",
+          "config": {},
+          "time": "once"
+        },
+        {
+          "catch": "edgeRoad",
+          "method": "vector",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "sumoVssAddFile",
+          "method": "file",
+          "config": { "all": true },
+          "time": "once"
+        }
+      ]
+    },
+    {
+      "module": "sumo",
+      "time": "once",
+      "input": [
+        {
+          "into": "sumoUni",
+          "use": "new",
+          "new": {
+            "field": "sumoUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "inFile": true,
+                  "inFilePath": "data/cz/sumodata1.json"
+                },
+                "data": null
+              }
+            }
+          }
+        },
+        {
+          "into": "network",
+          "use": "instance",
+          "instance": "sumoNetwork"
+        },
+        {
+          "into": "routeFiles",
+          "use": "instance",
+          "instance": "sumoRoute"
+        },
+        {
+          "into": "addFiles",
+          "use": "new",
+          "new": {
+            "field": "tempFile",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "fileMerge",
+                "config": {
+                  "inFileIns": "sumoVssAddFile",
+                  "inDetail": {
+                    "vss": "sumoVssAddFile:vss"
+                  }
+                },
+                "data": {}
+              }
+            }
+          }
+        }
+      ],
+      "output": [],
+      "recordInside": [
+        {
+          "catch": "files",
+          "method": "file",
+          "config": { "all": true },
+          "time": "once"
+        }
+      ],
+      "record": []
+    }
+  ]
+}

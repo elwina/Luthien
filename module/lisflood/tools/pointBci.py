@@ -14,11 +14,13 @@ def getBciBdy(vField: VectorBase, pointWater: JsonBase):
             continue
         else:
             n = vField.getObjByOnePropNew("nodeid", node)
-            lenn=floods.__len__()
+            lenn = floods.__len__()
             if n is None: continue
             x, y = cast(TYPE_COO_T, n.coordinates)
-            bdy.append(f"P\t{x}\t{y}\tQVAR\t{node}\n")
-            bcistr=list(map(lambda a:"%.6f\t%d\n"%(a[1],a[0]),enumerate(floods)))
-            bci.append(f"{node}\n{lenn}\thours\n{bcistr}")
-    
-    return bci,bdy
+            bci.append(f"P\t{x}\t{y}\tQVAR\t{node}\n")
+            bdystr = list(
+                map(lambda a: "%.6f\t%d\n" % (a[1], a[0]), enumerate(floods)))
+            bdystr = "".join(bdystr)
+            bdy.append(f"{node}\n{lenn}\thours\n{bdystr}")
+
+    return bci, bdy

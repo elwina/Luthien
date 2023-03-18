@@ -84,6 +84,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
 
     ifBdy=False
     bdyFilename = os.path.join(tempDir, "auto.bdy")
+
     if config.getOne("bciFromPoint")==1:
         pointXYIns=cast(VectorBase,instances["pointXY"])
         pointWaterIns=cast(JsonBase,instances["pointWater"])
@@ -94,6 +95,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
             fp.write("".join(bci))
             ifBci = True
         with open(bdyFilename,mode="w",encoding="utf-8") as fp:
+            fp.write("auto generated\n")
             fp.write("".join(bdy))
             ifBdy=True
 

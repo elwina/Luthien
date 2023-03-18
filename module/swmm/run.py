@@ -51,7 +51,7 @@ def swmmRun(putout: Callable[[TYPE_Putout], None],
         subprocess.run(cmd, shell=True, cwd=tempDir)
 
     nodeIns = nodeExtract(inpPath)
-    nodeIns.trans2Proj(3395, 32650)
+    # nodeIns.trans2Proj(3395, 32650)
 
     pjson: dict[str, list[float]] = {}
 

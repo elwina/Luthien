@@ -68,6 +68,7 @@ from module.sumo.field.uniField import UniField as SumoUniField
 from module.sumo.field.sumoNetField import SumoNetField
 from module.sumoSpeed.field.uniField import UniField as SumoSpeedUniField
 from module.swmm.field.uniField import UniField as SwmmUniField
+from module.swmm.field.drainPointField import DrainPointField
 
 FIELD_LIST: TYPE_FIELD_LIST = {
     "dem": DemField,
@@ -78,5 +79,6 @@ FIELD_LIST: TYPE_FIELD_LIST = {
     "sumoUni": SumoUniField,
     "sumoNet": SumoNetField,
     "sumoSpeedUni": SumoSpeedUniField,
-    "swmmUni":SwmmUniField
+    "swmmUni":SwmmUniField,
+    "drainPoint":DrainPointField
 }

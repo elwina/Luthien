@@ -22,7 +22,7 @@ def nodeExtract(filepath: str):
             if not line:
                 break
             str = line.strip()
-
+            if str.__len__() == 0: continue
             if str[0] == ";":
                 continue
 
@@ -74,6 +74,8 @@ def getType(filepath: str, find="[OUTFALLS]"):
             if not line:
                 break
             str = line.strip()
+
+            if str.__len__()==0:continue
 
             if str[0] == ";":
                 continue
