@@ -1,0 +1,181 @@
+#PCSWMM project file
+#Please do not edit
+[Project Summary]
+Compute Time= < 1 sec
+Routing Error=-0.599
+Runoff Error=-0.838
+[GIS]
+VisibleExtent.XMax=782160.796247351
+VisibleExtent.XMin=779113.364752649
+VisibleExtent.YMax=3526408.92795887
+VisibleExtent.YMin=3524482.12504113
+[Layers]
+layer0=Subcatchments.shp
+layer1=Outlets.shp
+layer2=Weirs.shp
+layer3=Orifices.shp
+layer4=Pumps.shp
+layer5=Conduits.shp
+layer6=Storages.shp
+layer7=Dividers.shp
+layer8=Outfalls.shp
+layer9=Junctions.shp
+[General]
+Project Type=SHAPE
+Auto-Length=False
+Show Uncertainty=False
+Version=2
+Flow Path=
+Pathway Priority=0
+Pathway Tag=
+Last Access=03/22/2023 18:29:17
+Last Access Shape=03/22/2023 18:29:17
+SWMM5 Version=5.0.022
+PCSWMM.NET Version=5.2.1313
+Detail Scenario=CZSWMM2.inp
+Detail Bookmark=Top of File
+Detail Style=Full
+Status Scenario=CZSWMM2.inp
+Status Bookmark=Top of File
+Status Style=Full
+Last Report Date=03/22/2023 17:52:22
+Package Path=C:\Users\wyx\Desktop\CZSWMM2.pcz
+Map EPSG=0
+POI file=
+[Labels]
+WEIR_Coeff=3.33
+[Scenarios]
+"Scenarios0"="D:\Workspace\luthien\data\cz\CZSWMM2.inp",False,False
+[Graph]
+Plotting Position=Gringorten
+[Defaults]
+SUBCATCH_FLOWLENGTH=0
+[Animation]
+Hide non_SWMM5 layers=False
+Subcat Scheme=GR_One
+Subcat Thresh=0
+Nodes Fn=Flooding
+Nodes Scheme=GR_One
+Nodes Size=True
+Nodes Thresh=0
+Links Scheme=GR_One
+Links Size=False
+Links Thresh=0
+Animate Depth=False
+2D Scheme=LBR_Two
+2D Thresh=0
+Animate Vector=False
+Vector Scheme=GR_One
+Vector Thresh=0
+Vector Size=2
+[Map Options]
+Arrow Size=10
+Arrow Style=None
+Draw Transect=False
+Show POI=False
+Transect Color=-16744448
+Flooding Analysis=False
+[Overview]
+Name=
+[Locations]
+0=D:\Workspace\luthien\data\cz\
+1=D:\Workspace\luthien\data\cz\
+2=D:\Workspace\luthien\data\cz\
+3=D:\Workspace\luthien\data\cz\
+4=D:\Workspace\luthien\data\cz\
+5=D:\Workspace\luthien\data\cz\
+6=D:\Workspace\luthien\data\cz\
+7=D:\Workspace\luthien\data\cz\
+8=D:\Workspace\luthien\data\cz\
+9=D:\Workspace\luthien\data\cz\
+10=D:\Workspace\luthien\data\cz\
+11=D:\Workspace\luthien\data\cz\
+12=D:\Workspace\luthien\data\cz\
+13=D:\Workspace\luthien\data\cz\
+14=D:\Workspace\luthien\data\cz\
+15=D:\Workspace\luthien\data\cz\
+16=D:\Workspace\luthien\data\cz\
+17=D:\Workspace\luthien\data\cz\
+18=D:\Workspace\luthien\data\cz\
+19=D:\Workspace\luthien\data\cz\
+20=D:\Workspace\luthien\data\cz\
+21=D:\Workspace\luthien\data\cz\
+22=D:\Workspace\luthien\data\cz\
+23=D:\Workspace\luthien\data\cz\
+24=D:\Workspace\luthien\data\cz\
+25=D:\Workspace\luthien\data\cz\
+26=D:\Workspace\luthien\data\cz\
+27=D:\Workspace\luthien\data\cz\
+28=D:\Workspace\luthien\data\cz\
+29=D:\Workspace\luthien\data\cz\
+30=D:\Workspace\luthien\data\cz\
+31=D:\Workspace\luthien\data\cz\
+32=D:\Workspace\luthien\data\cz\
+33=D:\Workspace\luthien\data\cz\
+34=D:\Workspace\luthien\data\cz\
+35=D:\Workspace\luthien\data\cz\
+36=D:\Workspace\luthien\data\cz\
+37=D:\Workspace\luthien\data\cz\
+38=D:\Workspace\luthien\data\cz\
+39=D:\Workspace\luthien\data\cz\
+40=D:\Workspace\luthien\data\cz\
+41=D:\Workspace\luthien\data\cz\
+[Flood Analysis]
+Transect Layer=
+FVA Layer=
+DEM Layer=
+Flood Layer=
+CenterLine Layer=
+Spacing=1
+Length=200
+interval=100
+Use CrossPt=False
+Minimum Length=0
+[2D]
+2DModeling=False
+Bounding=
+Obstruction=
+Points=
+Edge layer=
+Out layer=
+CenterLine=
+DEM layer=
+Elevations=
+Hydrograph layer=
+Velocity On=False
+[Google]
+KML Type=One
+Tilt=45
+Heading=0
+Range=3562.3
+LookAt X=0
+LookAt Y=0
+Range Type=0
+Include Xsection=False
+Include POI=False
+[KML Layers]
+Subcatchments=True,True,False,True,False
+Outlets=True,True,False,True,False
+Weirs=True,True,False,True,False
+Orifices=True,True,False,True,False
+Pumps=True,True,False,True,False
+Conduits=True,True,False,True,False
+Storages=True,True,False,True,False
+Dividers=True,True,False,True,False
+Outfalls=True,True,False,True,False
+Junctions=True,True,False,True,False
+
+[UN_Raingages]
+
+[UN_Subcatchments]
+
+[UN_Infiltrations]
+
+[UN_Groundwaters]
+
+[UN_Junctions]
+
+[UN_Outfalls]
+
+[UN_Conduits]
+

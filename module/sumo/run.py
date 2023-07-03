@@ -43,6 +43,9 @@ def sumoRun(putout: Callable[[TYPE_Putout], None],
     cmd.append("--net-file")
     cmd.append("auto.net.xml")
 
+    cmd.append("--end")
+    cmd.append("43200")
+
     if "routeFiles" in instances and config.getOne("routeFiles") == 1:
         routeFilename = os.path.join(tempDir, "auto.route.xml")
         routeFilesIns = cast(TempFileField, instances["routeFiles"])
@@ -65,22 +68,36 @@ def sumoRun(putout: Callable[[TYPE_Putout], None],
     resDir = os.path.join(tempDir, "res")
     os.mkdir(resDir)
 
-    outputFiles = []
+    outputFiles = {}
     if config.getOne("out--tripinfo-output") == 1:
-        global tripinfoFilename
         tripinfoFilename = os.path.join("res", "res.tripinfo.xml")
         cmd.append("--tripinfo-output")
         cmd.append(tripinfoFilename)
         tripinfoFilename = os.path.join(tempDir, tripinfoFilename)
-        outputFiles.append(tripinfoFilename)
+        outputFiles["tripinfo"] = tripinfoFilename
+    if config.getOne("out--summary") == 1:
+        summaryFilename = os.path.join("res", "res.summary.xml")
+        cmd.append("--summary")
+        cmd.append(summaryFilename)
+        summaryFilename = os.path.join(tempDir, summaryFilename)
+        outputFiles["summary"] = summaryFilename
+    if config.getOne("out--lanedata-output") == 1:
+        lanedataFilename = os.path.join("res", "res.lanedata.xml")
+        cmd.append("--lanedata-output")
+        cmd.append(lanedataFilename)
+        lanedataFilename = os.path.join(tempDir, lanedataFilename)
+        outputFiles["lanedata"] = lanedataFilename
+    if config.getOne("out--queue-output") == 1:
+        queueFilename = os.path.join("res", "res.queue.xml")
+        cmd.append("--queue-output")
+        cmd.append(queueFilename)
+        queueFilename = os.path.join(tempDir, queueFilename)
+        outputFiles["queue"] = queueFilename
 
     subprocess.run(cmd, shell=True, cwd=tempDir)
 
-    Files = TempFileField()
-    Files.init()
-    Files.define(fileListIO, {}, {
-        "tripinfo": tripinfoFilename,
-    })
-    putout({"files": {0: Files}})
-    if config.getOne("out--tripinfo-output") == 1:
+    if outputFiles != {}:
+        Files = TempFileField()
+        Files.init()
+        Files.define(fileListIO, {}, outputFiles)
         putout({"files": {0: Files}})

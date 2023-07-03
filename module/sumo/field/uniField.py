@@ -18,6 +18,18 @@ UNI_INPUT_DICT_DEFAULT: TYPE_LIST_CONF_IN_DATA = [{
     "name": "out--tripinfo-output",
     "type": "int",
     "default": 0
+}, {
+    "name": "out--summary",
+    "type": "int",
+    "default": 0
+}, {
+    "name": "out--lanedata-output",
+    "type": "int",
+    "default": 0
+}, {
+    "name": "out--queue-output",
+    "type": "int",
+    "default": 0
 }]
 
 

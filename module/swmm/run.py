@@ -1,3 +1,4 @@
+import math
 import subprocess
 import os
 import platform
@@ -67,17 +68,41 @@ def swmmRun(putout: Callable[[TYPE_Putout], None],
             floodData: dict[str, float] = out.node_attribute(
                 NodeAttribute.FLOODING_LOSSES,  # type: ignore
                 t)  # type: ignore
+            pondData: dict[str, float] = out.node_attribute(
+                NodeAttribute.TOTAL_INFLOW,  # type: ignore
+                t)  # type: ignore
             # print(floodData)
 
             for obj in nodeIns.data.objects:
                 nodeid = obj.properties["nodeid"]
                 if nodeid in floodData:
-                    obj.properties["flood"] = floodData[nodeid]
-                    pjson[nodeid].append(floodData[nodeid])
-            putout({"floodNode": {t: nodeIns}})
+                    # obj.properties["flood"] = floodData[nodeid]
+                    if math.isclose(floodData[nodeid], 0.0):
+                        #pjson[nodeid].append(-pondData[nodeid])
+                        pjson[nodeid].append(0.0)
+                    else:
+                        pjson[nodeid].append(floodData[nodeid])
+            # putout({"floodNode": {t: nodeIns}})
+
+    for h in range(totalTime // 60):
+        for obj in nodeIns.data.objects:
+            nodeid = obj.properties["nodeid"]
+            if nodeid in pjson:
+                obj.properties["flood"] = getHourSum(pjson[nodeid], h)
+        putout({"floodNode": {h: nodeIns}})
 
     # pointWaterJson
     pointWaterJson = JsonBase("pointWater")
     pointWaterJson.init()
     pointWaterJson.data = pjson
     putout({"pointWaterJson": {0: pointWaterJson}})
+
+
+def getHourSum(list: list[float], hour):
+    re: float = 0
+    for i in range(hour * 60, (hour + 1) * 60):
+        if i > list.__len__():
+            continue
+        else:
+            re = re + list[i]
+    return re

@@ -99,7 +99,7 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
                 obj.properties["water_depth"] = depth
 
                 # 核心速度公式区域
-                v0 = obj.properties.get("speed", 30)
+                v0 = obj.properties.get("ospeed", 30)
                 if v0 == 0: v0 = 30
                 speed, change = newSpeed(v0, depth)
 
@@ -134,7 +134,7 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
             for time in edgeSpeed:
                 timeSeconds = time * tss
                 vssEdgeTime = vssXml.createElement("step")
-                vssEdgeTime.setAttribute("time", str(timeSeconds))
+                vssEdgeTime.setAttribute("time", str(timeSeconds + 25200))
                 vssEdgeTime.setAttribute("speed",
                                          str(edgeSpeed[time][edgeid]["speed"]))
                 vssEdge.appendChild(vssEdgeTime)
@@ -144,10 +144,10 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
     vssPath = os.path.join(tempDir, "vss.add.xml")
     with open(vssPath, "w") as f:
         vssXml.writexml(f, indent="", addindent="\t", newl="\n")
-    vssAddFile=TempFileField()
+    vssAddFile = TempFileField()
     vssAddFile.init()
-    vssAddFile.define(fileListIO,{},{"vss":vssPath})
-    putout({"vssAddFile": {0:vssAddFile}})
+    vssAddFile.define(fileListIO, {}, {"vss": vssPath})
+    putout({"vssAddFile": {0: vssAddFile}})
 
     if road is not None and uni.getOne("ifStreet") == 1:
         # 按街道进行平均计算

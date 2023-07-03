@@ -5,7 +5,7 @@
     // basic config
     "timestep": 1,
     "timeUnit": "hour",
-    "timeEpoch": 3, // 运行几次
+    "timeEpoch": 6, // 运行几次
     "outputPath": "output/czs2-2/"
   },
   "instance": [
@@ -101,12 +101,7 @@
       "name": "rainFile",
       "field": "tempFile",
       "init": {
-        "use": "define",
-        "define": {
-          "method": "fileList",
-          "config": {},
-          "data": { "rain": "data/cz/rain.txt" }
-        }
+        "use": "no"
       }
     },
     {
@@ -126,71 +121,39 @@
   ],
   "link": [
     {
-      "module": "swmm",
+      "module": "geneRain",
       "time": "once",
       "input": [
         {
-          "into": "swmmUni",
+          "into": "geneRainUni",
           "use": "new",
           "new": {
-            "field": "swmmUni",
+            "field": "geneRainUni",
             "init": {
               "use": "define",
               "define": {
                 "method": "json",
                 "config": {
                   "inFile": true,
-                  "inFilePath": "data/cz/swmmUni.json"
+                  "inFilePath": "data/cz/geneRainUni.json"
                 },
                 "data": null
               }
             }
           }
-        },
-        {
-          "into": "inpFile",
-          "use": "new",
-          "new": {
-            "field": "tempFile",
-            "init": {
-              "use": "define",
-              "define": {
-                "method": "fileList",
-                "config": {},
-                "data": {
-                  "inp": "data/cz/CZSWMM.inp"
-                }
-              }
-            }
-          }
-        },
-        {
-          "into": "rainFile",
-          "use": "instance",
-          "instance": "rainFile"
         }
       ],
       "output": [
         {
-          "catch": "floodNode",
-          "put": "pointXY"
-        },
-        {
-          "catch": "pointWaterJson",
-          "put": "pointWaterJson"
+          "catch": "rainFile",
+          "put": "rainFile"
         }
       ],
       "recordInside": [
         {
-          "catch": "floodNode",
-          "method": "vector",
-          "config": {},
-          "time": "always"
-        },
-        {
-          "catch": "pointWaterJson",
-          "method": "json",
-          "config": {},
+          "catch": "rainFile",
+          "method": "file",
+          "config": { "all": true },
           "time": "once"
         }
       ],
@@ -249,7 +212,8 @@
           "into": "pointWater",
           "use": "instance",
           "instance": "pointWaterJson"
-        }
+        },
+        { "into": "staRainFile", "use": "instance", "instance": "rainFile" }
       ],
       "output": [
         {

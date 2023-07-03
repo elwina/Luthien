@@ -1,6 +1,6 @@
 {
-  "simTime": 10800,
-  "recordNum": 3,
+  "simTime": 21600,
+  "recordNum": 6,
 
   "rainFromConf": 0,
   "rainBase": 2,

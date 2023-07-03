@@ -37,13 +37,15 @@ from module.landslideEva.main import Module as landslideEva
 from module.sumo.main import Module as sumo
 from module.sumoSpeed.main import Module as sumoSpeed
 from module.swmm.main import Module as swmm
+from module.geneRain.main import Module as geneRain
 
 MODULE_LIST: TYPE_MODULE_LIST = {
     "lisflood": lisflood,
     "landslideEva": landslideEva,
     "sumo": sumo,
     "sumoSpeed": sumoSpeed,
-    "swmm": swmm
+    "swmm": swmm,
+    "geneRain":geneRain
 }
 
 from core.base.listConf import ListConfBase
@@ -69,6 +71,7 @@ from module.sumo.field.sumoNetField import SumoNetField
 from module.sumoSpeed.field.uniField import UniField as SumoSpeedUniField
 from module.swmm.field.uniField import UniField as SwmmUniField
 from module.swmm.field.drainPointField import DrainPointField
+from module.geneRain.field.uniField import UniField as GeneRainUniField
 
 FIELD_LIST: TYPE_FIELD_LIST = {
     "dem": DemField,
@@ -79,6 +82,7 @@ FIELD_LIST: TYPE_FIELD_LIST = {
     "sumoUni": SumoUniField,
     "sumoNet": SumoNetField,
     "sumoSpeedUni": SumoSpeedUniField,
-    "swmmUni":SwmmUniField,
-    "drainPoint":DrainPointField
+    "swmmUni": SwmmUniField,
+    "drainPoint": DrainPointField,
+    "geneRainUni": GeneRainUniField
 }

@@ -21,6 +21,8 @@ from core.tools.raster2Txt import raster2Txt
 
 from loguru import logger
 
+from module.lisflood.tools.staRain import staRain
+
 
 def lisfloodRun(putout: Callable[[TYPE_Putout], None],
                 instances: MutableMapping[str, TYPE_Instance],
@@ -43,7 +45,8 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
     from core.field.demField import DemField
     dem = cast(DemField, instances["dem"])
     demFilename = os.path.join(tempDir, "dem.ascii")
-    raster2Txt(dem.data, demFilename)
+    cellsize = raster2Txt(dem.data, demFilename)
+    if cellsize is None: cellsize = 30
 
     # 雨水处理
     ifRain = False
@@ -74,30 +77,42 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         rainFilename = os.path.join(tempDir, "auto.rain")
         addFiles.getFile(config.getOne("rainFromFile"), rainFilename)
         ifRain = True
+    if config.getOne("rainFromStaFile") != 0:
+        rainFilename = os.path.join(tempDir, "auto.rain")
+        from core.field.tempFileField import TempFileField
+        staRainIns = cast(TempFileField, instances["staRainFile"])
+        staRain(staRainIns, rainFilename)
+        ifRain = True
 
     # 边界条件
     ifBci = False
     bciFilename = os.path.join(tempDir, "auto.bci")
+    with open(bciFilename, mode="w+", encoding="utf-8") as fp:
+        fp.write("E\t-10000000\t10000000\tFREE\n")
+        fp.write("S\t-10000000\t10000000\tFREE\n")
+        fp.write("W\t-10000000\t10000000\tFREE\n")
+        fp.write("N\t-10000000\t10000000\tFREE\n")
+        ifBci = True
     if config.getOne("bciFromFile") != "":
         addFiles.getFile(config.getOne("bciFromFile"), bciFilename)
         ifBci = True
 
-    ifBdy=False
+    ifBdy = False
     bdyFilename = os.path.join(tempDir, "auto.bdy")
 
-    if config.getOne("bciFromPoint")==1:
-        pointXYIns=cast(VectorBase,instances["pointXY"])
-        pointWaterIns=cast(JsonBase,instances["pointWater"])
+    if config.getOne("bciFromPoint") == 1:
+        pointXYIns = cast(VectorBase, instances["pointXY"])
+        pointWaterIns = cast(JsonBase, instances["pointWater"])
         from module.lisflood.tools.pointBci import getBciBdy
-        bci,bdy=getBciBdy(pointXYIns,pointWaterIns)
+        bci, bdy = getBciBdy(pointXYIns, pointWaterIns, cellsize)
 
-        with open(bciFilename, mode="w+", encoding="utf-8") as fp:
+        with open(bciFilename, mode="a+", encoding="utf-8") as fp:
             fp.write("".join(bci))
             ifBci = True
-        with open(bdyFilename,mode="w",encoding="utf-8") as fp:
+        with open(bdyFilename, mode="w", encoding="utf-8") as fp:
             fp.write("auto generated\n")
             fp.write("".join(bdy))
-            ifBdy=True
+            ifBdy = True
 
     parDict = {
         "DEMfile": "dem.ascii",
@@ -116,7 +131,6 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         parDict["bcifile"] = "auto.bci"
     if ifBdy:
         parDict["bdyfile"] = "auto.bdy"
-
 
     parFilename = os.path.join(tempDir, "auto.par")
     dict2Txt(parDict, parFilename)
@@ -144,6 +158,11 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         }, None)
         # 从meter转换为mm
         water.timesANum(1000)
+
+        # swmm调整
+        if i == 4: water.timesANum(0.1)
+        if i == 5: water.timesANum(0.01)
+
         water.data.xllCorner, water.data.yllCorner, water.data.cellSize = dem.data.xllCorner, dem.data.yllCorner, dem.data.cellSize
         putout({"water": {i: water}})
         pass

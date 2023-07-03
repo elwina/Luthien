@@ -65,6 +65,11 @@ UNI_INPUT_DICT_DEFAULT: TYPE_LIST_CONF_IN_DATA = [
         "name": "bciFromPoint",
         "type": "int",
         "default": 0
+    },
+    {
+        "name": "rainFromStaFile",
+        "type": "int",
+        "default": 0
     }
 ]
 

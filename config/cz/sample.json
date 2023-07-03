@@ -1,0 +1,69 @@
+{
+  "version": 1,
+  "description": "模拟常州实验地区,sumo,lisflood生成地表径流,sumospeed分析每条道路平均积水情况,生成每段道路速度下降值,生成sumo速度文件",
+  "basic": {
+    // basic config
+    "timestep": 1,
+    "timeUnit": "hour",
+    "timeEpoch": 6, // 运行几次
+    "outputPath": "output/czs2/"
+  },
+  "instance": [
+    {
+      "name": "dem",
+      "field": "dem",
+      "init": {
+        "use": "define", // define | no | copy
+        "define": {
+          "method": "txt2Raster",
+          "config": {
+            "inDriver": "GTiff",
+            "inFilePath": "data/cz/4336sq_utm.tif"
+          },
+          "data": null
+        }
+      }
+    }
+  ],
+  "link": [
+    {
+      "module": "geneRain",
+      "time": "once",
+      "input": [
+        {
+          "into": "geneRainUni",
+          "use": "new",
+          "new": {
+            "field": "geneRainUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "inFile": true,
+                  "inFilePath": "data/cz/geneRainUni.json"
+                },
+                "data": null
+              }
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "catch": "rainFile",
+          "put": "rainFile"
+        }
+      ],
+      "recordInside": [
+        {
+          "catch": "rainFile",
+          "method": "file",
+          "config": { "all": true },
+          "time": "once"
+        }
+      ],
+      "record": []
+    }
+  ]
+}

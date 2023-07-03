@@ -5,7 +5,7 @@ from core.base.vector import VectorBase
 from core.base.vectorType import TYPE_COO_T
 
 
-def getBciBdy(vField: VectorBase, pointWater: JsonBase):
+def getBciBdy(vField: VectorBase, pointWater: JsonBase,cellsize:float):
     bdy = []
     bci = []
 
@@ -19,8 +19,9 @@ def getBciBdy(vField: VectorBase, pointWater: JsonBase):
             x, y = cast(TYPE_COO_T, n.coordinates)
             bci.append(f"P\t{x}\t{y}\tQVAR\t{node}\n")
             bdystr = list(
-                map(lambda a: "%.6f\t%d\n" % (a[1], a[0]), enumerate(floods)))
+                map(lambda a: "%.6f\t%d\n" % (a[1] / cellsize, a[0] * 60),
+                    enumerate(floods)))
             bdystr = "".join(bdystr)
-            bdy.append(f"{node}\n{lenn}\thours\n{bdystr}")
+            bdy.append(f"{node}\n{lenn}\tseconds\n{bdystr}")
 
     return bci, bdy

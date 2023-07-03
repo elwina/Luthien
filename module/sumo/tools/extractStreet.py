@@ -79,6 +79,7 @@ def extractStreet2MultiLineString(filename: str):
 
         speed = net.getEdge(edgeid).getSpeed()
         newObj[name].properties['speed'] = speed
+        newObj[name].properties['ospeed'] = speed
         # # 手工查询shape
         # fromjuction = edge.attrib.get('from')
         # tojuction = edge.attrib.get('to')

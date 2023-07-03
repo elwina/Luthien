@@ -30,7 +30,6 @@ class ListConfBase(BaseBase):
         self.typeName = typeName
         super().__init__()
 
-
     def init(self, list: TYPE_LIST_CONF_IN_DATA):
         '''每个子类必须在__init__中调用此函数'''
         self.key = [item["name"] for item in list]
@@ -62,6 +61,9 @@ class ListConfBase(BaseBase):
         '''获取值'''
         # TODO 泛型支持
         return self.data[key]
+
+    def getManyFloats(self, keys: list[str]):
+        return tuple(map(lambda x: float(self.getOne(x)), keys))
 
     def setter(self, indata: dict):
         '''批量设置值'''

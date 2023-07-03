@@ -14,6 +14,7 @@
 - conda install numpy
 - conda install -c conda-forge matplotlib
 - numba
+- conda install Pandas
 
 # cli support
 - sumo 

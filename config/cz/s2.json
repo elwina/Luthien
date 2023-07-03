@@ -5,7 +5,7 @@
     // basic config
     "timestep": 1,
     "timeUnit": "hour",
-    "timeEpoch": 3, // 运行几次
+    "timeEpoch": 6, // 运行几次
     "outputPath": "output/czs2/"
   },
   "instance": [
@@ -101,7 +101,7 @@
       "name": "rainFile",
       "field": "tempFile",
       "init": {
-        "use": "define",
+        "use": "no",
         "define": {
           "method": "fileList",
           "config": {},
@@ -125,6 +125,45 @@
     }
   ],
   "link": [
+    {
+      "module": "geneRain",
+      "time": "once",
+      "input": [
+        {
+          "into": "geneRainUni",
+          "use": "new",
+          "new": {
+            "field": "geneRainUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "inFile": true,
+                  "inFilePath": "data/cz/geneRainUni.json"
+                },
+                "data": null
+              }
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "catch": "rainFile",
+          "put": "rainFile"
+        }
+      ],
+      "recordInside": [
+        {
+          "catch": "rainFile",
+          "method": "file",
+          "config": { "all": true },
+          "time": "once"
+        }
+      ],
+      "record": []
+    },
     {
       "module": "swmm",
       "time": "once",
@@ -158,7 +197,7 @@
                 "method": "fileList",
                 "config": {},
                 "data": {
-                  "inp": "data/cz/CZSWMM.inp"
+                  "inp": "data/cz/CZSWMM2.inp"
                 }
               }
             }
@@ -421,6 +460,68 @@
                   "inDetail": {
                     "vss": "sumoVssAddFile:vss"
                   }
+                },
+                "data": {}
+              }
+            }
+          }
+        }
+      ],
+      "output": [],
+      "recordInside": [
+        {
+          "catch": "files",
+          "method": "file",
+          "config": { "all": true },
+          "time": "once"
+        }
+      ],
+      "record": []
+    },
+    {
+      "module": "sumo",
+      "time": "once",
+      "input": [
+        {
+          "into": "sumoUni",
+          "use": "new",
+          "new": {
+            "field": "sumoUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "inFile": true,
+                  "inFilePath": "data/cz/sumodata2.json"
+                },
+                "data": null
+              }
+            }
+          }
+        },
+        {
+          "into": "network",
+          "use": "instance",
+          "instance": "sumoNetwork"
+        },
+        {
+          "into": "routeFiles",
+          "use": "instance",
+          "instance": "sumoRoute"
+        },
+        {
+          "into": "addFiles",
+          "use": "new",
+          "new": {
+            "field": "tempFile",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "fileMerge",
+                "config": {
+                  "inFileIns": "sumoVssAddFile",
+                  "inDetail": {}
                 },
                 "data": {}
               }

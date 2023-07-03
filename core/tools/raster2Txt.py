@@ -21,6 +21,7 @@ def raster2Txt(rasterData: TYPE_RASTER_DATA, filename: str):
                     rasterData.radata))
             dataList[-1] = dataList[-1][:-1]
             fp.writelines(dataList)
+            return rasterData.cellSize
     except Exception as e:
         logger.error(e)
         logger.error("Cannot write raster txt.")

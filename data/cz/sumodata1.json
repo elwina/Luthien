@@ -2,5 +2,8 @@
   "route": 1,
   "routeFiles": 1,
   "addFiles": 1,
-  "out--tripinfo-output": 1
+  "out--tripinfo-output": 1,
+  "out--summary": 1,
+  "out--lanedata-output": 1,
+  "out--queue-output": 1
 }

@@ -19,6 +19,9 @@ MODULE_INSTANCE_INF: TYPE_Information = {
     },
     "pointWater": {
         "required": False
+    },
+    "staRainFile": {
+        "required": False
     }
 }
 
