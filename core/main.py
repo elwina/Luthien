@@ -14,7 +14,6 @@ from loguru import logger
 
 
 def start():
-
     try:
         opts, args = getopt.getopt(sys.argv[2:], "c:", [])
         for opt, arg in opts:
@@ -31,8 +30,7 @@ def start():
     configGlobal.initConfig()
 
     # 初始化日志记录
-    logger.add(configGlobal.getConfig()["basic"]["outputPath"] + "main.log",
-               mode="w")
+    logger.add(configGlobal.getConfig()["basic"]["outputPath"] + "main.log", mode="w")
     logger.info("Log system starts running.")
 
     # 新建temp目录
@@ -45,5 +43,5 @@ def start():
     # 开始运行
     logger.info("Controller starts running.")
     ct = Controller()
-    envGlobal.ct=ct
+    envGlobal.ct = ct
     ct.run()

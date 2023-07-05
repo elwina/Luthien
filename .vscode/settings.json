@@ -1,5 +1,5 @@
 {
-  "python.formatting.provider": "yapf",
+  "python.formatting.provider": "none",
   "python.analysis.typeCheckingMode": "basic",
   "editor.formatOnSave": true,
   "python.analysis.diagnosticMode": "workspace",
@@ -10,6 +10,13 @@
     ".vscode/*.py",
     "template/**/*.py"
   ],
-  "python.analysis.exclude": ["template/**/*.py"],
-  "typescript.tsdk": "./web/configui/node_modules/typescript/lib"
+  "python.analysis.exclude": [
+    "template/**/*.py",
+    ".conda",
+    "web/configui"
+  ],
+  "typescript.tsdk": "./web/configui/node_modules/typescript/lib",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter"
+  }
 }

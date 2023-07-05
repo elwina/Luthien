@@ -1,6 +1,5 @@
 from typing import MutableSequence, cast
 import numpy
-from scipy.spatial import Voronoi, voronoi_plot_2d
 
 from core.base.vectorType import TYPE_COO_T
 
@@ -8,6 +7,7 @@ from core.base.vectorType import TYPE_COO_T
 def nodeExtract(filepath: str):
     from module.swmm.field.drainPointField import DrainPointField
     from core.base.vectorType import AVector
+
     field = DrainPointField()
     objs: MutableSequence[AVector] = []
 
@@ -15,14 +15,15 @@ def nodeExtract(filepath: str):
     outfalls = getType(path, "[OUTFALLS]")
     junctions = getType(path, "[JUNCTIONS]")
 
-    with open(path, mode='r', encoding='utf-8') as fp:
+    with open(path, mode="r", encoding="utf-8") as fp:
         ifIn = False
         while True:
             line = fp.readline()
             if not line:
                 break
             str = line.strip()
-            if str.__len__() == 0: continue
+            if str.__len__() == 0:
+                continue
             if str[0] == ";":
                 continue
 
@@ -41,8 +42,10 @@ def nodeExtract(filepath: str):
 
                 av.properties["nodeid"] = nodeid
 
-                if nodeid in junctions: av.properties["type"] = "junction"
-                if nodeid in outfalls: av.properties["type"] = "outfall"
+                if nodeid in junctions:
+                    av.properties["type"] = "junction"
+                if nodeid in outfalls:
+                    av.properties["type"] = "outfall"
 
                 av.coordinates = (cooX, cooY)
                 objs.append(av)
@@ -67,7 +70,7 @@ def nodeExtract(filepath: str):
 
 def getType(filepath: str, find="[OUTFALLS]"):
     re = []
-    with open(filepath, mode='r', encoding='utf-8') as fp:
+    with open(filepath, mode="r", encoding="utf-8") as fp:
         ifIn = False
         while True:
             line = fp.readline()
@@ -75,7 +78,8 @@ def getType(filepath: str, find="[OUTFALLS]"):
                 break
             str = line.strip()
 
-            if str.__len__()==0:continue
+            if str.__len__() == 0:
+                continue
 
             if str[0] == ";":
                 continue

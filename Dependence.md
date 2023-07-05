@@ -1,11 +1,11 @@
 # Dependences for Luthien
 
-- yapf
+- black
 - loguru
 - commentjson
 - typing_extensions
 - tqdm
-- conda install rasterio
+<!-- - conda install rasterio -->
 - conda install gdal
 - pyproj
 - bottle
@@ -23,8 +23,8 @@
 # environment
 - sumo bin in path
 - SUMO_HOME
-- gdal bin in path
-- GDAL_DATA
+<!-- - gdal bin in path
+- GDAL_DATA -->
 
 # dev
 - psutil
