@@ -10,3 +10,7 @@ class TYPE_Define_Declare(TypedDict):
 class TYPE_Init_Declare(TypedDict):
     use: Literal["define", "no", "copy"]
     define: TYPE_Define_Declare
+    copy: str
+
+
+TYPE_Define_Config = MutableMapping[str, Any]

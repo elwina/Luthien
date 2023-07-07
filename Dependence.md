@@ -25,6 +25,8 @@
 - SUMO_HOME
 <!-- - gdal bin in path
 - GDAL_DATA -->
+- PROJ_LIB
+- GDAL_DATA
 
 # dev
 - psutil

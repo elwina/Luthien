@@ -4,7 +4,7 @@ from typing import Any
 class _EnvGlobal:
     configPath: str = ""
 
-    ct:Any
+    ct: Any
 
     timestep: int
     timeUnit: str

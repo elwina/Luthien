@@ -31,3 +31,5 @@ class TYPE_Recorder_Data(TypedDict):
 TYPE_Recorder = Callable[[TYPE_Recorder_Data], None]
 
 TYPE_RECORDER_LIST = MutableMapping[str, TYPE_Recorder]
+
+TYPE_Record_Config = MutableMapping[str, Any]

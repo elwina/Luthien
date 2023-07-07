@@ -1,5 +1,3 @@
-from tqdm import tqdm
-
 from typing import Optional, Sequence
 from core.typing.linkType import TYPE_Link_Declare
 from core.typing.outputType import TYPE_Output_Action_Declare
@@ -19,8 +17,6 @@ class LinkManager:
 
     timenow: int
     nowLinkNum: int
-
-    pbar: tqdm
 
     def __init__(self):
         self.init()
@@ -44,11 +40,8 @@ class LinkManager:
         self.nowLinkNum = 0
         self.updateEnv()
 
-        self.pbar = tqdm(total=self.allEpoches * self.linkDeclare.__len__(),
-                         disable=True)
-
     def geneEpochs(self):
-        '''总轮数生成器'''
+        """总轮数生成器"""
         for i in range(self.allEpoches):
             self.timenow = i
             self.updateEnv()
@@ -58,45 +51,49 @@ class LinkManager:
                     self.nowLinkNum = num
                     self.updateEnv()
                     yield link
-                    self.pbar.update(1)
 
             yield i, geneLink()
 
     def ifLinkRun(self, num: Optional[int] = None) -> bool:
-        '''返回第num个link是否需要跑'''
-        if num is None: num = self.nowLinkNum
+        """返回第num个link是否需要跑"""
+        if num is None:
+            num = self.nowLinkNum
         time = self.timenow
         ts = self.linkDeclare[num]["time"]
         return ifTimeRun(ts, time)
 
     def getInputDeclare(self, num: Optional[int] = None):
         time = self.timenow
-        if num is None: num = self.nowLinkNum
+        if num is None:
+            num = self.nowLinkNum
         inputList = self.linkDeclare[num]["input"]
         return inputList
 
     def getOutputAction(
-            self,
-            num: Optional[int] = None) -> Sequence[TYPE_Output_Action_Declare]:
+        self, num: Optional[int] = None
+    ) -> Sequence[TYPE_Output_Action_Declare]:
         time = self.timenow
-        if num is None: num = self.nowLinkNum
+        if num is None:
+            num = self.nowLinkNum
         actionList = self.linkDeclare[num]["output"]
         return actionList
 
     def getRecordInside(self, num: Optional[int] = None):
         time = self.timenow
-        if num is None: num = self.nowLinkNum
+        if num is None:
+            num = self.nowLinkNum
         recordInsideList = self.linkDeclare[num]["recordInside"]
         recordInsideList = list(
-            filter(lambda x: ifTimeRun(x["time"]), recordInsideList))
+            filter(lambda x: ifTimeRun(x["time"]), recordInsideList)
+        )
         return recordInsideList
 
     def getRecordDeclare(self, num: Optional[int] = None):
         time = self.timenow
-        if num is None: num = self.nowLinkNum
+        if num is None:
+            num = self.nowLinkNum
         recordList = self.linkDeclare[num]["record"]
-        recordList = list(
-            filter(lambda x: ifTimeRun(x["time"]), recordList))
+        recordList = list(filter(lambda x: ifTimeRun(x["time"]), recordList))
         return recordList
 
     def updateEnv(self):
@@ -106,5 +103,5 @@ class LinkManager:
         envGlobal.moduleNow = self.linkDeclare[self.nowLinkNum]["module"]
 
     def timeParser(self):
-        '''[待开发]解析时间何时运行'''
+        """[待开发]解析时间何时运行"""
         pass

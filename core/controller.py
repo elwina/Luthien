@@ -6,8 +6,10 @@ from core.linkManager import LinkManager
 
 from loguru import logger
 
+logger = logger.bind(type="control")
 
-class Controller():
+
+class Controller:
     lMr: LinkManager
     iMr: InstanceManager
 
@@ -18,7 +20,7 @@ class Controller():
         self.initialize()
 
     def initialize(self):
-        '''Controller初始化'''
+        """Controller初始化"""
         logger.info("Controller starts initializing.")
 
         # iMr初始化
@@ -31,27 +33,31 @@ class Controller():
 
         # 模块初始化
         from config.register import MODULE_LIST
+
         for moName in MODULE_LIST:
             logger.info("Create Module {module_name}.", module_name=moName)
             self.modules[moName] = MODULE_LIST[moName]()
         logger.success("All modules created.")
 
     def run(self):
-        '''启动函数'''
+        """启动函数"""
         for epoch, links in self.lMr.geneEpochs():
             logger.info("Epoch {num} start.", num=epoch)
             self.iMr.updateInsTime()
 
             for link in links:
-                logger.info("Now process module {module_name}",
-                            module_name=link["module"])
-                self.mo = self.modules[link["module"]] 
+                logger.info(
+                    "Now process module {module_name}", module_name=link["module"]
+                )
+                self.mo = self.modules[link["module"]]
 
                 # 检查是否需要跑
                 if self.lMr.ifLinkRun():
                     # 需要跑
-                    logger.info("Put data in and run module {module_name}",
-                                module_name=link["module"])
+                    logger.info(
+                        "Put data in and run module {module_name}",
+                        module_name=link["module"],
+                    )
                     self.dataIn()
                     self.runOne()
                     self.dealOut()
