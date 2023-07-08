@@ -7,5 +7,5 @@ class TYPE_IO_Data(TypedDict):
     newData: Any
 
 
-TYPE_IO = Callable[[TYPE_IO_Data], TYPE_IO_Data]
+TYPE_IO = Callable[[TYPE_IO_Data], int]
 TYPE_IO_LIST = MutableMapping[str, TYPE_IO]

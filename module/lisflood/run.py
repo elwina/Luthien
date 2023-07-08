@@ -23,10 +23,14 @@ from loguru import logger
 
 from module.lisflood.tools.staRain import staRain
 
+logger.bind(type="module.lisflood")
 
-def lisfloodRun(putout: Callable[[TYPE_Putout], None],
-                instances: MutableMapping[str, TYPE_Instance],
-                optList: Sequence[str]):
+
+def lisfloodRun(
+    putout: Callable[[TYPE_Putout], None],
+    instances: MutableMapping[str, TYPE_Instance],
+    optList: Sequence[str],
+):
     logger.debug("Module Lisflood Run,optList:{opt}.", opt=",".join(optList))
 
     # 新建temp文件夹
@@ -35,6 +39,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
     os.mkdir(tempDir)
 
     from core.base.listConf import ListConfBase
+
     config = cast(ListConfBase, instances["lisUni"])
 
     if "addFiles" in optList:
@@ -43,10 +48,12 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
 
     # dem处理
     from core.field.demField import DemField
+
     dem = cast(DemField, instances["dem"])
     demFilename = os.path.join(tempDir, "dem.ascii")
     cellsize = raster2Txt(dem.data, demFilename)
-    if cellsize is None: cellsize = 30
+    if cellsize is None:
+        cellsize = 30
 
     # 雨水处理
     ifRain = False
@@ -57,12 +64,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         simTime = cast(int, config.getOne("simTime"))
         totalHours = math.ceil(simTime / 60 / 60)
 
-        strList = [
-            "# Auto Generated\n",
-            str(totalHours + 1) + "\t"
-            "hours"
-            "\n"
-        ]
+        strList = ["# Auto Generated\n", str(totalHours + 1) + "\t" "hours" "\n"]
         strList.append(str(rainBase) + "\t0" + "\n")
         for hourM1 in range(totalHours):
             hour = hourM1 + 1
@@ -80,6 +82,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
     if config.getOne("rainFromStaFile") != 0:
         rainFilename = os.path.join(tempDir, "auto.rain")
         from core.field.tempFileField import TempFileField
+
         staRainIns = cast(TempFileField, instances["staRainFile"])
         staRain(staRainIns, rainFilename)
         ifRain = True
@@ -104,6 +107,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         pointXYIns = cast(VectorBase, instances["pointXY"])
         pointWaterIns = cast(JsonBase, instances["pointWater"])
         from module.lisflood.tools.pointBci import getBciBdy
+
         bci, bdy = getBciBdy(pointXYIns, pointWaterIns, cellsize)
 
         with open(bciFilename, mode="a+", encoding="utf-8") as fp:
@@ -123,7 +127,7 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
         "massint": 100,
         "saveint": config.getOne("saveInt"),
         "fpfric": config.getOne("fpfric"),
-        "adaptoff": ""
+        "adaptoff": "",
     }
     if ifRain:
         parDict["rainfall"] = "auto.rain"
@@ -137,41 +141,49 @@ def lisfloodRun(putout: Callable[[TYPE_Putout], None],
 
     system = platform.system()
     if system == "Windows":
-        subprocess.run(["..\\bin\\lisflood.exe", "auto.par"],
-                       shell=True,
-                       cwd=tempDir)
+        subprocess.run(["..\\bin\\lisflood.exe", "auto.par"], shell=True, cwd=tempDir)
 
     elif system == "Linux":
         subprocess.run(["../bin/lisflood", "auto.par"], cwd=tempDir)
 
     from core.field.waterField import WaterField
+
     recordNum = cast(int, config.getOne("recordNum"))
     for i in range(recordNum):
         nameNum = "%04d" % i
-        outWaterFileName = os.path.join(tempDir, "results",
-                                        "res-%s.wd" % nameNum)
+        outWaterFileName = os.path.join(tempDir, "results", "res-%s.wd" % nameNum)
         water = WaterField()
         water.init()
-        water.define(rasterIO, {
-            "inDriver": "AAIGrid",
-            "inFilePath": outWaterFileName
-        }, None)
+        water.define(
+            rasterIO, {"inDriver": "AAIGrid", "inFilePath": outWaterFileName}, None
+        )
         # 从meter转换为mm
         water.timesANum(1000)
 
         # swmm调整
-        if i == 4: water.timesANum(0.1)
-        if i == 5: water.timesANum(0.01)
+        if i == 4:
+            water.timesANum(0.1)
+        if i == 5:
+            water.timesANum(0.01)
 
-        water.data.xllCorner, water.data.yllCorner, water.data.cellSize = dem.data.xllCorner, dem.data.yllCorner, dem.data.cellSize
+        water.data.xllCorner, water.data.yllCorner, water.data.cellSize = (
+            dem.data.xllCorner,
+            dem.data.yllCorner,
+            dem.data.cellSize,
+        )
         putout({"water": {i: water}})
         pass
 
     from core.field.tempFileField import TempFileField
+
     Files = TempFileField()
     Files.init()
-    Files.define(fileListIO, {}, {
-        "mass": os.path.join(tempDir, "results", "res.mass"),
-        "max": os.path.join(tempDir, "results", "res.max"),
-    })
+    Files.define(
+        fileListIO,
+        {},
+        {
+            "mass": os.path.join(tempDir, "results", "res.mass"),
+            "max": os.path.join(tempDir, "results", "res.max"),
+        },
+    )
     putout({"files": {0: Files}})
