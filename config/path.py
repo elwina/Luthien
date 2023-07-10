@@ -1,1 +1,1 @@
-CONFIG_JSON_PATH: str = "config/cz/s3-5.json"
+CONFIG_JSON_PATH: str = "config/test/s1.json"

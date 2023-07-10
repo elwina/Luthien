@@ -2,6 +2,7 @@ from core.field.tempFileField import TempFileField
 
 
 def staRain(rainField: TempFileField, rainPath: str):
+    """从staRain文件生成rain文件"""
     oldFile = rainField.getAFilePath("rain")
     newstr = ["# auto generate from sta\n"]
     with open(oldFile, "r", encoding="utf-8") as fp:
@@ -10,7 +11,8 @@ def staRain(rainField: TempFileField, rainPath: str):
         for i, line in enumerate(rls):
             arr = line.split()
             rain = 0
-            if float(arr[6]) > 0: rain = arr[6]
+            if float(arr[6]) > 0:
+                rain = arr[6]
             newstr.append(f"{rain}\t{i*60}\n")
     with open(rainPath, "w", encoding="utf-8") as fp:
         fp.write("".join(newstr))

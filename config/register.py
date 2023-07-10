@@ -4,6 +4,7 @@ from core.typing.fieldType import TYPE_FIELD_LIST
 from core.typing.recordType import TYPE_RECORDER_LIST
 
 from core.io.rasterIO import rasterIO
+from core.io.raster2IO import raster2IO
 from core.io.jsonIO import jsonIO
 from core.io.fileListIO import fileListIO
 from core.io.geojsonVectorIO import geojsonVectorIO
@@ -14,13 +15,16 @@ from module.sumo.io.sumoNet2RoadIO import sumoNet2RoadIO
 IO_LIST: TYPE_IO_LIST = {
     "json": jsonIO,
     "txt2Raster": rasterIO,
+    "raster": raster2IO,
     "fileList": fileListIO,
     "fileMerge": fileMergeIO,
     "geojson2Vector": geojsonVectorIO,
-    "sumoNet2Road": sumoNet2RoadIO
+    "sumoNet2Road": sumoNet2RoadIO,
 }
 
-from core.recorder.rasterRecorder import rasterRecorder
+from core.recorder.raster2Recorder import rasterRecorder
+
+# from core.recorder.raster2Recorder import rasterRecorder
 from core.recorder.fileRecoder import fileRecorder
 from core.recorder.jsonRecoder import jsonRecorder
 from core.recorder.vectorRecorder import vectorRecorder
@@ -29,7 +33,7 @@ RECORDER_LIST: TYPE_RECORDER_LIST = {
     "raster": rasterRecorder,
     "file": fileRecorder,
     "json": jsonRecorder,
-    "vector": vectorRecorder
+    "vector": vectorRecorder,
 }
 
 from module.lisflood.main import Module as lisflood
@@ -45,11 +49,11 @@ MODULE_LIST: TYPE_MODULE_LIST = {
     "sumo": sumo,
     "sumoSpeed": sumoSpeed,
     "swmm": swmm,
-    "geneRain":geneRain
+    "geneRain": geneRain,
 }
 
 from core.base.listConf import ListConfBase
-from core.base.raster import RasterBase
+from core.base.raster2 import RasterBase
 from core.base.vector import VectorBase
 from core.base.file import FileBase
 
@@ -57,7 +61,7 @@ BASE_LIST = {
     "listConf": ListConfBase,
     "raster": RasterBase,
     "vector": VectorBase,
-    "file": FileBase
+    "file": FileBase,
 }
 
 from core.field.demField import DemField
@@ -84,5 +88,5 @@ FIELD_LIST: TYPE_FIELD_LIST = {
     "sumoSpeedUni": SumoSpeedUniField,
     "swmmUni": SwmmUniField,
     "drainPoint": DrainPointField,
-    "geneRainUni": GeneRainUniField
+    "geneRainUni": GeneRainUniField,
 }

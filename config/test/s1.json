@@ -1,0 +1,86 @@
+{
+  "version": 1,
+  "description": "模拟常州实验地区,lisflood生成地表径流,sumospeed分析每条道路平均积水情况,生成每段道路速度下降值,生成sumo速度文件",
+  "basic": {
+    // basic config
+    "timestep": 1,
+    "timeUnit": "hour",
+    "timeEpoch": 3, // 运行几次
+    "outputPath": "output/test/"
+  },
+  "instance": [
+    {
+      "name": "dem",
+      "field": "dem",
+      "init": {
+        "use": "define", // define | no | copy
+        "define": {
+          "method": "raster",
+          "config": {
+            "inFilePath": "data/cz/4336sq_utm.tif"
+          },
+          "data": null
+        }
+      }
+    },
+    {
+      "name": "water",
+      "field": "rain",
+      "init": {
+        "use": "no"
+      }
+    }
+  ],
+  "link": [
+    {
+      "module": "lisflood",
+      "time": "once",
+      "input": [
+        {
+          "into": "dem",
+          "use": "instance",
+          "instance": "dem"
+        },
+        {
+          "into": "lisUni",
+          "use": "new",
+          "new": {
+            "field": "lisfloodUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "inFile": true,
+                  "inFilePath": "data/cz/lisdata1.json"
+                },
+                "data": null
+              }
+            }
+          }
+        }
+      ],
+      "output": [
+        {
+          "catch": "water",
+          "put": "water"
+        }
+      ],
+      "recordInside": [],
+      "record": [
+        {
+          "catch": "water",
+          "method": "raster",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "dem",
+          "method": "raster",
+          "config": {},
+          "time": "once"
+        }
+      ]
+    }
+  ]
+}

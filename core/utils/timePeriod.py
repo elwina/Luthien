@@ -1,8 +1,14 @@
 from core.envGlobal import envGlobal as eGl
 
+
 def timeStepSeconds():
     match eGl.timeUnit:
         case "hour":
-            return eGl.timestep*3600
+            return eGl.timestep * 3600
         case default:
-            return eGl.timestep*3600
+            return eGl.timestep * 3600
+
+
+def totalSimTimeSeconds():
+    unitseconds = timeStepSeconds()
+    return eGl.allEpoches * unitseconds

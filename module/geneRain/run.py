@@ -11,10 +11,14 @@ from module.geneRain.information import MODULE_ROOT
 
 from loguru import logger
 
+logger.bind(type="module.geneRain")
 
-def geneRainRun(putout: Callable[[TYPE_Putout], None],
-                instances: MutableMapping[str, TYPE_Instance],
-                optList: Sequence[str]):
+
+def geneRainRun(
+    putout: Callable[[TYPE_Putout], None],
+    instances: MutableMapping[str, TYPE_Instance],
+    optList: Sequence[str],
+):
     logger.debug("Module geneRain Run,optList:{opt}.", opt=",".join(optList))
 
     # 新建temp文件夹
@@ -23,6 +27,7 @@ def geneRainRun(putout: Callable[[TYPE_Putout], None],
     os.mkdir(tempDir)
 
     from core.base.listConf import ListConfBase
+
     uni = cast(ListConfBase, instances["geneRainUni"])
 
     # 芝加哥雨型
@@ -36,12 +41,11 @@ def geneRainRun(putout: Callable[[TYPE_Putout], None],
     for t in range(totalMinutes):
         if t <= float(r) * totalMinutes:
             t = totalMinutes / 2 - t
-            val = 60 * A * ((1 - C) * t / r + B) / ((t / r + B)**(C + 1))
+            val = 60 * A * ((1 - C) * t / r + B) / ((t / r + B) ** (C + 1))
             rains.append(val)
         else:
             t = t - totalMinutes / 2
-            val = 60 * A * ((1 - C) * t /
-                            (1 - r) + B) / ((t / (1 - r) + B)**(C + 1))
+            val = 60 * A * ((1 - C) * t / (1 - r) + B) / ((t / (1 - r) + B) ** (C + 1))
             rains.append(val)
 
     rainFile = TempFileField()
@@ -54,5 +58,6 @@ def geneRainRun(putout: Callable[[TYPE_Putout], None],
             fp.write(cin)
 
     from core.io.fileListIO import fileListIO
+
     rainFile.define(fileListIO, {}, {"rain": rainPath})
-    putout({"rainFile":{0:rainFile}})
+    putout({"rainFile": {0: rainFile}})

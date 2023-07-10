@@ -24,12 +24,12 @@ class RasterBase(BaseBase):
     data: TYPE_Raster_Data
 
     def __init__(self, typeName: str):
+        self.typeName = typeName
         super().__init__()
 
     def init(self):
         """每个子类必须调用此函数"""
         self.data = TYPE_Raster_Data()
-        self.data.file = ""
 
     def define(self, method: TYPE_IO, config: TYPE_Define_Config, data: Any):
         method({"config": config, "ins": self, "newData": data})
@@ -50,6 +50,38 @@ class RasterBase(BaseBase):
         """获取栅格"""
         return self.data.file
 
+    def getRasterInfo(self) -> dict:
+        """获取栅格信息"""
+        raster = gdal.Open(self.data.file, gdalconst.GA_ReadOnly)
+        band = raster.GetRasterBand(1)
+
+        (xllcorner, cellsize, _, oyllcorner, _, ycellsize) = raster.GetGeoTransform()
+        row = raster.RasterYSize
+        col = raster.RasterXSize
+        yllcorner = oyllcorner + ycellsize * row
+        nullData = band.GetNoDataValue()
+
+        raster = None
+        return {
+            col: col,
+            row: row,
+            xllcorner: xllcorner,
+            yllcorner: yllcorner,
+            cellsize: cellsize,
+            nullData: nullData,
+        }
+
+    def getExportRasterInfo(self):
+        raster = gdal.Open(self.data.file, gdalconst.GA_ReadOnly)
+        rasterinfo = raster.GetGeoTransform()
+        raster = None
+        return rasterinfo
+
+    def setImportRasterInfo(self, rasterinfo):
+        raster = gdal.Open(self.data.file, gdalconst.GA_Update)
+        raster.SetGeoTransform(rasterinfo)
+        raster = None
+
     def raster2array(self, bandNum=1):
         """栅格转数组"""
         raster = gdal.Open(self.data.file)
@@ -57,6 +89,7 @@ class RasterBase(BaseBase):
         array = band.ReadAsArray()
         array = np.array(array)
         nodata = band.GetNoDataValue()
+        raster = None
         return array, nodata
 
     def array2raster(self, newRasterfn, array, nodata=None):
@@ -82,6 +115,8 @@ class RasterBase(BaseBase):
         # outRasterSRS = osr.SpatialReference()
         # outRasterSRS.ImportFromWkt(raster.GetProjectionRef())
         # outRaster.SetProjection(outRasterSRS.ExportToWkt())
+        raster = None
+        outRaster = None
 
     def setImportFromFile(self, filepath: str):
         """从文件导入"""
@@ -100,7 +135,7 @@ class RasterBase(BaseBase):
         outband.SetNoDataValue(-9999)
         outband.FlushCache()
 
-        self.data.file = tempFile
+        self.setRaster(tempFile)
         src = None
         dst = None
 
@@ -158,7 +193,7 @@ class RasterBase(BaseBase):
         array[array != nodata] = array[array != nodata] * num
         tempFile = os.path.join("temp", str(uuid.uuid4()) + ".tiff")
         self.array2raster(tempFile, array, nodata)
-        self.data.file = tempFile
+        self.setRaster(tempFile)
 
     def getMaskLinearData(self, maskRaster: TYPE_Raster_Data):
         """获取掩膜线性数据"""

@@ -15,7 +15,7 @@ from core.typing.outputType import TYPE_Putout
 
 from module.lisflood.information import MODULE_ROOT
 
-from core.io.rasterIO import rasterIO
+from core.io.raster2IO import raster2IO
 from core.tools.dict2Txt import dict2Txt
 from core.tools.raster2Txt import raster2Txt
 
@@ -49,14 +49,16 @@ def lisfloodRun(
     # dem处理
     from core.field.demField import DemField
 
+    # 导出ASCII DEM到temp文件夹
     dem = cast(DemField, instances["dem"])
     demFilename = os.path.join(tempDir, "dem.ascii")
-    cellsize = raster2Txt(dem.data, demFilename)
-    if cellsize is None:
-        cellsize = 30
+    dem.getExportToFile(demFilename, outputType="AAIGrid")
+    # 读取dem头信息
+    deminfo = dem.getRasterInfo()
 
     # 雨水处理
     ifRain = False
+    # 简单通过配置生成降雨文件
     if config.getOne("rainFromConf") == 1:
         # 生成.rain
         rainBase = cast(int, config.getOne("rainBase"))
@@ -75,10 +77,12 @@ def lisfloodRun(
         with open(rainFilename, "w", encoding="utf-8") as fp:
             fp.write(rainString)
         ifRain = True
+    # 复制addfiles中降雨文件降雨
     if config.getOne("rainFromFile") != "":
         rainFilename = os.path.join(tempDir, "auto.rain")
         addFiles.getFile(config.getOne("rainFromFile"), rainFilename)
         ifRain = True
+    # 从sta文件生成降雨文件
     if config.getOne("rainFromStaFile") != 0:
         rainFilename = os.path.join(tempDir, "auto.rain")
         from core.field.tempFileField import TempFileField
@@ -90,25 +94,29 @@ def lisfloodRun(
     # 边界条件
     ifBci = False
     bciFilename = os.path.join(tempDir, "auto.bci")
+    # 自动生成四周开放的边界条件
     with open(bciFilename, mode="w+", encoding="utf-8") as fp:
         fp.write("E\t-10000000\t10000000\tFREE\n")
         fp.write("S\t-10000000\t10000000\tFREE\n")
         fp.write("W\t-10000000\t10000000\tFREE\n")
         fp.write("N\t-10000000\t10000000\tFREE\n")
         ifBci = True
+    # 从addfiles中复制边界条件文件
     if config.getOne("bciFromFile") != "":
         addFiles.getFile(config.getOne("bciFromFile"), bciFilename)
         ifBci = True
 
+    # 边界调节连续值
     ifBdy = False
     bdyFilename = os.path.join(tempDir, "auto.bdy")
 
+    # 通过pointXY和pointWater生成点溢流为主的边界条件
     if config.getOne("bciFromPoint") == 1:
         pointXYIns = cast(VectorBase, instances["pointXY"])
         pointWaterIns = cast(JsonBase, instances["pointWater"])
         from module.lisflood.tools.pointBci import getBciBdy
 
-        bci, bdy = getBciBdy(pointXYIns, pointWaterIns, cellsize)
+        bci, bdy = getBciBdy(pointXYIns, pointWaterIns, deminfo["cellsize"])
 
         with open(bciFilename, mode="a+", encoding="utf-8") as fp:
             fp.write("".join(bci))
@@ -118,6 +126,7 @@ def lisfloodRun(
             fp.write("".join(bdy))
             ifBdy = True
 
+    # 制作par参数文件
     parDict = {
         "DEMfile": "dem.ascii",
         "resroot": "res",
@@ -139,6 +148,7 @@ def lisfloodRun(
     parFilename = os.path.join(tempDir, "auto.par")
     dict2Txt(parDict, parFilename)
 
+    # 运行lisflood
     system = platform.system()
     if system == "Windows":
         subprocess.run(["..\\bin\\lisflood.exe", "auto.par"], shell=True, cwd=tempDir)
@@ -146,6 +156,7 @@ def lisfloodRun(
     elif system == "Linux":
         subprocess.run(["../bin/lisflood", "auto.par"], cwd=tempDir)
 
+    # 读取积水结果
     from core.field.waterField import WaterField
 
     recordNum = cast(int, config.getOne("recordNum"))
@@ -154,23 +165,19 @@ def lisfloodRun(
         outWaterFileName = os.path.join(tempDir, "results", "res-%s.wd" % nameNum)
         water = WaterField()
         water.init()
-        water.define(
-            rasterIO, {"inDriver": "AAIGrid", "inFilePath": outWaterFileName}, None
-        )
+
+        water.setImportFromFile(outWaterFileName)
         # 从meter转换为mm
-        water.timesANum(1000)
+        water.alterTimeANum(1000)
 
-        # swmm调整
-        if i == 4:
-            water.timesANum(0.1)
-        if i == 5:
-            water.timesANum(0.01)
+        # # swmm调整
+        # if i == 4:
+        #     water.alterTimeANum(0.1)
+        # if i == 5:
+        #     water.alterTimeANum(0.01)
 
-        water.data.xllCorner, water.data.yllCorner, water.data.cellSize = (
-            dem.data.xllCorner,
-            dem.data.yllCorner,
-            dem.data.cellSize,
-        )
+        water.setImportRasterInfo(dem.getExportRasterInfo())
+
         putout({"water": {i: water}})
         pass
 

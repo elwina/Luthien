@@ -2,12 +2,12 @@
   "simTime": 21600,
   "recordNum": 6,
 
-  "rainFromConf": 0,
+  "rainFromConf": 1,
   "rainBase": 20,
   "rainAddPerhour": 0,
   "bciFromFile": "",
   "fpfric": 0.04,
 
   "bciFromPoint": 0,
-  "rainFromStaFile": 1
+  "rainFromStaFile": 0
 }
