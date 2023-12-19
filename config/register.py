@@ -14,7 +14,6 @@ from module.sumo.io.sumoNet2RoadIO import sumoNet2RoadIO
 
 IO_LIST: TYPE_IO_LIST = {
     "json": jsonIO,
-    "txt2Raster": rasterIO,
     "raster": raster2IO,
     "fileList": fileListIO,
     "fileMerge": fileMergeIO,
@@ -28,12 +27,14 @@ from core.recorder.raster2Recorder import rasterRecorder
 from core.recorder.fileRecoder import fileRecorder
 from core.recorder.jsonRecoder import jsonRecorder
 from core.recorder.vectorRecorder import vectorRecorder
+from core.recorder.tableRecorder import tableRecorder
 
 RECORDER_LIST: TYPE_RECORDER_LIST = {
     "raster": rasterRecorder,
     "file": fileRecorder,
     "json": jsonRecorder,
     "vector": vectorRecorder,
+    "table": tableRecorder,
 }
 
 from module.lisflood.main import Module as lisflood
@@ -42,6 +43,7 @@ from module.sumo.main import Module as sumo
 from module.sumoSpeed.main import Module as sumoSpeed
 from module.swmm.main import Module as swmm
 from module.geneRain.main import Module as geneRain
+from module.genOD.main import Module as genOD
 
 MODULE_LIST: TYPE_MODULE_LIST = {
     "lisflood": lisflood,
@@ -50,24 +52,28 @@ MODULE_LIST: TYPE_MODULE_LIST = {
     "sumoSpeed": sumoSpeed,
     "swmm": swmm,
     "geneRain": geneRain,
+    "genOD": genOD,
 }
 
 from core.base.listConf import ListConfBase
 from core.base.raster2 import RasterBase
 from core.base.vector import VectorBase
 from core.base.file import FileBase
+from core.base.table import TableBase
 
 BASE_LIST = {
     "listConf": ListConfBase,
     "raster": RasterBase,
     "vector": VectorBase,
     "file": FileBase,
+    "table": TableBase,
 }
 
 from core.field.demField import DemField
 from core.field.waterField import WaterField
 from core.field.tempFileField import TempFileField
 from core.field.roadField import RoadField
+from core.field.buildingField import BuildingField
 
 from module.lisflood.field.uniField import UniField as LisfloodUniField
 from module.sumo.field.uniField import UniField as SumoUniField
@@ -76,11 +82,13 @@ from module.sumoSpeed.field.uniField import UniField as SumoSpeedUniField
 from module.swmm.field.uniField import UniField as SwmmUniField
 from module.swmm.field.drainPointField import DrainPointField
 from module.geneRain.field.uniField import UniField as GeneRainUniField
+from module.genOD.field.uniField import UniField as GenODUniField
 
 FIELD_LIST: TYPE_FIELD_LIST = {
     "dem": DemField,
     "rain": WaterField,
     "road": RoadField,
+    "building": BuildingField,
     "tempFile": TempFileField,
     "lisfloodUni": LisfloodUniField,
     "sumoUni": SumoUniField,
@@ -89,4 +97,5 @@ FIELD_LIST: TYPE_FIELD_LIST = {
     "swmmUni": SwmmUniField,
     "drainPoint": DrainPointField,
     "geneRainUni": GeneRainUniField,
+    "genODUni": GenODUniField,
 }

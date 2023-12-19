@@ -29,6 +29,51 @@
       "init": {
         "use": "no"
       }
+    },
+    {
+      "name": "sumoNetwork",
+      "field": "sumoNet",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "fileList",
+          "config": {},
+          "data": { "sumoNet": "data/cz/test165.net.xml" }
+        }
+      }
+    },
+    {
+      "name": "road",
+      "field": "road",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "sumoNet2Road",
+          "config": {
+            "filepath": "data/cz/test165.net.xml",
+            "inProj": 4326,
+            "outProj": 32650
+          },
+          "data": {}
+        }
+      }
+    },
+    {
+      "name": "edgeRoad",
+      "field": "road",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "sumoNet2Road",
+          "config": {
+            "filepath": "data/cz/test165.net.xml",
+            "outEdge": true,
+            "inProj": 4326,
+            "outProj": 32650
+          },
+          "data": {}
+        }
+      }
     }
   ],
   "link": [
@@ -73,12 +118,99 @@
           "method": "raster",
           "config": {},
           "time": "always"
+        }
+      ]
+    },
+
+    {
+      "module": "sumoSpeed",
+      "time": "once",
+      "input": [
+        {
+          "into": "sumoSpeedUni",
+          "use": "new",
+          "new": {
+            "field": "sumoSpeedUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "outListConf": true,
+                  "inFile": true,
+
+                  "inFilePath": "data/cz/sumoSpeedData1.json"
+                },
+                "data": null
+              }
+            }
+          }
         },
         {
-          "catch": "dem",
-          "method": "raster",
+          "into": "water",
+          "use": "instance",
+          "instance": "water"
+        },
+        {
+          "into": "sumoNet",
+          "use": "instance",
+          "instance": "sumoNetwork"
+        },
+        {
+          "into": "road",
+          "use": "instance",
+          "instance": "road"
+        },
+        {
+          "into": "edgeRoad",
+          "use": "instance",
+          "instance": "edgeRoad"
+        }
+      ],
+      "output": [
+        {
+          "catch": "sroad",
+          "put": "edgeRoad"
+        }
+      ],
+      "recordInside": [
+        {
+          "catch": "edgeWaterJson",
+          "method": "json",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "edgeSpeedJson",
+          "method": "json",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "streetWaterJson",
+          "method": "json",
+          "config": {},
+          "time": "always"
+        },
+        {
+          "catch": "streetSpeedJson",
+          "method": "json",
+          "config": {},
+          "time": "always"
+        }
+      ],
+      "record": [
+        {
+          "catch": "road",
+          "method": "vector",
           "config": {},
           "time": "once"
+        },
+        {
+          "catch": "edgeRoad",
+          "method": "vector",
+          "config": {},
+          "time": "always"
         }
       ]
     }

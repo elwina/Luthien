@@ -11,8 +11,6 @@ from module.geneRain.information import MODULE_ROOT
 
 from loguru import logger
 
-logger.bind(type="module.geneRain")
-
 
 def geneRainRun(
     putout: Callable[[TYPE_Putout], None],

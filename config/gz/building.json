@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "description": "tripgen",
+  "basic": {
+    "timestep": 1,
+    "timeUnit": "hour",
+    "timeEpoch": 1,
+    "outputPath": "output/testgen/"
+  },
+  "instance": [
+    {
+      "name": "building",
+      "field": "building",
+      "init": {
+        "use": "define",
+        "define": {
+          "method": "geojson2Vector",
+          "config": {
+            "inFile": true,
+            "inFilePath": "data/gz/building/newbuilding2.geojson"
+          },
+          "data": {}
+        }
+      }
+    }
+  ],
+  "link": [
+    {
+      "module": "genOD",
+      "time": "once",
+      "input": [
+        {
+          "into": "building",
+          "use": "instance",
+          "instance": "building"
+        },
+        {
+          "into": "genODUni",
+          "use": "new",
+          "new": {
+            "field": "genODUni",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "json",
+                "config": {
+                  "inFile": true,
+                  "inFilePath": "data/gz/geneODuni.json",
+                  "inGeoType": "Polygon"
+                },
+                "data": null
+              }
+            }
+          }
+        },
+        {
+          "into": "files",
+          "use": "new",
+          "new": {
+            "field": "tempFile",
+            "init": {
+              "use": "define",
+              "define": {
+                "method": "fileList",
+                "config": {},
+                "data": {
+                  "action": "data/gz/agent.action.json",
+                  "config": "data/gz/agent.config.json",
+                  "place": "data/gz/agent.place.json"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "output": [],
+      "recordInside": [
+        {
+          "catch": "ODTable",
+          "method": "table",
+          "config": {
+            "type": "csv"
+          },
+          "time": "once"
+        },
+        {
+          "catch": "ODJson",
+          "method": "json",
+          "config": {},
+          "time": "once"
+        },
+        {
+          "catch": "TraceJson",
+          "method": "json",
+          "config": {},
+          "time": "once"
+        }
+      ],
+      "record": []
+    }
+  ]
+}

@@ -200,6 +200,7 @@ class RasterBase(BaseBase):
         array, nodata = self.raster2array()
         array[array == nodata] = 0
         tempIns = RasterBase("temp")
+        tempIns.init()
         tempIns.setRaster(maskRaster.file)
         maskArray, maskNodata = tempIns.raster2array()
         if array.shape != maskArray.shape:
@@ -209,12 +210,12 @@ class RasterBase(BaseBase):
         return re
 
 
-r = RasterBase("r")
-from core.io.raster2IO import raster2IO
+# r = RasterBase("r")
+# from core.io.raster2IO import raster2IO
 
-r.init()
-r.define(raster2IO, {"inFilePath": "data/cz/4336sq_utm.tif"}, None)
-r.alterTimeANum(10)
-r.getExportToFile("output/test1.txt", "AAIGrid", False)
+# r.init()
+# r.define(raster2IO, {"inFilePath": "data/cz/4336sq_utm.tif"}, None)
+# r.alterTimeANum(10)
+# r.getExportToFile("output/test1.txt", "AAIGrid", False)
 
-print(0)
+# print(0)

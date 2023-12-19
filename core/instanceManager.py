@@ -12,8 +12,6 @@ from loguru import logger
 from core.configGlobal import configGlobal
 from core.envGlobal import envGlobal
 
-logger = logger.bind(type="control.instance")
-
 
 class _TYPE_A_Instance(TypedDict):
     """类中Instance类型定义"""

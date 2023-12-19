@@ -4,9 +4,6 @@ from osgeo import gdal, ogr, osr, gdalconst
 from loguru import logger
 
 
-logger.bind(type="tool.raster2Ascii")
-
-
 def raster2Ascii(rasterfile: str, destfile: str):
     logger.info("Write raster txt {path}.", path=destfile)
 

@@ -5,7 +5,8 @@ from uuid import uuid4
 
 from typing import Mapping, MutableMapping, Tuple, cast
 from core.typing.ioType import TYPE_IO_Data
-'''
+
+"""
 多个file ins合并为一个
 config:
 inAll 全部合并,不规避冲突
@@ -15,10 +16,10 @@ inDetail: {
 }
 
 data中存放新加的文件
-'''
+"""
 
 
-def fileMergeIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
+def fileMergeIO(ioData: TYPE_IO_Data) -> int:
     from core.base.file import FileBase
 
     config = ioData["config"]
@@ -39,35 +40,35 @@ def fileMergeIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
 
     from core.envGlobal import envGlobal as eGl
     from core.instanceManager import InstanceManager as IMR
+
     EGL_iMr: IMR = eGl.ct.iMr
     if config.get("inAll", False) == True:
         for inInsName in config.get("inFileIns", []):
             inIns = EGL_iMr.getInstance(inInsName)
             inIns = cast(FileBase, inIns)
             for name in inIns.getFileNames():
-                oldPath=inIns.getAFilePath(name)
+                oldPath = inIns.getAFilePath(name)
                 newpath = os.path.join(
-                    "temp", fname,
-                    str(uuid4()) + "".join(Path(oldPath).suffixes))
+                    "temp", fname, str(uuid4()) + "".join(Path(oldPath).suffixes)
+                )
                 inIns.getFile(name, newpath)
                 finalData.update({name: newpath})
     elif config.get("inDetail", None) is not None:
         detail: Mapping[str, str] = config["inDetail"]
-        for name,deStr in detail.items():
-            insName,fileName=_parseFile(deStr)
-            if insName !="":
+        for name, deStr in detail.items():
+            insName, fileName = _parseFile(deStr)
+            if insName != "":
                 inIns = EGL_iMr.getInstance(insName)
                 inIns = cast(FileBase, inIns)
-                oldPath=inIns.getAFilePath(fileName)
+                oldPath = inIns.getAFilePath(fileName)
                 newpath = os.path.join(
-                    "temp", fname,
-                    str(uuid4()) + "".join(Path(oldPath).suffixes))
-                inIns.getFile(fileName,newpath)
+                    "temp", fname, str(uuid4()) + "".join(Path(oldPath).suffixes)
+                )
+                inIns.getFile(fileName, newpath)
                 finalData.update({name: newpath})
 
-    ioData["newData"] = finalData
     ins.data = finalData
-    return ioData
+    return 0
 
 
 def _parseFile(str: str) -> Tuple[str, str]:

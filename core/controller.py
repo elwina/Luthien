@@ -6,8 +6,6 @@ from core.linkManager import LinkManager
 
 from loguru import logger
 
-logger = logger.bind(type="control")
-
 
 class Controller:
     lMr: LinkManager

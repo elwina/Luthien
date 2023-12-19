@@ -23,8 +23,6 @@ from loguru import logger
 
 from module.lisflood.tools.staRain import staRain
 
-logger.bind(type="module.lisflood")
-
 
 def lisfloodRun(
     putout: Callable[[TYPE_Putout], None],

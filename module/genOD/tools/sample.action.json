@@ -1,0 +1,116 @@
+{
+  "agent": ["worker", "child"],
+  "location": ["home", "work", "school", "restaurant"],
+  "detail": {
+    "worker": {
+      "init": "home",
+      "action": [
+        {
+          "time": "06:30",
+          "p": "15",
+          "float": "20",
+          "des": "送孩子上学",
+          "to": "school",
+          "action": [
+            {
+              "time": "08:00",
+              "p": "80",
+              "float": "30",
+              "des": "上班去",
+              "to": "work",
+              "action": [
+                {
+                  "time": "12:00",
+                  "p": "50",
+                  "float": "30",
+                  "des": "吃饭",
+                  "to": "restaurant",
+                  "action": [
+                    {
+                      "time": "13:00",
+                      "p": "100",
+                      "float": "30",
+                      "des": "回去上班",
+                      "to": "work",
+                      "action": [
+                        {
+                          "time": "17:00",
+                          "p": "100",
+                          "float": "60",
+                          "des": "下班",
+                          "to": "home",
+                          "action": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "time": "17:00",
+                  "p": "50",
+                  "float": "60",
+                  "des": "回家",
+                  "to": "home",
+                  "action": []
+                }
+              ]
+            },
+            {
+              "time": "08:00",
+              "p": "20",
+              "float": "30",
+              "des": "回家",
+              "to": "home",
+              "action": []
+            }
+          ]
+        },
+        {
+          "time": "08:00",
+          "p": "80",
+          "float": "120",
+          "des": "上班去",
+          "to": "work",
+          "action": [
+            {
+              "time": "17:00",
+              "p": "100",
+              "float": "60",
+              "des": "下班",
+              "to": "home",
+              "action": []
+            }
+          ]
+        }
+      ]
+    },
+    "child": {
+      "init": "home",
+      "action": [
+        {
+          "time": "06:30",
+          "p": "95",
+          "float": "20",
+          "des": "上学",
+          "to": "school",
+          "action": [
+            {
+              "time": "15:00",
+              "p": "50",
+              "float": "20",
+              "des": "3点放学",
+              "to": "home"
+            },
+            {
+              "time": "16:00",
+              "p": "50",
+              "float": "20",
+              "des": "4点放学",
+              "to": "home"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

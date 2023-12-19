@@ -2,8 +2,6 @@ from typing import MutableMapping
 
 from loguru import logger
 
-logger.bind(type="tools.dict2Txt")
-
 
 def dict2Txt(data: MutableMapping, filename: str):
     logger.info("Write dict txt {path}.", path=filename)

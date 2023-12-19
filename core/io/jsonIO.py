@@ -4,17 +4,18 @@ import commentjson as json
 from core.typing.ioType import TYPE_IO_Data
 
 from loguru import logger
-'''
+
+"""
 config
     outListConf:True  #* 以listConf中的out输出
     outJson:True #* 以jsonBase的形式输出
 
     inFile:True #* 以文件的形式输入配置
     inFilePath:"" #* 文件路径
-'''
+"""
 
 
-def jsonIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
+def jsonIO(ioData: TYPE_IO_Data) -> int:
     from core.base.listConf import ListConfBase
 
     config = ioData["config"]
@@ -27,14 +28,11 @@ def jsonIO(ioData: TYPE_IO_Data) -> TYPE_IO_Data:
     if "outListConf" in config and config["outListConf"] == True:
         for name in data:
             oldData[name] = data[name]
-        ioData["newData"] = oldData
-        ins.data = oldData
+        data = oldData
 
-    if "outJson" in config and config["outJson"] == True:
-        ins.data = data
-        ioData["newData"] = data
+    ins.data = data
 
-    return ioData
+    return 0
 
 
 def _inFromFile(filepath) -> Any:
@@ -46,4 +44,4 @@ def _inFromFile(filepath) -> Any:
     except Exception as e:
         logger.error(e)
         logger.error("Cannot read the file {path}!", path=filepath)
-        return {}
+        return -1

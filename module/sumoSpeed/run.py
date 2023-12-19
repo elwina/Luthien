@@ -9,7 +9,7 @@ import xml.dom.minidom
 
 from typing import Any, Callable, MutableMapping, Sequence, cast
 from core.base.listConf import ListConfBase
-from core.base.raster import RasterBase
+from core.base.raster2 import RasterBase
 from core.base.json import JsonBase
 from core.base.vectorType import VectorData
 from core.field.tempFileField import TempFileField
@@ -24,15 +24,18 @@ from core.envGlobal import envGlobal as eGl
 from loguru import logger
 
 
-def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
-                 instances: MutableMapping[str, TYPE_Instance],
-                 optList: Sequence[str]):
+def sumoSpeedRun(
+    putout: Callable[[TYPE_Putout], None],
+    instances: MutableMapping[str, TYPE_Instance],
+    optList: Sequence[str],
+):
     logger.debug("Module sumoSpeed Run,optList:{opt}.", opt=",".join(optList))
 
     # 从instances中获取需要的实例
     from module.sumoSpeed.field.uniField import UniField
     from core.field.roadField import RoadField
     from core.field.waterField import WaterField
+
     uni = cast(UniField, instances["sumoSpeedUni"])
     sroad = cast(RoadField, instances["edgeRoad"])
     water = cast(WaterField, instances["water"])
@@ -49,8 +52,7 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
     os.mkdir(tempDir)
 
     # water为模板栅格
-    rasterPath = os.path.join(tempDir, "autowater.txt")
-    shutil.copy(water.getTempFile(), rasterPath)
+    rasterPath = water.getRaster()
     outRasterPath = os.path.join(tempDir, "autoroadinraster.txt")
 
     # 计算每个edge的积水深度
@@ -60,18 +62,15 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
         edgeWater[time] = {}
         for edgeid in allEdgeid:
             edgePath = os.path.join(tempDir, "autoedge%s.geojson" % edgeid)
-            shutil.copy(
-                sroad.getInsByOneProp("id", edgeid).getTempFile(), edgePath)
+            shutil.copy(sroad.getInsByOneProp("id", edgeid).getTempFile(), edgePath)
 
-            outRasterPath = os.path.join(tempDir,
-                                         "autoedgeinraster%s.ascii" % edgeid)
+            outRasterPath = os.path.join(tempDir, "autoedgeinraster%s.tif" % edgeid)
             vector2raster(edgePath, rasterPath, outRasterPath)
             edgeRaster = RasterBase("edgeRoad")
             edgeRaster.init()
-            edgeRaster.defineFromAsciiFile(outRasterPath)
-
+            edgeRaster.setRaster(outRasterPath)
             edgeRData = edgeRaster.data
-            waterInEdge = water.maskData(edgeRData)
+            waterInEdge = water.getMaskLinearData(edgeRData)
             if waterInEdge is not None:
                 edgeWater[time][edgeid] = listMean(waterInEdge)
             else:
@@ -100,7 +99,8 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
 
                 # 核心速度公式区域
                 v0 = obj.properties.get("ospeed", 30)
-                if v0 == 0: v0 = 30
+                if v0 == 0:
+                    v0 = 30
                 speed, change = newSpeed(v0, depth)
 
                 obj.properties["speed"] = speed
@@ -130,13 +130,13 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
             vssEdge.setAttribute("lanes", " ".join(props.properties["lanes"]))
 
             from core.utils.timePeriod import timeStepSeconds
+
             tss = timeStepSeconds()
             for time in edgeSpeed:
                 timeSeconds = time * tss
                 vssEdgeTime = vssXml.createElement("step")
                 vssEdgeTime.setAttribute("time", str(timeSeconds + 25200))
-                vssEdgeTime.setAttribute("speed",
-                                         str(edgeSpeed[time][edgeid]["speed"]))
+                vssEdgeTime.setAttribute("speed", str(edgeSpeed[time][edgeid]["speed"]))
                 vssEdge.appendChild(vssEdgeTime)
         vssRoot.appendChild(vssEdge)
 
@@ -161,13 +161,14 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
                 roadPath = os.path.join(tempDir, "autoroad%d.geojson" % index)
                 shutil.copy(road.getAStreet(street).getTempFile(), roadPath)
 
+                outRasterPath = os.path.join(tempDir, "autoroadinraster%s.tif" % street)
                 vector2raster(roadPath, rasterPath, outRasterPath)
                 roadRaster = RasterBase("road")
                 roadRaster.init()
-                roadRaster.defineFromAsciiFile(outRasterPath)
+                roadRaster.setRaster(outRasterPath)
 
                 roadRData = roadRaster.data
-                waterinroad = water.maskData(roadRData)
+                waterinroad = water.getMaskLinearData(roadRData)
                 if waterinroad is not None:
                     meanOneWater[street] = listMean(waterinroad)
                 else:
@@ -195,14 +196,14 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
             for street in streets:
                 depth = streetWater[time][street]
                 if depth != -1:
-                    props = newRoad.getAStreet(
-                        street).data.objects[0].properties
+                    props = newRoad.getAStreet(street).data.objects[0].properties
                     props["water_depth"] = depth
 
                     v0 = props.get("speed", 30)
 
                     # 核心速度公式区域
-                    if v0 == 0: v0 = 30
+                    if v0 == 0:
+                        v0 = 30
                     speed, change = newSpeed(v0, depth)
 
                     props["speed"] = speed
@@ -210,7 +211,7 @@ def sumoSpeedRun(putout: Callable[[TYPE_Putout], None],
                     timeRoadSpeed[time][street] = {
                         "depth": depth,
                         "speed": speed,
-                        "change": change
+                        "change": change,
                     }
             putout({"road": {time - timenow: newRoad}})
 

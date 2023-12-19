@@ -1,23 +1,23 @@
-import os
-import shutil
-import uuid
-
-from typing import Any, MutableMapping, Sequence
+from typing import Any, MutableMapping
+import pandas as pd
 from core.base.base import BaseBase
+from core.typing.fieldType import TYPE_Field, TYPE_Instance
 
+from core.base.file import FileBase
 from core.typing.ioType import TYPE_IO
 from core.typing.recordType import TYPE_Recorder, TYPE_Recorder_TempEnv
 
 
-class JsonBase(BaseBase):
-    data: Any = {}
+class TableBase(BaseBase):
+    """内置Field:csv"""
 
-    def __init__(self, typeName: str):
-        self.typeName = typeName
+    data: pd.DataFrame
+
+    def __init__(self):
         super().__init__()
 
     def init(self):
-        self.data = {}
+        self.data = pd.DataFrame()
 
     def define(self, method: TYPE_IO, config: MutableMapping[str, Any], data: Any):
         method({"config": config, "ins": self, "newData": data})
@@ -30,5 +30,8 @@ class JsonBase(BaseBase):
     ):
         method({"config": config, "ins": self, "tempEnv": tempEnv})
 
-    def setJsonData(self, data):
+    def setPandasData(self, data):
         self.data = data
+
+    def toCSVFile(self, path: str):
+        self.data.to_csv(path, index=False)
